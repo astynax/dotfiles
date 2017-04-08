@@ -1,0 +1,14 @@
+XXkb.mainwindow.enable: yes
+XXkb.mainwindow.type: tray
+XXkb.mainwindow.geometry: 15x15+0+0
+XXkb.button.enable: no
+
+XXkb.controls.add_when_change: yes
+XXkb.controls.focusout: yes
+XXkb.app_list.wm_name.ignore: *Gitter*
+XXkb.app_list.wm_class_class.ignore: *emacs* *Emacs* *steam* *Steam* *InputOutput* *i3bar* *Gitter*
+XXkb.app_list.wm_class_class.alt_group1: *emacs* *Emacs*
+
+XXkb.image.path: /usr/share/xxkb/
+XXkb.mainwindow.image.1: en15.xpm
+XXkb.mainwindow.image.2: ru15.xpm
