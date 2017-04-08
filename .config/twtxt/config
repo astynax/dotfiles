@@ -1,0 +1,12 @@
+[twtxt]
+nick = astynax
+twtfile = ~/Projects/tweets/twtxt.txt
+twturl = https://raw.githubusercontent.com/astynax/tweets/master/twtxt.txt
+post_tweet_hook = "cd ~/Projects/tweets && ./update.sh"
+use_pager = True
+porcelain = True
+
+[following]
+twtxt_news = https://buckket.org/twtxt_news.txt
+twtxt = https://buckket.org/twtxt.txt
+
