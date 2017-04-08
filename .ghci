@@ -1,0 +1,4 @@
+-- "chmod go-w to this!" --
+
+-- colorize a prompt
+:set prompt "\ESC[32mλ> \ESC[m"

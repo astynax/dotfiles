@@ -1,0 +1,8 @@
+"\e[A": history-search-backward
+"\e[B": history-search-forward
+#TAB: menu-complete
+#set show-all-if-ambiguous On
+set glob-complete-word On
+set completion-ignore-case on
+set blink-matching-paren on
+"\C-w": backward-kill-word
