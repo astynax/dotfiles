@@ -151,7 +151,7 @@ bindsym $mod+Shift+z move scratchpad
 bindsym $mod+z scratchpad show
 
 # menus
-bindsym $mod+a exec --no-startup-id "~/Dropbox/tux_cfg/dmenus/i3menu.py"
+bindsym $mod+a exec --no-startup-id "~/.i3/dmenus/i3menu.py"
 
 # tag & jump to tag
 bindsym $mod+Shift+F1 mark '1'
