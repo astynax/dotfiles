@@ -1,0 +1,1 @@
+/home/astynax/Dropbox/tux_cfg/sus-depot/share/emacs/emacs
