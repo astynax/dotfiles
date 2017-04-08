@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: Description header
+# key: desc
+# --
+#+DESCRIPTION: $1

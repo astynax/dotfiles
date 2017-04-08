@@ -1,0 +1,14 @@
+# -*- mode: snippet -*-
+# name: html
+# key: h
+# --
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>${1:}</title>
+  </head>
+  <body>
+    ${2:<div id="container">}${3:}
+  </body>
+</html>

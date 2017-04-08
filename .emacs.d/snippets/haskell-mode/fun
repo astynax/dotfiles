@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: funu
+# key: funu
+# binding: direct-keybinding
+# --
+${1:function-name} :: ${2:type}
+$1 = undefined
