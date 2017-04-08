@@ -1,0 +1,4 @@
+#!/bin/sh
+SINK=$(pactl info | grep -oP "(?<=Default Sink: ).*$")
+echo Default sink is $SINK
+echo "+10%\n-10%\n0%\n20%\n40%\n60%\n80%" | rofi -dmenu -p "Volume:" | xargs -I {} -r pactl -- set-sink-volume $SINK {}
