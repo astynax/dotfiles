@@ -535,24 +535,18 @@
   )
  )
 
+;; swiper ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package swiper
  :ensure t
 
  :bind
- ("M-s s" . swiper)
+ (("M-s s" . swiper)
 
- :bind
- (:map swiper-map ("C-c c" . swiper-mc))
-
- :commands
- (swiper)
-
- :config
- (custom-set-faces
-  '(swiper-match-face1 ((t (:box (:line-width 1 :color "dark orange")))))
-  '(swiper-match-face2 ((t (:box (:line-width 1 :color "orange")))))
-  '(swiper-match-face3 ((t (:box (:line-width 1 :color "gold")))))
-  '(swiper-match-face4 ((t (:box (:line-width 1 :color "yellow")))))))
+  :map
+  swiper-map
+  ("C-c c" . swiper-mc)
+  )
+ )
 
 ;; Key help ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package which-key
@@ -1104,26 +1098,23 @@
   ;; (bind-key "s r" 'projectile-ripgrep 'projectile-command-map)
   )
 
-;; gotodef with dumb-jump
+;; counsel
+(use-package counsel-projectile
+  :ensure t
+
+  :bind
+  (:map
+   projectile-command-map
+   ("SPC" . counsel-projectile)
+   ("s S". counsel-projectile-ag)))
+
+;; gotodef with dumb-jump ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package dumb-jump
   :ensure t
 
   :bind
   (("C-c ." . dumb-jump-go)
    ("C-c ," . dumb-jump-back)))
-
-;; counsel
-(use-package counsel-projectile
-  :ensure t
-
-  :commands
-  (counsel-ag
-   counsel-dpkg)
-
-  :bind
-  (:map
-   projectile-command-map
-   ("s S" . counsel-projectile-ag)))
 
 ;; Multiple Cursors ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package multiple-cursors
