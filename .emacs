@@ -12,7 +12,7 @@
  '(magit-log-arguments (quote ("--graph" "--color" "--decorate")))
  '(package-selected-packages
    (quote
-    (pocket-mode company-web company-cabal smex org-brain terminal-here emmet-mode web-mode counsel counsel-projectile achievements ob-restclient zoom-window zeal-at-point yankpad yaml-mode window-numbering whole-line-or-region which-key volatile-highlights vimish-fold use-package unkillable-scratch undo-tree toml-mode switch-window swiper sr-speedbar solarized-theme smartparens shrink-whitespace rust-mode ripgrep rainbow-delimiters purescript-mode projectile org names markdown-mode magit lua-mode js2-mode intero idomenu ido-vertical-mode ido-ubiquitous ido-occur hindent hi2 guide-key git-timemachine ghc fullframe flycheck-rust flycheck-purescript flycheck-haskell flycheck-elm flycheck-color-mode-line flx-ido fireplace expand-region eno elpy elm-mode dumb-jump discover-my-major dired-single dired-hacks-utils dired-details+ company-restclient company-flx comment-dwim-2 color-identifiers-mode clojure-mode-extra-font-locking clj-refactor caseformat beacon avy-zap auto-indent-mode align-cljlet aggressive-indent ag ace-mc)))
+    (ace-link pocket-mode company-web company-cabal smex org-brain terminal-here emmet-mode web-mode counsel counsel-projectile achievements ob-restclient zoom-window zeal-at-point yankpad yaml-mode window-numbering whole-line-or-region which-key volatile-highlights vimish-fold use-package unkillable-scratch undo-tree toml-mode switch-window swiper sr-speedbar solarized-theme smartparens shrink-whitespace rust-mode ripgrep rainbow-delimiters purescript-mode projectile org names markdown-mode magit lua-mode js2-mode intero idomenu ido-vertical-mode ido-ubiquitous ido-occur hindent hi2 guide-key git-timemachine ghc fullframe flycheck-rust flycheck-purescript flycheck-haskell flycheck-elm flycheck-color-mode-line flx-ido fireplace expand-region eno elpy elm-mode dumb-jump discover-my-major dired-single dired-hacks-utils dired-details+ company-restclient company-flx comment-dwim-2 clojure-mode-extra-font-locking clj-refactor caseformat beacon avy-zap auto-indent-mode align-cljlet aggressive-indent ag ace-mc)))
  '(safe-local-variable-values
    (quote
     ((create-lockfiles)
@@ -389,9 +389,7 @@
    :map
    company-active-map
    ("C-n" . company-select-next)
-   ("C-p" . company-select-previous)
-   ("C-." . company-select-next)
-   ("C-," . company-select-previous))
+   ("C-p" . company-select-previous))
 
   :config
   (global-company-mode t)
@@ -405,608 +403,634 @@
   (setq
    company-tooltip-limit 20
    company-tooltip-align-annotations 't
-   company-idle-delay .3
+   ;; company-idle-delay .3
    company-begin-commands '(self-insert-command)
    )
 
- (use-package company-flx
-   :ensure t
+  (use-package company-flx
+    :ensure t
 
-   :config
-   (add-hook 'company-mode-hook (lambda () (company-flx-mode +1))))
- )
+    :config
+    (add-hook 'company-mode-hook (lambda () (company-flx-mode +1))))
+  )
 
 ;; Zeal-at-point
 (use-package zeal-at-point
- :if (executable-find "zeal")
+  :if (executable-find "zeal")
 
- :bind
- ("C-c d" . zeal-at-point)
- ;;(add-to-list 'zeal-at-point-mode-alist '(smth-mode . "smth")
- )
+  :bind
+  ("C-c d" . zeal-at-point)
+  ;;(add-to-list 'zeal-at-point-mode-alist '(smth-mode . "smth")
+  )
 
 ;; Avy & Eno ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package avy
- :ensure t
+  :ensure t
 
- :init
- (bind-keys
-  :prefix "M-g SPC"
-  :prefix-map my/avy-map)
+  :init
+  (bind-keys
+   :prefix "M-g SPC"
+   :prefix-map my/avy-map
+   :menu-name "Avy")
 
- :bind
- (("M-SPC" . avy-goto-char)
-  ("M-z" . avy-zap-to-char-dwim)
-  ("M-Z" . avy-zap-up-to-char-dwim)
+  :bind
+  (("M-SPC" . avy-goto-char)
+
+   :map
+   isearch-mode-map
+   ("M-SPC" . avy-isearch)
+
+   :map
+   search-map
+   ("M-SPC" . avy-isearch)
+
+   :map
+   my/avy-map
+   ("w" . avy-goto-word-or-subword-1)
+   ("l" . avy-goto-line)
+   )
+
+  :config
+  (use-package avy-zap
+    :ensure t
+
+    :bind
+    (("M-z" . avy-zap-to-char-dwim)
+     ("M-Z" . avy-zap-up-to-char-dwim)
+
+     :map
+     my/avy-map
+     ("z" . avy-zap-to-char)
+     ("Z" . avy-zap-up-to-char)
+     ))
+
+  (use-package ace-link
+    :ensure t
+
+    :bind
+    (("M-o" . ace-link))
+
+    :config
+    (ace-link-setup-default)
+    )
+
+  (let ((sfa '(lambda (fc bg)
+                (set-face-attribute
+                 fc nil :background bg :foreground "white"))))
+    (funcall sfa 'avy-lead-face "chocolate4")
+    (funcall sfa 'avy-lead-face-0 "chocolate3")
+    (funcall sfa 'avy-lead-face-2 "chocolate2"))
   )
-
- :bind
- (:map
-  isearch-mode-map
-  ("M-SPC" . avy-isearch))
-
- :bind
- (:map
-  search-map
-  ("M-SPC" . avy-isearch))
-
- :bind
- (:map
-  my/avy-map
-  ("w" . avy-goto-word-or-subword-1)
-  ("l" . avy-goto-line)
-  ("z" . avy-zap-to-char)
-  ("Z" . avy-zap-up-to-char)
-  )
-
- :config
- (use-package avy-zap
-   :ensure t)
-
- (let ((sfa '(lambda (fc bg)
-               (set-face-attribute
-                fc nil :background bg :foreground "white"))))
-   (funcall sfa 'avy-lead-face "chocolate4")
-   (funcall sfa 'avy-lead-face-0 "chocolate3")
-   (funcall sfa 'avy-lead-face-2 "chocolate2"))
- )
 
 (use-package eno
- :ensure t
+  :ensure t
 
- :init
- (define-prefix-command 'my/eno/goto 'my/eno/goto "Eno:GoTo")
- (define-prefix-command 'my/eno/copy 'my/eno/copy "Eno:Copy")
- (define-prefix-command 'my/eno/cut 'my/eno/cut "Eno:Cut")
- (define-prefix-command 'my/eno/paste 'my/eno/paste "Eno:Paste")
+  :init
+  (define-prefix-command 'my/eno/goto 'my/eno/goto "Eno:GoTo")
+  (define-prefix-command 'my/eno/copy 'my/eno/copy "Eno:Copy")
+  (define-prefix-command 'my/eno/cut 'my/eno/cut "Eno:Cut")
+  (define-prefix-command 'my/eno/paste 'my/eno/paste "Eno:Paste")
 
- (bind-keys
-  :prefix "C-c e"
-  :prefix-map my/eno-map
-  ("g" . my/eno/goto)
-  ("M-w" . my/eno/copy)
-  ("C-w" . my/eno/cut)
-  ("C-y" . my/eno/paste))
+  (bind-keys
+   :prefix "C-c e"
+   :prefix-map my/eno-map
+   ("g" . my/eno/goto)
+   ("M-w" . my/eno/copy)
+   ("C-w" . my/eno/cut)
+   ("C-y" . my/eno/paste))
 
- :bind
- (:map
-  my/eno/goto
-  ("w" . eno-word-goto)
-  ("l" . eno-line-goto)
-  ("'" . eno-str-goto)
-  ("[" . eno-paren-goto)
-  ("s" . eno-symbol-goto)
+  :bind
+  (:map
+   my/eno/goto
+   ("w" . eno-word-goto)
+   ("l" . eno-line-goto)
+   ("'" . eno-str-goto)
+   ("[" . eno-paren-goto)
+   ("s" . eno-symbol-goto)
 
-  :map
-  my/eno/copy
-  ("w" . eno-word-copy)
-  ("l" . eno-line-copy)
-  ("t" . eno-line-copy-to)
-  ("f" . eno-line-copy-from-to)
-  ("'" . eno-str-copy)
-  ("[" . eno-paren-copy)
-  ("s" . eno-symbol-copy)
-  ("S" . eno-symbol-copy-to)
-  ("M-s" . eno-symbol-copy-from-to)
+   :map
+   my/eno/copy
+   ("w" . eno-word-copy)
+   ("l" . eno-line-copy)
+   ("t" . eno-line-copy-to)
+   ("f" . eno-line-copy-from-to)
+   ("'" . eno-str-copy)
+   ("[" . eno-paren-copy)
+   ("s" . eno-symbol-copy)
+   ("S" . eno-symbol-copy-to)
+   ("M-s" . eno-symbol-copy-from-to)
 
-  :map
-  my/eno/cut
-  ("w" . eno-word-cut)
-  ("l" . eno-line-cut)
-  ("t" . eno-line-cut-to)
-  ("f" . eno-line-cut-from-to)
-  ("'" . eno-str-cut)
-  ("[" . eno-paren-cut)
-  ("s" . eno-symbol-cut)
-  ("S" . eno-symbol-cut-to)
-  ("M-s" . eno-symbol-cut-from-to)
+   :map
+   my/eno/cut
+   ("w" . eno-word-cut)
+   ("l" . eno-line-cut)
+   ("t" . eno-line-cut-to)
+   ("f" . eno-line-cut-from-to)
+   ("'" . eno-str-cut)
+   ("[" . eno-paren-cut)
+   ("s" . eno-symbol-cut)
+   ("S" . eno-symbol-cut-to)
+   ("M-s" . eno-symbol-cut-from-to)
 
-  :map
-  my/eno/paste
-  ("w" . eno-word-paste)
-  ("l" . eno-line-paste)
-  ("t" . eno-line-paste-to)
-  ("f" . eno-line-paste-from-to)
-  ("'" . eno-str-paste)
-  ("[" . eno-paren-paste)
-  ("s" . eno-symbol-paste)
-  ("S" . eno-symbol-paste-to)
-  ("M-s" . eno-symbol-paste-from-to)
+   :map
+   my/eno/paste
+   ("w" . eno-word-paste)
+   ("l" . eno-line-paste)
+   ("t" . eno-line-paste-to)
+   ("f" . eno-line-paste-from-to)
+   ("'" . eno-str-paste)
+   ("[" . eno-paren-paste)
+   ("s" . eno-symbol-paste)
+   ("S" . eno-symbol-paste-to)
+   ("M-s" . eno-symbol-paste-from-to)
+   )
   )
- )
 
 ;; swiper ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package swiper
- :ensure t
+  :ensure t
 
- :bind
- (("M-s s" . swiper)
+  :bind
+  (("M-s s" . swiper)
 
-  :map
-  swiper-map
-  ("C-c c" . swiper-mc)
+   :map
+   swiper-map
+   ("C-c c" . swiper-mc)
+   )
   )
- )
 
 ;; Key help ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package which-key
- :ensure t
+  :ensure t
 
- :diminish which-key-mode
+  :diminish which-key-mode
 
- :config
- (setq which-key-popup-type 'side-window)
- (setq which-key-side-window-location 'bottom)
- (setq which-key-side-window-max-height 0.25)
- (which-key-mode))
+  :config
+  (setq which-key-popup-type 'side-window
+        which-key-side-window-location 'bottom
+        which-key-side-window-max-height 0.25)
+  (which-key-mode)
+  )
 
 ;; Expand Region ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package expand-region
- :ensure t
+  :ensure t
 
- :bind
- (("M-]" . er/expand-region)
-  ("M-[" . er/contract-region)))
+  :bind
+  (("M-]" . er/expand-region)
+   ("M-[" . er/contract-region)))
 
 ;; Rainbow delimiters ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package rainbow-delimiters
- :ensure t
+  :ensure t
 
- :config
- (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+  :config
+  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
 
 ;; Case formatting ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package caseformat
- :ensure t
+  :ensure t
 
- :bind
- ("M-L" . caseformat-backward))
+  :bind
+  ("M-L" . caseformat-backward))
 
 ;; Flycheck ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package flycheck
- :ensure t
+  :ensure t
 
- :diminish "Ⓕ"
+  :diminish "Ⓕ"
 
- :config
- (use-package flycheck-color-mode-line
-   :ensure t
-   :config
-   (add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode))
- (setq flycheck-check-syntax-automatically '(save mode-enabled)))
+  :config
+  (use-package flycheck-color-mode-line
+    :ensure t
+    :config
+    (add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode))
+  (setq flycheck-check-syntax-automatically '(save mode-enabled)))
 
 ;; Clojure-mode + CIDER + align-cljlet + ac-nrepl ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package clojure-mode
- :ensure t
+  :ensure t
 
- :config
- ;; some unicode
- (font-lock-add-keywords
-  'clojure-mode `(("(\\(fn\\)[\[[:space:]]"
-                   (0 (progn (compose-region (match-beginning 1)
-                                             (match-end 1) "λ")
-                             nil)))
-                  ("\\(#\\)("
-                   (0 (progn (compose-region (match-beginning 1)
-                                             (match-end 1) "ƒ")
-                             nil)))
-                  ("\\(#\\){"
-                   (0 (progn (compose-region (match-beginning 1)
-                                             (match-end 1) "∈")
-                             nil)))))
+  :config
+  ;; some unicode
+  (font-lock-add-keywords
+   'clojure-mode `(("(\\(fn\\)[\[[:space:]]"
+                    (0 (progn (compose-region (match-beginning 1)
+                                              (match-end 1) "λ")
+                              nil)))
+                   ("\\(#\\)("
+                    (0 (progn (compose-region (match-beginning 1)
+                                              (match-end 1) "ƒ")
+                              nil)))
+                   ("\\(#\\){"
+                    (0 (progn (compose-region (match-beginning 1)
+                                              (match-end 1) "∈")
+                              nil)))))
 
- (define-clojure-indent
-   ;; compojure indentation tweaks
-   (defroutes 'defun)
-   (GET 2)
-   (POST 2)
-   (PUT 2)
-   (DELETE 2)
-   (HEAD 2)
-   (ANY 2)
-   (context 2))
+  (define-clojure-indent
+    ;; compojure indentation tweaks
+    (defroutes 'defun)
+    (GET 2)
+    (POST 2)
+    (PUT 2)
+    (DELETE 2)
+    (HEAD 2)
+    (ANY 2)
+    (context 2))
 
- (use-package clojure-mode-extra-font-locking
-   :ensure t)
+  (use-package clojure-mode-extra-font-locking
+    :ensure t)
 
- (use-package cider
-   :ensure t
-   :config
-   (add-hook 'cider-repl-mode-hook 'rainbow-delimiters-mode)
-   (add-hook 'cider-mode-hook 'rainbow-delimiters-mode)
-   (setq cider-repl-result-prefix ";; => "))
+  (use-package cider
+    :ensure t
+    :config
+    (add-hook 'cider-repl-mode-hook 'rainbow-delimiters-mode)
+    (add-hook 'cider-mode-hook 'rainbow-delimiters-mode)
+    (setq cider-repl-result-prefix ";; => "))
 
- (use-package clj-refactor
-   :ensure t
-   :config
-   (add-hook 'clojure-mode-hook
-             (lambda ()
-               (clj-refactor-mode 1)
-               (cljr-add-keybindings-with-prefix "C-c C-r"))))
+  (use-package clj-refactor
+    :ensure t
+    :config
+    (add-hook 'clojure-mode-hook
+              (lambda ()
+                (clj-refactor-mode 1)
+                (cljr-add-keybindings-with-prefix "C-c C-r"))))
 
- (add-hook 'clojure-mode-hook (lambda () (aggressive-indent-mode 1))))
+  (add-hook 'clojure-mode-hook (lambda () (aggressive-indent-mode 1))))
 
 ;; haskell mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package haskell-mode
- :ensure t
+  :ensure t
 
- :diminish haskell-mode
+  :diminish haskell-mode
 
- :config
- (use-package hi2
-   :ensure t
-   :diminish hi2-mode
-   :config
-   (bind-key "<tab>" 'hi2-indent-line hi2-mode-map))
+  :config
+  (add-hook
+   'haskell-mode-hook
+   (lambda ()
+     "Declaration scanning hook"
+     (haskell-decl-scan-mode)))
 
- (use-package intero
-   :ensure t
-   :diminish intero-mode
-   :config
-   (unbind-key "M-." intero-mode-map)
-   (defvar my/suppress-intero nil "Suppresses an intero-mode")
-   (add-hook 'haskell-mode-hook
-             (lambda ()
-               (add-hook 'hack-local-variables-hook
-                         (lambda ()
-                           (if my/suppress-intero
-                               (setq flycheck-checker 'haskell-stack-ghc)
-                             (intero-mode))
-                           (flycheck-mode))
-                         nil t))))
+  (use-package hi2
+    :ensure t
 
- (use-package hindent
-   :if (file-exists-p "~/Projects/hindent/elisp")
-   :load-path "~/Projects/hindent/elisp"
-   :ensure t
-   :config
-   (defvar my/suppress-hindent nil "Suppresses an autofromatting on save")
-   (add-hook 'haskell-mode-hook
-             (lambda ()
-               (add-hook 'hack-local-variables-hook
-                         (lambda ()
-                           (when (not my/suppress-hindent)
-                             (setq hindent-reformat-buffer-on-save t)
-                             (hindent-mode)))
-                         nil t))))
+    :diminish hi2-mode
 
- (use-package company-cabal
-   :ensure t
+    :config
+    (bind-key "<tab>" 'hi2-indent-line hi2-mode-map))
 
-   :config
-   (add-to-list 'company-backends 'company-cabal))
+  (use-package intero
+    :ensure t
 
- (defun my/boot-haskell ()
-   "Initialize haskell stuff"
-   (interactive)
+    :diminish intero-mode
 
-   ;; auto-indentation
-   (hi2-mode)
-   (auto-indent-mode -1)
-   (setq indent-line-function (lambda () 'noindent)
-         electric-indent-inhibit 1)
-   )
+    :config
+    (unbind-key "M-." intero-mode-map)
+    (defvar my/suppress-intero nil "Suppresses an intero-mode")
+    (add-hook 'haskell-mode-hook
+              (lambda ()
+                (add-hook 'hack-local-variables-hook
+                          (lambda ()
+                            (if my/suppress-intero
+                                (setq flycheck-checker 'haskell-stack-ghc)
+                              (intero-mode))
+                            (flycheck-mode))
+                          nil t))))
 
- (setq hi2-layout-offset 4
-       hi2-left-offset 4
-       hi2-where-post-offset 2)
+  (use-package hindent
+    :if (file-exists-p "~/Projects/hindent/elisp")
+    :load-path "~/Projects/hindent/elisp"
 
- (add-hook 'haskell-mode-hook 'my/boot-haskell)
+    :ensure t
 
- ;; hemmet
- (when (executable-find "hemmet")
-   (defun hemmet-expand-region ()
-     (interactive)
-     (let ((f (lambda (b e)
-                (shell-command-on-region
-                 b e "hemmet" t t "*hemmet error*" t))))
-       (if (region-active-p)
-           (funcall f (region-beginning) (region-end))
-         (funcall f (line-beginning-position) (line-end-position)))
-       ))
-   (bind-key "C-c C-j" 'hemmet-expand-region haskell-mode-map))
- )
+    :config
+    (defvar my/suppress-hindent nil "Suppresses an autofromatting on save")
+    (add-hook 'haskell-mode-hook
+              (lambda ()
+                (add-hook 'hack-local-variables-hook
+                          (lambda ()
+                            (when (not my/suppress-hindent)
+                              (setq hindent-reformat-buffer-on-save t)
+                              (hindent-mode)))
+                          nil t))))
+
+  (use-package company-cabal
+    :ensure t
+
+    :config
+    (add-to-list 'company-backends 'company-cabal))
+
+  (defun my/boot-haskell ()
+    "Initialize haskell stuff"
+    (interactive)
+
+    ;; auto-indentation
+    (hi2-mode)
+    (auto-indent-mode -1)
+    (setq indent-line-function (lambda () 'noindent)
+          electric-indent-inhibit 1)
+    )
+
+  (setq hi2-layout-offset 4
+        hi2-left-offset 4
+        hi2-where-post-offset 2)
+
+  (add-hook 'haskell-mode-hook 'my/boot-haskell)
+
+  ;; hemmet
+  (when (executable-find "hemmet")
+    (defun hemmet-expand-region ()
+      (interactive)
+      (let ((f (lambda (b e)
+                 (shell-command-on-region
+                  b e "hemmet" t t "*hemmet error*" t))))
+        (if (region-active-p)
+            (funcall f (region-beginning) (region-end))
+          (funcall f (line-beginning-position) (line-end-position)))
+        ))
+    (bind-key "C-c C-j" 'hemmet-expand-region haskell-mode-map))
+  )
 
 ;; Python mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package python
- :ensure t
+  :ensure t
 
- :mode ("\\.py\\'" . python-mode)
+  :mode ("\\.py\\'" . python-mode)
 
- :commands (my/boot-python)
+  :commands (my/boot-python)
 
- :init
- (add-hook 'python-mode-hook 'my/boot-python)
+  :init
+  (add-hook 'python-mode-hook 'my/boot-python)
 
- :config
- (use-package elpy
-   :ensure t
+  :config
+  (use-package elpy
+    :ensure t
 
-   :diminish elpy-mode
+    :diminish elpy-mode
 
-   :config
-   (set-variable
-    'elpy-modules
-    '(elpy-module-company
-      elpy-module-eldoc
-      ;;elpy-module-flymake
-      elpy-module-pyvenv
-      elpy-module-yasnippet
-      elpy-module-sane-defaults))
+    :config
+    (set-variable
+     'elpy-modules
+     '(elpy-module-company
+       elpy-module-eldoc
+       ;;elpy-module-flymake
+       elpy-module-pyvenv
+       elpy-module-yasnippet
+       elpy-module-sane-defaults))
 
-   (bind-key "M-g j" 'elpy-menu python-mode-map)
-   (elpy-enable)
-   )
+    (bind-key "M-g j" 'elpy-menu python-mode-map)
+    (elpy-enable)
+    )
 
- (defun my/python-enforce-indentation ()
-   "Enforces python indentation to 4 spaces"
-   (interactive)
-   (auto-indent-mode -1)
-   (setq indent-tabs-mode nil
-         python-indent-offset 4
-         electric-indent-inhibit t
-         python-indent-guess-indent-offset nil)
-   )
+  (defun my/python-enforce-indentation ()
+    "Enforces python indentation to 4 spaces"
+    (interactive)
+    (auto-indent-mode -1)
+    (setq indent-tabs-mode nil
+          python-indent-offset 4
+          electric-indent-inhibit t
+          python-indent-guess-indent-offset nil)
+    )
 
- (defun my/boot-python ()
-   "Initialize python stuff"
-   (interactive)
-   (my/python-enforce-indentation)
-   (flycheck-mode)
-   (flycheck-select-checker 'python-pylint)
-   )
- )
+  (defun my/boot-python ()
+    "Initialize python stuff"
+    (interactive)
+    (my/python-enforce-indentation)
+    (flycheck-mode)
+    (flycheck-select-checker 'python-pylint)
+    )
+  )
 
 ;; Rust ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package rust-mode
- :ensure t
+  :ensure t
 
- :mode "\\.rs\\'"
+  :mode "\\.rs\\'"
 
- :commands (rust-mode)
+  :commands (rust-mode)
 
- :config
- (use-package toml-mode
-   :ensure t)
+  :config
+  (use-package toml-mode
+    :ensure t)
 
- (use-package flycheck-rust
-   :ensure t
-   :config
-   (add-hook 'rust-mode-hook
-             (lambda ()
-               (flycheck-rust-setup)
-               (flycheck-mode))))
+  (use-package flycheck-rust
+    :ensure t
+    :config
+    (add-hook 'rust-mode-hook
+              (lambda ()
+                (flycheck-rust-setup)
+                (flycheck-mode))))
 
- (add-to-list 'company-dabbrev-code-modes 'rust-mode)
- (add-to-list 'company-keywords-alist (cons 'rust-mode rust-mode-keywords))
- ;; zeal docset advice
- (when (fboundp 'zeal-at-point-mode-alist)
-   (add-to-list 'zeal-at-point-mode-alist '(rust-mode . "rust")))
- )
+  (add-to-list 'company-dabbrev-code-modes 'rust-mode)
+  (add-to-list 'company-keywords-alist (cons 'rust-mode rust-mode-keywords))
+  ;; zeal docset advice
+  (when (fboundp 'zeal-at-point-mode-alist)
+    (add-to-list 'zeal-at-point-mode-alist '(rust-mode . "rust")))
+  )
 
 ;; Markdown ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package markdown-mode
- :ensure t
+  :ensure t
 
- :mode "\\.md\\'")
+  :mode "\\.md\\'")
 
 ;; YAML ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package yaml-mode
- :ensure t
+  :ensure t
 
- :mode "\\.yaml\\'")
+  :mode "\\.yaml\\'")
 
 ;; window-number ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package window-numbering
- :ensure t
+  :ensure t
 
- :config
- (setq window-numbering-auto-assign-0-to-minibuffer t)
- (set-face-foreground 'window-numbering-face "#b58900")
- (set-face-bold-p     'window-numbering-face t)
- (window-numbering-mode))
+  :config
+  (setq window-numbering-auto-assign-0-to-minibuffer t)
+  (set-face-foreground 'window-numbering-face "#b58900")
+  (set-face-bold-p     'window-numbering-face t)
+  (window-numbering-mode))
 
 (use-package switch-window
- :ensure t
+  :ensure t
 
- :commands
- (switch-window)
+  :commands
+  (switch-window)
 
- :bind
- ("C-x o" . switch-window))
+  :bind
+  ("C-x o" . switch-window))
 
 ;; zoom window ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package zoom-window
- :ensure t
+  :ensure t
 
- :bind
- ("C-x C-z" . zoom-window-zoom)
+  :bind
+  ("C-x C-z" . zoom-window-zoom)
 
- :config
- (setq zoom-window-mode-line-color "DarkGreen"))
+  :config
+  (setq zoom-window-mode-line-color "DarkGreen"))
 
 ;; undo tree ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package undo-tree
- :ensure t
+  :ensure t
 
- :diminish undo-tree-mode
+  :diminish undo-tree-mode
 
- :config
- (global-undo-tree-mode))
+  :config
+  (global-undo-tree-mode))
 
 ;; Git ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package magit
- :ensure t
+  :ensure t
 
- :bind
- ("C-x g" . magit-status))
+  :bind
+  ("C-x g" . magit-status))
 
 (use-package git-timemachine
- :ensure t
+  :ensure t
 
- :commands (git-timemachine))
+  :commands (git-timemachine))
 
 ;; Elm ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package elm-mode
- :ensure t
+  :ensure t
 
- :mode "\\.elm\\'"
+  :mode "\\.elm\\'"
 
- :config
- (use-package flycheck-elm
-   :ensure t
-   :config
-   (add-hook 'flycheck-mode-hook
-             #'flycheck-elm-setup)
-   (add-hook
-    'elm-mode-hook
-    #'flycheck-mode))
+  :config
+  (use-package flycheck-elm
+    :ensure t
+    :config
+    (add-hook 'flycheck-mode-hook
+              #'flycheck-elm-setup)
+    (add-hook
+     'elm-mode-hook
+     #'flycheck-mode))
 
- (when (executable-find "elm-oracle")
-   (add-hook
-    'elm-mode-hook
-    #'elm-oracle-setup-completion
-    ))
+  (when (executable-find "elm-oracle")
+    (add-hook
+     'elm-mode-hook
+     #'elm-oracle-setup-completion
+     ))
 
- (add-hook
-  'elm-mode-hook
-  (lambda ()
-    (setq electric-indent-inhibit t)))
+  (add-hook
+   'elm-mode-hook
+   (lambda ()
+     (setq electric-indent-inhibit t)))
 
- (bind-keys
-  :map elm-mode-map
-  ("TAB" . elm-indent-cycle)
+  (bind-keys
+   :map elm-mode-map
+   ("TAB" . elm-indent-cycle)
+   )
+  (diminish 'elm-indent-mode)
   )
- (diminish 'elm-indent-mode)
- )
 
 ;; Go ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package go-mode
- ;; :ensure t
+  ;; :ensure t
 
- :mode "\\.go\\'"
+  :mode "\\.go\\'"
 
- :commands
- (go-mode)
+  :commands
+  (go-mode)
 
- :config
- (add-hook
-  'go-mode-hook
-  (lambda ()
-    (add-hook 'before-save-hook (lambda () (gofmt)) t t)
-    (setq-local whitespace-style '(face lines-tail trailing))
-    (flycheck-mode)
-    )))
+  :config
+  (add-hook
+   'go-mode-hook
+   (lambda ()
+     (add-hook 'before-save-hook (lambda () (gofmt)) t t)
+     (setq-local whitespace-style '(face lines-tail trailing))
+     (flycheck-mode)
+     )))
 
 ;; PureScript ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package purescript-mode
- :ensure t
+  :ensure t
 
- :mode "\\.purs\\'"
+  :mode "\\.purs\\'"
 
- :commands
- (purescript-mode)
+  :commands
+  (purescript-mode)
 
- :config
- (use-package flycheck-purescript
-   :ensure t
-   :config
-   (eval-after-load 'flycheck
-     '(flycheck-purescript-setup)))
+  :config
+  (use-package flycheck-purescript
+    :ensure t
+    :config
+    (eval-after-load 'flycheck
+      '(flycheck-purescript-setup)))
 
- (defun my/boot-purescript ()
-   "Initialize purs stuff"
-   (auto-indent-mode -1)
-   (electric-indent-mode -1)
-   (setq purescript-indent-offset 2)
-   (purescript-indent-mode)
-   (flycheck-mode)
-   )
+  (defun my/boot-purescript ()
+    "Initialize purs stuff"
+    (auto-indent-mode -1)
+    (electric-indent-mode -1)
+    (setq purescript-indent-offset 2)
+    (purescript-indent-mode)
+    (flycheck-mode)
+    )
 
- (add-hook 'purescript-mode-hook 'my/boot-purescript))
+  (add-hook 'purescript-mode-hook 'my/boot-purescript))
 
 ;; JavaScript ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package js2-mode
- :ensure t
+  :ensure t
 
- :mode "\\.jsx?\\'"
+  :mode "\\.jsx?\\'"
 
- :commands
- (js2-jsx-mode)
+  :commands
+  (js2-jsx-mode)
 
- :bind
- (:map
-  js2-jsx-mode-map
-  ("<tab>" . js2-jsx-indent-line))
+  :bind
+  (:map
+   js2-jsx-mode-map
+   ("<tab>" . js2-jsx-indent-line))
 
- :config
- (setq js2-basic-offset 2)
- (add-to-list 'auto-mode-alist '("\\.jsx?\\'" . js2-jsx-mode))
- (add-hook 'js2-jsx-mode-hook
-           (lambda ()
-             (setq electric-indent-inhibit t))))
+  :config
+  (setq js2-basic-offset 2)
+  (add-to-list 'auto-mode-alist '("\\.jsx?\\'" . js2-jsx-mode))
+  (add-hook 'js2-jsx-mode-hook
+            (lambda ()
+              (setq electric-indent-inhibit t))))
 
 ;; SmartParens ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package smartparens
- :ensure t
+  :ensure t
 
- :diminish smartparens-mode
+  :diminish smartparens-mode
 
- :commands
- (smartparens-strict-mode)
+  :commands
+  (smartparens-strict-mode)
 
- :init
- (dolist
-     (m '(emacs-lisp-mode-hook
-          ielm-mode-hook
-          lisp-mode-hook
-          lisp-interaction-mode-hook
-          scheme-mode-hook
-          clojure-mode-hook
-          cider-repl-mode-hook
-          cider-mode-hook
-          eval-expression-minibuffer-setup-hook))
-   (add-hook m (lambda () (smartparens-strict-mode t))))
+  :init
+  (dolist
+      (m '(emacs-lisp-mode-hook
+           ielm-mode-hook
+           lisp-mode-hook
+           lisp-interaction-mode-hook
+           scheme-mode-hook
+           clojure-mode-hook
+           cider-repl-mode-hook
+           cider-mode-hook
+           eval-expression-minibuffer-setup-hook))
+    (add-hook m (lambda () (smartparens-strict-mode t))))
 
- :bind
- (:map
-  sp-keymap
-  ;; split/join/unwrap
-  ("C-c j" . sp-join-sexp)
-  ("C-c J" . sp-split-sexp)
-  ("C-c M-j" . sp-splice-sexp)
-  ;; barf/slurp
-  ("C-)" . sp-forward-slurp-sexp)
-  ("C-}" . sp-forward-barf-sexp)
-  ("C-(" . sp-backward-slurp-sexp)
-  ("C-{" . sp-backward-barf-sexp)
-  ;; closing brackets of any kinds
-  (")" . sp-up-sexp)
-  ("}" . sp-up-sexp)
-  ("]" . sp-up-sexp))
+  :bind
+  (:map
+   sp-keymap
+   ;; split/join/unwrap
+   ("C-c j" . sp-join-sexp)
+   ("C-c J" . sp-split-sexp)
+   ("C-c M-j" . sp-splice-sexp)
+   ;; barf/slurp
+   ("C-)" . sp-forward-slurp-sexp)
+   ("C-}" . sp-forward-barf-sexp)
+   ("C-(" . sp-backward-slurp-sexp)
+   ("C-{" . sp-backward-barf-sexp)
+   ;; closing brackets of any kinds
+   (")" . sp-up-sexp)
+   ("}" . sp-up-sexp)
+   ("]" . sp-up-sexp))
 
- :config
- (require 'smartparens-config))
+  :config
+  (require 'smartparens-config))
 
 ;; Web Mode
 (use-package web-mode
@@ -1106,7 +1130,10 @@
   (:map
    projectile-command-map
    ("SPC" . counsel-projectile)
-   ("s S". counsel-projectile-ag)))
+   ("s S". counsel-projectile-ag))
+
+  :config
+  (add-to-list 'ivy-re-builders-alist '(t . ivy--regex-fuzzy)))
 
 ;; gotodef with dumb-jump ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package dumb-jump
@@ -1368,11 +1395,23 @@
   :commands
   (list-pocket))
 
+;; Fun ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(use-package achievements-mode
+  :commands
+  (achievements-list-achievements)
+
+  :init
+  (add-hook
+   'after-init-hook
+   (lambda () (achievements-mode))))
+
+(use-package fireplace
+  :commands
+  (fireplace))
+
 ;; ===========================================================================
-;; Mark-ring
-;; When popping the mark, continue popping until the cursor
-;; actually moves
 (defadvice pop-to-mark-command (around ensure-new-position activate)
+  "When popping the mark, continue popping until the cursor actually moves"
   (let ((p (point)))
     (dotimes (i 10)
       (when (= p (point)) ad-do-it))))
@@ -1393,11 +1432,6 @@
                 'my/smarter-move-beginning-of-line)
 
 ;; ===========================================================================
-(defun my/yank-buffer-file-name ()
-  "Yank buffer-file-name"
-  (interactive)
-  (kill-new (buffer-file-name)))
-
 ;; Keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (bind-keys
  ("M-/" . hippie-expand)
