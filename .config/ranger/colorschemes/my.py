@@ -1,13 +1,19 @@
 # Copyright (C) 2009-2013  Roman Zimbelmann <hut@lavabit.com>
 # This software is distributed under the terms of the GNU GPL version 3.
 
+from __future__ import (absolute_import, division, print_function)
+
 from ranger.gui.colorscheme import ColorScheme
-from ranger.gui.color import *
+from ranger.gui.color import (
+    black, blue, cyan, green, magenta, red, white, yellow, default,
+    normal, bold, reverse, blink,
+    default_colors,
+)
 
 class My(ColorScheme):
     progress_bar_color = blue
 
-    def use(self, context):
+    def use(self, context):  # pylint: disable=too-many-branches,too-many-statements
         fg, bg, attr = default_colors
 
         if context.reset:
@@ -72,6 +78,9 @@ class My(ColorScheme):
                 # else:
                 #     fg = magenta
 
+            if context.inactive_pane:
+                fg = cyan
+
         elif context.in_titlebar:
             # attr |= bold
             if context.hostname:
@@ -103,6 +112,15 @@ class My(ColorScheme):
                     fg = red
             if context.loaded:
                 bg = self.progress_bar_color
+            if context.vcsinfo:
+                fg = blue
+                attr &= ~bold
+            if context.vcscommit:
+                fg = yellow
+                attr &= ~bold
+            if context.vcsdate:
+                fg = cyan
+                attr &= ~bold
 
         if context.text:
             if context.highlight:
@@ -120,5 +138,33 @@ class My(ColorScheme):
                     fg = self.progress_bar_color
                 else:
                     bg = self.progress_bar_color
+
+        if context.vcsfile and not context.selected:
+            attr &= ~bold
+            if context.vcsconflict:
+                fg = magenta
+            elif context.vcschanged:
+                fg = red
+            elif context.vcsunknown:
+                fg = red
+            elif context.vcsstaged:
+                fg = green
+            elif context.vcssync:
+                fg = green
+            elif context.vcsignored:
+                fg = default
+
+        elif context.vcsremote and not context.selected:
+            attr &= ~bold
+            if context.vcssync or context.vcsnone:
+                fg = green
+            elif context.vcsbehind:
+                fg = red
+            elif context.vcsahead:
+                fg = blue
+            elif context.vcsdiverged:
+                fg = magenta
+            elif context.vcsunknown:
+                fg = red
 
         return fg, bg, attr
