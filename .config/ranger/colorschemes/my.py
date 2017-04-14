@@ -7,7 +7,7 @@ from ranger.gui.colorscheme import ColorScheme
 from ranger.gui.color import (
     black, blue, cyan, green, magenta, red, white, yellow, default,
     normal, bold, reverse, blink,
-    default_colors,
+    default_colors, underline
 )
 
 class My(ColorScheme):
