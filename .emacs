@@ -664,12 +664,25 @@
 
   :diminish haskell-mode
 
+  :init
+  (add-to-list
+   'auto-mode-alist
+   '("routes\\'" . haskell-yesod-parse-routes-mode))
+
   :config
   (add-hook
    'haskell-mode-hook
    (lambda ()
      "Declaration scanning hook"
      (haskell-decl-scan-mode)))
+
+  (add-hook
+   'haskell-yesod-parse-routes-mode-hook
+   (lambda ()
+     "Disables the line wrapping and auto-fill-mode"
+     (toggle-truncate-lines t)
+     (yas-minor-mode nil) ;; TODO: make possible to disable only autofill-mode
+     ))
 
   (use-package hi2
     :ensure t
@@ -749,6 +762,32 @@
           (funcall f (line-beginning-position) (line-end-position)))
         ))
     (bind-key "C-c C-j" 'hemmet-expand-region haskell-mode-map))
+
+  ;; yesod handlers scaffolding
+  (defun my/haskell-scaffold-yesod-handlers ()
+    "Kills a current line (that containins an Yesod route) and
+     scaffolds yesod handler for each of methods"
+    (interactive)
+    (let* ((p1 (line-beginning-position))
+           (p2 (line-end-position))
+           (lval (buffer-substring-no-properties p1 p2))
+           (tokens (cdr (split-string lval))))
+      (if (> 2 (length tokens))
+          (message "%s" "Not enough tokens")
+        (let ((rname (car tokens))
+              (methods (cdr tokens)))
+          (progn
+            (kill-whole-line)
+            (previous-line)
+            (loop for m in methods do
+                  (let* ((name (concat (downcase m) rname))
+                         (l1 (concat name " :: Handler TypedContent"))
+                         (l2 (concat name " = error \"" name " not implemented\"")))
+                    (end-of-line)
+                    (newline)
+                    (insert l1) (newline)
+                    (insert l2) (newline))))))))
+  (bind-key "C-c h y" 'my/haskell-scaffold-yesod-handlers haskell-mode-map)
   )
 
 ;; Python mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
