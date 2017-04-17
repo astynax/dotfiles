@@ -182,7 +182,12 @@
 ;; beacon (visualizes cursor position)
 (use-package beacon
   :ensure t
+
   :diminish beacon-mode
+
+  :bind
+  (("<f11>" . beacon-blink))
+
   :config
   (beacon-mode 1)
   (setq beacon-color "#A06600"
@@ -756,7 +761,7 @@
       (interactive)
       (let ((f (lambda (b e)
                  (shell-command-on-region
-                  b e "hemmet" t t "*hemmet error*" t))))
+                  b e "hemmet bem" t t "*hemmet error*" t))))
         (if (region-active-p)
             (funcall f (region-beginning) (region-end))
           (funcall f (line-beginning-position) (line-end-position)))
@@ -1486,6 +1491,8 @@
  :prefix-map my/indent-map
  ("c" . indent-to)
  ("r" . indent-region))
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (custom-set-faces
