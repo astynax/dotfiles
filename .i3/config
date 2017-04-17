@@ -102,8 +102,8 @@ bindsym $mod+d exec $dmenu_run
 bindsym $mod+Shift+d exec --no-startup-id i3-dmenu-desktop --dmenu=$dmenu_apps
 
 # dict
-for_window [title="^hClient$"] floating enable
-bindsym $mod+Control+d exec --no-startup-id ~/Dropbox/tux_cfg/bin/hclient dict
+for_window [class="fce4-dict$"] floating enable
+bindsym $mod+Control+d exec --no-startup-id xfce4-dict
 
 # MPD menu
 #bindsym $mod+m exec --no-startup-id "~/.i3/mediactl"
