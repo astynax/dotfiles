@@ -469,22 +469,22 @@
      ("Z" . avy-zap-up-to-char)
      ))
 
-  (use-package ace-link
-    :ensure t
-
-    :bind
-    (("M-o" . ace-link))
-
-    :config
-    (ace-link-setup-default)
-    )
-
   (let ((sfa '(lambda (fc bg)
                 (set-face-attribute
                  fc nil :background bg :foreground "white"))))
     (funcall sfa 'avy-lead-face "chocolate4")
     (funcall sfa 'avy-lead-face-0 "chocolate3")
     (funcall sfa 'avy-lead-face-2 "chocolate2"))
+  )
+
+(use-package ace-link
+  :ensure t
+
+  :bind
+  (("M-o" . ace-link))
+
+  :config
+  (ace-link-setup-default)
   )
 
 (use-package eno
@@ -1256,20 +1256,6 @@
         org-html-postamble nil
         )
 
-  ;; font for headings
-  (dolist (face '(org-level-1
-                  org-level-2
-                  org-level-3
-                  org-level-4
-                  org-level-5
-                  org-level-6
-                  org-level-7
-                  org-level-8
-                  org-document-title))
-    (set-face-attribute face nil
-                        :height 1.0
-                        :font my/font))
-
   (setq org-src-preserve-indentation t)
 
   (defvar my/org-babel-langs
@@ -1485,15 +1471,25 @@
 
 (global-unset-key (kbd "C-z"))
 
-;; indenting map
-(bind-keys
- :prefix "C-c i"
- :prefix-map my/indent-map
- ("c" . indent-to)
- ("r" . indent-region))
 
+;;(set-language-environment "UTF-8")
+(prefer-coding-system 'utf-8)
+(setq default-input-method "russian-computer")
+(put 'dired-find-alternate-file 'disabled nil)
 
+(setq resize-mini-windows t)
 
+(setq calendar-week-start-day 1
+      calendar-date-style 'european)
+
+;; restore GC-limit after timeout
+(run-with-idle-timer
+ 5 nil
+ (lambda ()
+   (setq gc-cons-threshold 1000000)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; after this line emacs writes all the stuff themself
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -1513,18 +1509,4 @@
  '(whitespace-line ((t (:background "OrangeRed4"))))
  '(whitespace-tab ((t (:foreground "brown" :inverse-video nil :underline t)))))
 
-;;(set-language-environment "UTF-8")
-(prefer-coding-system 'utf-8)
-(setq default-input-method "russian-computer")
-(put 'dired-find-alternate-file 'disabled nil)
-
-(setq resize-mini-windows t)
-
-(setq calendar-week-start-day 1
-      calendar-date-style 'european)
-
-;; restore GC-limit after timeout
-(run-with-idle-timer
- 5 nil
- (lambda ()
-   (setq gc-cons-threshold 1000000)))
+(put 'narrow-to-region 'disabled nil)
