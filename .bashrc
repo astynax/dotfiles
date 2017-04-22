@@ -14,6 +14,7 @@ set +o histexpand
 xrdb -load "$HOME/.Xresources"
 
 export EDITOR=editor
+export LESS="WR"
 
 # virtualenv wrapper
 if [[ -f /usr/local/bin/virtualenvwrapper.sh ]]; then
@@ -121,29 +122,23 @@ if [[ -x /usr/bin/dircolors ]]; then
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'
 
-    LS_COLORS="$LS_COLORS*.ipynb=02;36:*.py=02;36:*.clj=02;36:*.hs=03;36:"
+    LS_COLORS="$LS_COLORS*.ipynb=02;36:*.py=02;36:*.clj=02;36:*.hs=03;36:*.lhs=03;36:*.purs=03;36:*.elm=03;36:"
 fi
 
 # -------------------------------------------------------
 
-if [[ -f /usr/bin/most ]] ; then
-    export PAGER=most
-else
-    # less, as man pager, customization
-    man() {
-        env \
-            LESS_TERMCAP_mb=$(tput blink) \
-            LESS_TERMCAP_md=$(tput bold) \
-            LESS_TERMCAP_me=$(tput sgr0) \
-            LESS_TERMCAP_se=$(tput rmso) \
-            LESS_TERMCAP_so=$(tput smso) \
-            LESS_TERMCAP_ue=$(tput sgr0) \
-            LESS_TERMCAP_us=$(tput smul;tput setf 3) \
-                man "$@"
-    }
-fi
-
-cless() { pygmentize $* | less -R; }
+# less, as man pager, customization
+man() {
+    env \
+        LESS_TERMCAP_mb=$(tput blink) \
+        LESS_TERMCAP_md=$(tput bold) \
+        LESS_TERMCAP_me=$(tput sgr0) \
+        LESS_TERMCAP_se=$(tput rmso) \
+        LESS_TERMCAP_so=$(tput smso) \
+        LESS_TERMCAP_ue=$(tput sgr0) \
+        LESS_TERMCAP_us=$(tput smul;tput setf 3) \
+            man "$@"
+}
 
 # build-deps cleanup
 # http://www.webupd8.org/2010/10/undo-apt-get-build-dep-remove-build.html
