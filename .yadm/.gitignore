@@ -7,20 +7,20 @@
 
 !/.bash_completion.d
 
-############# .config ##############
+############# ~/.config/ ##############
 !/.config
 /.config/*
 
 !/.config/mpd/mpd.conf
 
-#### MPV ####
+#### mpv/ ####
 !/.config/mpv
 /.config/mpv/*
 !/.config/mpv/scripts
 !/.config/mpv/mpv.conf
 !/.config/mpv/input.conf
 
-#### ranger ####
+#### ranger/ ####
 !/.config/ranger
 /.config/ranger/*
 !/.config/ranger/rc.conf
@@ -30,19 +30,19 @@
 /.config/ranger/colorschemes/*
 !/.config/ranger/colorschemes/*.py
 
-############# ~ ####################
+############# ~/ ####################
 
-#### Vim ####
+#### vim/ ####
 !/.vim
 /.vim/*
 !/.vim/colors
 
-#### Emacs snippets ####
+#### .emacs.d/snippets ####
 !/.emacs.d
 /.emacs.d/*
 !/.emacs.d/snippets
 
-#### i3wm ####
+#### i3/ ####
 !/.i3
 
 !/.lein/profiles.clj
