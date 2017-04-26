@@ -1,0 +1,70 @@
+/*
+*.pyc
+
+!/.yadm
+/.yadm/*
+!/.yadm/.gitignore
+
+!/.bash_completion.d
+
+############# .config ##############
+!/.config
+/.config/*
+
+!/.config/mpd/mpd.conf
+
+#### MPV ####
+!/.config/mpv
+/.config/mpv/*
+!/.config/mpv/scripts
+!/.config/mpv/mpv.conf
+!/.config/mpv/input.conf
+
+#### ranger ####
+!/.config/ranger
+/.config/ranger/*
+!/.config/ranger/rc.conf
+!/.config/ranger/rifle.conf
+!/.config/ranger/scope.sh
+!/.config/ranger/colorschemes
+/.config/ranger/colorschemes/*
+!/.config/ranger/colorschemes/*.py
+
+############# ~ ####################
+
+#### Vim ####
+!/.vim
+/.vim/*
+!/.vim/colors
+
+#### Emacs snippets ####
+!/.emacs.d
+/.emacs.d/*
+!/.emacs.d/snippets
+
+#### i3wm ####
+!/.i3
+
+!/.lein/profiles.clj
+
+!/.ncmpcpp/config
+
+!/.ptpython/config.py
+
+!/.stack/config.yaml
+
+!/.Xdefaults
+!/.Xresources
+!/.bash_aliases
+!/.bash_prompt
+!/.bashrc
+!/.emacs
+!/.ghci
+!/.git_commit_template
+!/.gitconfig
+!/.hgrc
+!/.inputrc
+!/.profile
+!/.toprc
+!/.vimrc
+!/.xxkbrc
