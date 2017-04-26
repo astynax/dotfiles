@@ -12,7 +12,7 @@
  '(magit-log-arguments (quote ("--graph" "--color" "--decorate")))
  '(package-selected-packages
    (quote
-    (ace-link pocket-mode company-web company-cabal smex org-brain terminal-here emmet-mode web-mode counsel counsel-projectile achievements ob-restclient zoom-window zeal-at-point yankpad yaml-mode window-numbering whole-line-or-region which-key volatile-highlights vimish-fold use-package unkillable-scratch undo-tree toml-mode switch-window swiper sr-speedbar solarized-theme smartparens shrink-whitespace rust-mode ripgrep rainbow-delimiters purescript-mode projectile org names markdown-mode magit lua-mode js2-mode intero idomenu ido-vertical-mode ido-ubiquitous ido-occur hindent hi2 guide-key git-timemachine ghc fullframe flycheck-rust flycheck-purescript flycheck-haskell flycheck-elm flycheck-color-mode-line flx-ido fireplace expand-region eno elpy elm-mode dumb-jump discover-my-major dired-single dired-hacks-utils dired-details+ company-restclient company-flx comment-dwim-2 clojure-mode-extra-font-locking clj-refactor caseformat beacon avy-zap auto-indent-mode align-cljlet aggressive-indent ag ace-mc)))
+    (dired-subtree ace-link pocket-mode company-web company-cabal smex org-brain terminal-here emmet-mode web-mode counsel counsel-projectile achievements ob-restclient zoom-window zeal-at-point yankpad yaml-mode window-numbering whole-line-or-region which-key volatile-highlights vimish-fold use-package unkillable-scratch undo-tree toml-mode switch-window swiper sr-speedbar solarized-theme smartparens shrink-whitespace rust-mode ripgrep rainbow-delimiters purescript-mode projectile org names markdown-mode magit lua-mode js2-mode intero idomenu ido-vertical-mode ido-ubiquitous ido-occur hindent hi2 guide-key git-timemachine ghc fullframe flycheck-rust flycheck-purescript flycheck-haskell flycheck-elm flycheck-color-mode-line flx-ido fireplace expand-region eno elpy elm-mode dumb-jump discover-my-major dired-single dired-hacks-utils dired-details+ company-restclient company-flx comment-dwim-2 clojure-mode-extra-font-locking clj-refactor caseformat beacon avy-zap auto-indent-mode align-cljlet aggressive-indent ag ace-mc)))
  '(safe-local-variable-values
    (quote
     ((create-lockfiles)
@@ -263,6 +263,21 @@
   :config
   (setq dired-details-initially-hide nil
         dired-details-propagate-flag nil))
+
+(use-package dired-subtree
+  :ensure t
+
+  :bind
+  (:map
+   dired-mode-map
+   ("]" . dired-subtree-insert)
+   ("[" . dired-subtree-remove)
+   ("}" . dired-subtree-only-this-file)
+   ("{" . dired-subtree-only-this-directory)
+   ("M-p" . dired-subtree-up)
+   ("M-n" . dired-subtree-down)
+   ("<tab>" . dired-subtree-cycle)
+   ))
 
 ;; fullframe ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package fullframe
@@ -1148,7 +1163,19 @@
   :config
   (projectile-global-mode 1)
   (setq projectile-mode-line
-        '(:eval (format "[%s]" (projectile-project-name)))))
+        '(:eval (format "[%s]" (projectile-project-name))))
+
+  (defmacro add-alternative (target alternative)
+    `(let ((fn (lambda  (old &rest _)
+                 (interactive "P")
+                 (if (and (projectile-project-p) (not current-prefix-arg))
+                     (,alternative)
+                   (funcall old)))))
+       (advice-add (quote ,target) :around fn)))
+
+  (add-alternative ido-find-file projectile-find-file)
+  (add-alternative ido-switch-buffer projectile-switch-to-buffer)
+  )
 
 ;; sudo apt-get install silversearcher-ag
 (use-package ag
@@ -1257,6 +1284,8 @@
         )
 
   (setq org-src-preserve-indentation t)
+
+  (require 'ob-shell)
 
   (defvar my/org-babel-langs
     '((shell . t)
