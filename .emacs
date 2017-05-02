@@ -1490,13 +1490,19 @@
 (global-set-key [remap move-beginning-of-line]
                 'my/smarter-move-beginning-of-line)
 
+;; xref tweaks ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun my/do-then-quit (&rest args)
+  (let ((win (selected-window)))
+    (apply (car args) (rest args))
+    (quit-window nil win)))
+
+(advice-add #'xref-goto-xref :around #'my/do-then-quit)
+
 ;; ===========================================================================
 ;; Keybindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (bind-keys
  ("M-/" . hippie-expand)
- ("C-x C-b" . ibuffer)
- ("C-c M-." . xref-find-definitions)
- ("M-." . find-tag))
+ ("C-x C-b" . ibuffer))
 
 (global-unset-key (kbd "C-z"))
 
