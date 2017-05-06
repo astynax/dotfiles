@@ -15,8 +15,6 @@ alias ec="emacsclient -nq"
 
 alias psg="ps -eLF | grep"
 
-alias serve="python -m SimpleHTTPServer"
-
 alias clbin="curl -F 'clbin=<-' https://clbin.com"
 alias termbin="nc termbin.com 9999"
 
