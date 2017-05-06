@@ -1,4 +1,9 @@
 -- "chmod go-w to this!" --
 
+-- work with local .ghci
+:def r. const(return ":cmd readFile \".ghci\"")
+:def rr \m -> return (":reload " ++ m ++ "\n:r.")
+:def >> \x -> return (":! echo \"" ++ x ++ "\" >> .ghci")
+
 -- colorize a prompt
 :set prompt "\ESC[32mλ> \ESC[m"
