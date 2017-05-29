@@ -24,3 +24,4 @@ htags() {
     hasktags -e $(find `pwd` -iname '*.hs' -and \( -not -path '*.stack-work*' \) -and \( -not -name 'Setup.hs' \) -and -type f)
 }
 
+alias tldr="TLDR_COLOR_BLANK=white TLDR_COLOR_EXAMPLE=green TLDR_COLOR_COMMAND=red TLDR_COLOR_NAME=cyan TLDR_COLOR_DESCRIPTION=white tldr"
