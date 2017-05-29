@@ -12,7 +12,7 @@
  '(magit-log-arguments (quote ("--graph" "--color" "--decorate")))
  '(package-selected-packages
    (quote
-    (dired-subtree ace-link pocket-mode company-web company-cabal smex org-brain terminal-here emmet-mode web-mode counsel counsel-projectile achievements ob-restclient zoom-window zeal-at-point yankpad yaml-mode window-numbering whole-line-or-region which-key volatile-highlights vimish-fold use-package unkillable-scratch undo-tree toml-mode switch-window swiper sr-speedbar solarized-theme smartparens shrink-whitespace rust-mode ripgrep rainbow-delimiters purescript-mode projectile org names markdown-mode magit lua-mode js2-mode intero idomenu ido-vertical-mode ido-ubiquitous ido-occur hindent hi2 guide-key git-timemachine ghc fullframe flycheck-rust flycheck-purescript flycheck-haskell flycheck-elm flycheck-color-mode-line flx-ido fireplace expand-region eno elpy elm-mode dumb-jump discover-my-major dired-single dired-hacks-utils dired-details+ company-restclient company-flx comment-dwim-2 clojure-mode-extra-font-locking clj-refactor caseformat beacon avy-zap auto-indent-mode align-cljlet aggressive-indent ag ace-mc)))
+    (seq dired-subtree ace-link pocket-mode company-web company-cabal smex org-brain terminal-here emmet-mode web-mode counsel counsel-projectile achievements ob-restclient zoom-window zeal-at-point yankpad yaml-mode window-numbering whole-line-or-region which-key volatile-highlights vimish-fold use-package unkillable-scratch undo-tree toml-mode switch-window swiper sr-speedbar solarized-theme smartparens shrink-whitespace rust-mode ripgrep rainbow-delimiters purescript-mode projectile org names markdown-mode magit lua-mode js2-mode intero idomenu ido-vertical-mode ido-ubiquitous ido-occur hindent hi2 guide-key git-timemachine ghc fullframe flycheck-rust flycheck-purescript flycheck-haskell flycheck-elm flycheck-color-mode-line flx-ido fireplace expand-region eno elpy elm-mode dumb-jump discover-my-major dired-single dired-hacks-utils dired-details+ company-restclient company-flx comment-dwim-2 clojure-mode-extra-font-locking clj-refactor caseformat beacon avy-zap auto-indent-mode align-cljlet aggressive-indent ag ace-mc)))
  '(safe-local-variable-values
    (quote
     ((create-lockfiles)
@@ -661,6 +661,10 @@
   (use-package clojure-mode-extra-font-locking
     :ensure t)
 
+  ;; TODO: remove when clj-refactor will be fixed!
+  (use-package seq
+    :ensure t)
+
   (use-package cider
     :ensure t
     :config
@@ -1286,6 +1290,7 @@
   (setq org-src-preserve-indentation t)
 
   (require 'ob-shell)
+  (require 'ob-python)
 
   (defvar my/org-babel-langs
     '((shell . t)
@@ -1387,11 +1392,11 @@
   :init
   (bind-keys
    :prefix "C-c f"
-   :prefix-map my/vimish-fild-map)
+   :prefix-map my/vimish-fold-map)
 
   :bind
   (:map
-   my/fold-map
+   my/vimish-fold-map
    ("l" . vimish-fold-avy)
    ("f" . vimish-fold)
    ("F" . vimish-fold-refold)
