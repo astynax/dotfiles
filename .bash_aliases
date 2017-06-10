@@ -26,6 +26,6 @@ htags() {
 
 alias tldr="TLDR_COLOR_BLANK=white TLDR_COLOR_EXAMPLE=green TLDR_COLOR_COMMAND=red TLDR_COLOR_NAME=cyan TLDR_COLOR_DESCRIPTION=white tldr"
 
-xd() {
+xcd() {
     cd `/usr/bin/xd $*`
 }
