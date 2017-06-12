@@ -1332,15 +1332,6 @@
     (add-to-list 'my/org-babel-langs '(restclient . t))
     (my/org-babel-load-langs))
 
-  (defun my/create-empty-org (&optional ARG)
-    "Creates a new frame with org-mode (with ARG buffer will be opened in other frame)"
-    (interactive)
-    (let ((buffer (generate-new-buffer "untitled")))
-      (if ARG (switch-to-buffer-other-frame buffer)
-        (switch-to-buffer buffer))
-      (org-mode)
-      (set-visited-file-name "untitled.org" t)))
-
   (setq
    org-default-notes-file "~/Dropbox/org/buffer.org"
    org-capture-templates
