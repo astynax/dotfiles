@@ -12,7 +12,7 @@
  '(magit-log-arguments (quote ("--graph" "--color" "--decorate")))
  '(package-selected-packages
    (quote
-    (seq dired-subtree ace-link pocket-mode company-web company-cabal smex org-brain terminal-here emmet-mode web-mode counsel counsel-projectile achievements ob-restclient zoom-window zeal-at-point yankpad yaml-mode window-numbering whole-line-or-region which-key volatile-highlights vimish-fold use-package unkillable-scratch undo-tree toml-mode switch-window swiper sr-speedbar solarized-theme smartparens shrink-whitespace rust-mode ripgrep rainbow-delimiters purescript-mode projectile org names markdown-mode magit lua-mode js2-mode intero idomenu ido-vertical-mode ido-ubiquitous ido-occur hindent hi2 guide-key git-timemachine ghc fullframe flycheck-rust flycheck-purescript flycheck-haskell flycheck-elm flycheck-color-mode-line flx-ido fireplace expand-region eno elpy elm-mode dumb-jump discover-my-major dired-single dired-hacks-utils dired-details+ company-restclient company-flx comment-dwim-2 clojure-mode-extra-font-locking clj-refactor caseformat beacon avy-zap auto-indent-mode align-cljlet aggressive-indent ag ace-mc)))
+    (seq dired-subtree ace-link pocket-mode company-web company-cabal smex org-brain terminal-here emmet-mode web-mode counsel counsel-projectile ob-restclient zoom-window zeal-at-point yankpad window-numbering whole-line-or-region which-key volatile-highlights vimish-fold use-package unkillable-scratch undo-tree toml-mode switch-window swiper sr-speedbar solarized-theme smartparens shrink-whitespace rust-mode ripgrep rainbow-delimiters purescript-mode projectile org names markdown-mode magit lua-mode js2-mode intero idomenu ido-vertical-mode ido-ubiquitous ido-occur hindent hi2 guide-key git-timemachine ghc fullframe flycheck-rust flycheck-purescript flycheck-haskell flycheck-elm flycheck-color-mode-line flx-ido fireplace expand-region eno elpy elm-mode dumb-jump discover-my-major dired-single dired-hacks-utils dired-details+ company-restclient company-flx comment-dwim-2 clojure-mode-extra-font-locking clj-refactor caseformat beacon avy-zap auto-indent-mode align-cljlet aggressive-indent ag ace-mc)))
  '(safe-local-variable-values
    (quote
     ((create-lockfiles)
@@ -897,12 +897,6 @@
 
   :mode "\\.md\\'")
 
-;; YAML ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(use-package yaml-mode
-  :ensure t
-
-  :mode "\\.yaml\\'")
-
 ;; window-number ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package window-numbering
   :ensure t
@@ -1451,15 +1445,6 @@
   (list-pocket))
 
 ;; Fun ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(use-package achievements-mode
-  :commands
-  (achievements-list-achievements)
-
-  :init
-  (add-hook
-   'after-init-hook
-   (lambda () (achievements-mode))))
-
 (use-package fireplace
   :commands
   (fireplace))
