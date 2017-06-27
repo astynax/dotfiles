@@ -12,10 +12,12 @@
  '(magit-log-arguments (quote ("--graph" "--color" "--decorate")))
  '(package-selected-packages
    (quote
-    (seq dired-subtree ace-link pocket-mode company-web company-cabal smex org-brain terminal-here emmet-mode web-mode counsel counsel-projectile ob-restclient zoom-window zeal-at-point yankpad window-numbering whole-line-or-region which-key volatile-highlights vimish-fold use-package unkillable-scratch undo-tree toml-mode switch-window swiper sr-speedbar solarized-theme smartparens shrink-whitespace rust-mode ripgrep rainbow-delimiters purescript-mode projectile org names markdown-mode magit lua-mode js2-mode intero idomenu ido-vertical-mode ido-ubiquitous ido-occur hindent hi2 guide-key git-timemachine ghc fullframe flycheck-rust flycheck-purescript flycheck-haskell flycheck-elm flycheck-color-mode-line flx-ido fireplace expand-region eno elpy elm-mode dumb-jump discover-my-major dired-single dired-hacks-utils dired-details+ company-restclient company-flx comment-dwim-2 clojure-mode-extra-font-locking clj-refactor caseformat beacon avy-zap auto-indent-mode align-cljlet aggressive-indent ag ace-mc)))
+    (bifocal yaml-mode seq dired-subtree ace-link pocket-mode company-web company-cabal smex org-brain terminal-here emmet-mode web-mode counsel counsel-projectile ob-restclient zoom-window zeal-at-point yankpad window-numbering whole-line-or-region which-key volatile-highlights vimish-fold use-package unkillable-scratch undo-tree toml-mode switch-window swiper sr-speedbar solarized-theme smartparens shrink-whitespace rust-mode ripgrep rainbow-delimiters purescript-mode projectile org names markdown-mode magit lua-mode js2-mode intero idomenu ido-vertical-mode ido-ubiquitous ido-occur hindent hi2 guide-key git-timemachine ghc fullframe flycheck-rust flycheck-purescript flycheck-haskell flycheck-elm flycheck-color-mode-line flx-ido fireplace expand-region eno elpy elm-mode dumb-jump discover-my-major dired-single dired-hacks-utils dired-details+ company-restclient company-flx comment-dwim-2 clojure-mode-extra-font-locking clj-refactor caseformat beacon avy-zap auto-indent-mode align-cljlet aggressive-indent ag ace-mc)))
  '(safe-local-variable-values
    (quote
-    ((create-lockfiles)
+    ((flycheck-checker)
+     (intero-targets)
+     (create-lockfiles)
      (org-default-notes-file . "~/Projects/aviora/notes.org")
      (my/suppress-hindent . t)
      (my/suppress-intero . t)
@@ -692,6 +694,20 @@
   (add-to-list
    'auto-mode-alist
    '("routes\\'" . haskell-yesod-parse-routes-mode))
+  (bind-keys
+   :map haskell-mode-map
+   :prefix "C-c h"
+   :prefix-map my/haskell-map)
+
+  :bind
+  (:map
+   my/haskell-map
+   ("v" . haskell-cabal-visit-file)
+   ("m" . haskell-auto-insert-module-template)
+   ("I" . haskell-sort-imports)
+   ;; ("h" . my/hemmet-expand-region)
+   ("y" . haskell-hayoo)
+   )
 
   :config
   (add-hook
@@ -721,6 +737,12 @@
 
     :diminish intero-mode
 
+    :bind
+    (:map
+     my/haskell-map
+     ("i r" . intero-restart)
+     ("i t" . intero-targets))
+
     :config
     (unbind-key "M-." intero-mode-map)
     (defvar my/suppress-intero nil "Suppresses an intero-mode")
@@ -735,8 +757,8 @@
                           nil t))))
 
   (use-package hindent
-    :if (file-exists-p "~/Projects/hindent/elisp")
-    :load-path "~/Projects/hindent/elisp"
+    :if (file-exists-p "~/.software/hindent/elisp")
+    :load-path "~/.software/hindent/elisp"
 
     :ensure t
 
@@ -775,17 +797,16 @@
   (add-hook 'haskell-mode-hook 'my/boot-haskell)
 
   ;; hemmet
-  (when (executable-find "hemmet")
-    (defun hemmet-expand-region ()
-      (interactive)
+  (defun my/hemmet-expand-region ()
+    (interactive)
+    (when (executable-find "hemmet")
       (let ((f (lambda (b e)
                  (shell-command-on-region
                   b e "hemmet bem" t t "*hemmet error*" t))))
         (if (region-active-p)
             (funcall f (region-beginning) (region-end))
           (funcall f (line-beginning-position) (line-end-position)))
-        ))
-    (bind-key "C-c C-j" 'hemmet-expand-region haskell-mode-map))
+        )))
 
   ;; yesod handlers scaffolding
   (defun my/haskell-scaffold-yesod-handlers ()
@@ -811,7 +832,6 @@
                     (newline)
                     (insert l1) (newline)
                     (insert l2) (newline))))))))
-  (bind-key "C-c h y" 'my/haskell-scaffold-yesod-handlers haskell-mode-map)
   )
 
 ;; Python mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1408,6 +1428,10 @@
 ;;                '("\\.puml\\'" . puml-mode)
 ;;                '("\\.plantuml\\'" . puml-mode)))
 
+(use-package yaml-mode
+  :ensure t
+
+  :mode "\\.yaml\\'")
 
 ;; YankPad ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package yankpad
