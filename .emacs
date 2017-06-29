@@ -15,11 +15,11 @@
     (bifocal yaml-mode seq dired-subtree ace-link pocket-mode company-web company-cabal smex org-brain terminal-here emmet-mode web-mode counsel counsel-projectile ob-restclient zoom-window zeal-at-point yankpad window-numbering whole-line-or-region which-key volatile-highlights vimish-fold use-package unkillable-scratch undo-tree toml-mode switch-window swiper sr-speedbar solarized-theme smartparens shrink-whitespace rust-mode ripgrep rainbow-delimiters purescript-mode projectile org names markdown-mode magit lua-mode js2-mode intero idomenu ido-vertical-mode ido-ubiquitous ido-occur hindent hi2 guide-key git-timemachine ghc fullframe flycheck-rust flycheck-purescript flycheck-haskell flycheck-elm flycheck-color-mode-line flx-ido fireplace expand-region eno elpy elm-mode dumb-jump discover-my-major dired-single dired-hacks-utils dired-details+ company-restclient company-flx comment-dwim-2 clojure-mode-extra-font-locking clj-refactor caseformat beacon avy-zap auto-indent-mode align-cljlet aggressive-indent ag ace-mc)))
  '(safe-local-variable-values
    (quote
-    ((intero-targets)
-     (create-lockfiles)
+    ((create-lockfiles . nil)
      (org-default-notes-file . "~/Projects/aviora/notes.org")
      (my/suppress-hindent . t)
      (my/suppress-intero . t)
+     (my/haskell-check-using-stack-ghc . t)
      (hi2-where-post-offset . 2)
      (hi2-left-offset . 2)
      (hi2-layout-offset . 2)))))
@@ -684,6 +684,15 @@
   (add-hook 'clojure-mode-hook (lambda () (aggressive-indent-mode 1))))
 
 ;; haskell mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defvar my/suppress-intero nil
+  "Setting this to 't' will suppress 'intero-mode'")
+
+(defvar my/suppress-hindent nil
+  "Setting this to 't' will prevent hindent auto-formatting")
+
+(defvar my/haskell-check-using-stack-ghc nil
+  "If 't' then flycheck will use 'haskell-stack-ghc' instead of 'intero'")
+
 (use-package haskell-mode
   :ensure t
 
@@ -751,7 +760,9 @@
                           (lambda ()
                             (if my/suppress-intero
                                 (setq flycheck-checker 'haskell-stack-ghc)
-                              (intero-mode))
+                              (intero-mode)
+                              (when my/haskell-check-using-stack-ghc
+                                (setq flycheck-checker 'haskell-stack-ghc)))
                             (flycheck-mode))
                           nil t))))
 
