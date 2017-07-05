@@ -12,7 +12,7 @@
  '(magit-log-arguments (quote ("--graph" "--color" "--decorate")))
  '(package-selected-packages
    (quote
-    (bifocal yaml-mode seq dired-subtree ace-link pocket-mode company-web company-cabal smex org-brain terminal-here emmet-mode web-mode counsel counsel-projectile ob-restclient zoom-window zeal-at-point yankpad window-numbering whole-line-or-region which-key volatile-highlights vimish-fold use-package unkillable-scratch undo-tree toml-mode switch-window swiper sr-speedbar solarized-theme smartparens shrink-whitespace rust-mode ripgrep rainbow-delimiters purescript-mode projectile org names markdown-mode magit lua-mode js2-mode intero idomenu ido-vertical-mode ido-ubiquitous ido-occur hindent hi2 guide-key git-timemachine ghc fullframe flycheck-rust flycheck-purescript flycheck-haskell flycheck-elm flycheck-color-mode-line flx-ido fireplace expand-region eno elpy elm-mode dumb-jump discover-my-major dired-single dired-hacks-utils dired-details+ company-restclient company-flx comment-dwim-2 clojure-mode-extra-font-locking clj-refactor caseformat beacon avy-zap auto-indent-mode align-cljlet aggressive-indent ag ace-mc)))
+    (plantuml-mode bifocal yaml-mode seq dired-subtree ace-link pocket-mode company-web company-cabal smex org-brain terminal-here emmet-mode web-mode counsel counsel-projectile ob-restclient zoom-window zeal-at-point yankpad window-numbering whole-line-or-region which-key volatile-highlights vimish-fold use-package unkillable-scratch undo-tree toml-mode switch-window swiper sr-speedbar solarized-theme smartparens shrink-whitespace rust-mode ripgrep rainbow-delimiters purescript-mode projectile org names markdown-mode magit lua-mode js2-mode intero idomenu ido-vertical-mode ido-ubiquitous ido-occur hindent hi2 guide-key git-timemachine ghc fullframe flycheck-rust flycheck-purescript flycheck-haskell flycheck-elm flycheck-color-mode-line flx-ido fireplace expand-region eno elpy elm-mode dumb-jump discover-my-major dired-single dired-hacks-utils dired-details+ company-restclient company-flx comment-dwim-2 clojure-mode-extra-font-locking clj-refactor caseformat beacon avy-zap auto-indent-mode align-cljlet aggressive-indent ag ace-mc)))
  '(safe-local-variable-values
    (quote
     ((create-lockfiles . nil)
@@ -24,11 +24,21 @@
      (hi2-left-offset . 2)
      (hi2-layout-offset . 2)))))
 
-;; just a shortcut
+;; just a shortcut :)
 (defun my/configure ()
   "Opens user-init-file"
   (interactive)
   (find-file user-init-file))
+
+;; Variables ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defvar my/suppress-intero nil
+  "Setting this to 't' will suppress 'intero-mode'")
+
+(defvar my/suppress-hindent nil
+  "Setting this to 't' will prevent hindent auto-formatting")
+
+(defvar my/haskell-check-using-stack-ghc nil
+  "If 't' then flycheck will use 'haskell-stack-ghc' instead of 'intero'")
 
 ;; Package menagement ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -684,15 +694,6 @@
   (add-hook 'clojure-mode-hook (lambda () (aggressive-indent-mode 1))))
 
 ;; haskell mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defvar my/suppress-intero nil
-  "Setting this to 't' will suppress 'intero-mode'")
-
-(defvar my/suppress-hindent nil
-  "Setting this to 't' will prevent hindent auto-formatting")
-
-(defvar my/haskell-check-using-stack-ghc nil
-  "If 't' then flycheck will use 'haskell-stack-ghc' instead of 'intero'")
-
 (use-package haskell-mode
   :ensure t
 
@@ -1294,6 +1295,7 @@
 
   :bind
   (("C-c c" . org-capture)
+   ("<f12>" . my/org-open-notes-file)
 
    :map
    org-mode-map
@@ -1356,6 +1358,10 @@
     (add-to-list 'my/org-babel-langs '(restclient . t))
     (my/org-babel-load-langs))
 
+  (defun my/org-open-notes-file ()
+    (interactive)
+    (find-file org-default-notes-file))
+
   (setq
    org-default-notes-file "~/Dropbox/org/buffer.org"
    org-capture-templates
@@ -1392,6 +1398,9 @@
              (goto-char (point-max))
              (or (bolp) (insert "\n"))
              (insert "* " branch "\n")
+             (insert ":PROPERTIES:\n")
+             (insert ":VISIBILITY: children\n")
+             (insert ":END:\n")
              (beginning-of-line 0))
            )))
       "* [[file:/%F::%(with-current-buffer (org-capture-get :original-buffer) (number-to-string (line-number-at-pos)))][%(haskell-guess-module-name-from-file-name (buffer-file-name (org-capture-get :original-buffer)))]]"
@@ -1539,13 +1548,18 @@
    (setq gc-cons-threshold 1000000)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; after this line emacs writes all the stuff themself
+;; after this line emacs writes all the stuff itself
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(org-level-1 ((t (:inherit variable-pitch :foreground "#cb4b16" :height 1.0))))
+ '(org-level-2 ((t (:inherit variable-pitch :foreground "#859900" :height 1.0))))
+ '(org-level-3 ((t (:inherit variable-pitch :foreground "#268bd2" :height 1.0))))
+ '(org-level-4 ((t (:inherit variable-pitch :foreground "#b58900" :height 1.0))))
+ '(org-tag ((t (:weight normal :height 0.8))))
  '(swiper-match-face-1 ((t (:background "OrangeRed4"))))
  '(swiper-match-face-2 ((t (:background "DarkOrange4"))))
  '(swiper-match-face-3 ((t (:background "orange4"))))
