@@ -1,6 +1,12 @@
 ;; increase GC-limit up to 100M for boot speedup
 (setq gc-cons-threshold 100000000)
 
+;; just a shortcut :)
+(defun my/configure ()
+  "Opens user-init-file"
+  (interactive)
+  (find-file user-init-file))
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -16,19 +22,7 @@
  '(safe-local-variable-values
    (quote
     ((create-lockfiles . nil)
-     (org-default-notes-file . "~/Projects/aviora/notes.org")
-     (my/suppress-hindent . t)
-     (my/suppress-intero . t)
-     (my/haskell-check-using-stack-ghc . t)
-     (hi2-where-post-offset . 2)
-     (hi2-left-offset . 2)
-     (hi2-layout-offset . 2)))))
-
-;; just a shortcut :)
-(defun my/configure ()
-  "Opens user-init-file"
-  (interactive)
-  (find-file user-init-file))
+     ))))
 
 ;; Variables ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar my/suppress-intero nil
@@ -39,6 +33,19 @@
 
 (defvar my/haskell-check-using-stack-ghc nil
   "If 't' then flycheck will use 'haskell-stack-ghc' instead of 'intero'")
+
+;; add some safety to local variables
+(put 'intero-targets                   'safe-local-variable #'listp)
+(put 'flycheck-ghc-language-extensions 'safe-local-variable #'listp)
+(put 'company-backends                 'safe-local-variable #'listp)
+(put 'intero-targets                   'safe-local-variable #'listp)
+(put 'org-default-notes-file           'safe-local-variable #'stringp)
+(put 'my/suppress-hindent              'safe-local-variable #'booleanp)
+(put 'my/suppress-intero               'safe-local-variable #'booleanp)
+(put 'my/haskell-check-using-stack-ghc 'safe-local-variable #'booleanp)
+(put 'hi2-where-post-offset            'safe-local-variable #'numberp)
+(put 'hi2-left-offset                  'safe-local-variable #'numberp)
+(put 'hi2-layout-offset                'safe-local-variable #'numberp)
 
 ;; Package menagement ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
