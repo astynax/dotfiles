@@ -18,34 +18,21 @@
  '(magit-log-arguments (quote ("--graph" "--color" "--decorate")))
  '(package-selected-packages
    (quote
-    (plantuml-mode bifocal yaml-mode seq dired-subtree ace-link pocket-mode company-web company-cabal smex org-brain terminal-here emmet-mode web-mode counsel counsel-projectile ob-restclient zoom-window zeal-at-point yankpad window-numbering whole-line-or-region which-key volatile-highlights vimish-fold use-package unkillable-scratch undo-tree toml-mode switch-window swiper sr-speedbar solarized-theme smartparens shrink-whitespace rust-mode ripgrep rainbow-delimiters purescript-mode projectile org names markdown-mode magit lua-mode js2-mode intero idomenu ido-vertical-mode ido-ubiquitous ido-occur hindent hi2 guide-key git-timemachine ghc fullframe flycheck-rust flycheck-purescript flycheck-haskell flycheck-elm flycheck-color-mode-line flx-ido fireplace expand-region eno elpy elm-mode dumb-jump discover-my-major dired-single dired-hacks-utils dired-details+ company-restclient company-flx comment-dwim-2 clojure-mode-extra-font-locking clj-refactor caseformat beacon avy-zap auto-indent-mode align-cljlet aggressive-indent ag ace-mc)))
- '(safe-local-variable-values
-   (quote
-    ((create-lockfiles . nil)
-     ))))
+    (plantuml-mode bifocal yaml-mode seq dired-subtree ace-link pocket-mode company-web company-cabal smex org-brain terminal-here emmet-mode web-mode counsel counsel-projectile ob-restclient zoom-window zeal-at-point yankpad window-numbering whole-line-or-region which-key volatile-highlights vimish-fold use-package unkillable-scratch undo-tree toml-mode switch-window swiper sr-speedbar solarized-theme smartparens shrink-whitespace rust-mode ripgrep rainbow-delimiters purescript-mode projectile org names markdown-mode magit lua-mode js2-mode intero idomenu ido-vertical-mode ido-occur hindent hi2 guide-key git-timemachine ghc fullframe flycheck-rust flycheck-purescript flycheck-haskell flycheck-elm flycheck-color-mode-line flx-ido fireplace expand-region eno elpy elm-mode dumb-jump discover-my-major dired-single dired-hacks-utils dired-details+ company-restclient company-flx comment-dwim-2 clojure-mode-extra-font-locking clj-refactor caseformat beacon avy-zap auto-indent-mode align-cljlet aggressive-indent ag ace-mc)))
+ '(safe-local-variable-values (quote ((create-lockfiles)))))
 
 ;; Variables ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar my/suppress-intero nil
   "Setting this to 't' will suppress 'intero-mode'")
+(put 'my/suppress-hindent              'safe-local-variable #'booleanp)
 
 (defvar my/suppress-hindent nil
   "Setting this to 't' will prevent hindent auto-formatting")
+(put 'my/suppress-intero               'safe-local-variable #'booleanp)
 
 (defvar my/haskell-check-using-stack-ghc nil
   "If 't' then flycheck will use 'haskell-stack-ghc' instead of 'intero'")
-
-;; add some safety to local variables
-(put 'intero-targets                   'safe-local-variable #'listp)
-(put 'flycheck-ghc-language-extensions 'safe-local-variable #'listp)
-(put 'company-backends                 'safe-local-variable #'listp)
-(put 'intero-targets                   'safe-local-variable #'listp)
-(put 'org-default-notes-file           'safe-local-variable #'stringp)
-(put 'my/suppress-hindent              'safe-local-variable #'booleanp)
-(put 'my/suppress-intero               'safe-local-variable #'booleanp)
 (put 'my/haskell-check-using-stack-ghc 'safe-local-variable #'booleanp)
-(put 'hi2-where-post-offset            'safe-local-variable #'numberp)
-(put 'hi2-left-offset                  'safe-local-variable #'numberp)
-(put 'hi2-layout-offset                'safe-local-variable #'numberp)
 
 ;; Package menagement ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -368,7 +355,7 @@
   (setq ido-use-virtual-buffers t
         ido-confirm-unique-completion t)
 
-  (use-package ido-ubiquitous
+  (use-package ido-completing-read+
     :ensure t
 
     :config
@@ -449,8 +436,8 @@
     :ensure t
 
     :config
-    (add-hook 'company-mode-hook (lambda () (company-flx-mode +1))))
-  )
+    (add-hook 'company-mode-hook (lambda () (company-flx-mode +1)))))
+(put 'company-backends 'safe-local-variable #'listp)
 
 ;; Zeal-at-point
 (use-package zeal-at-point
@@ -849,8 +836,12 @@
                     (end-of-line)
                     (newline)
                     (insert l1) (newline)
-                    (insert l2) (newline))))))))
-  )
+                    (insert l2) (newline)))))))))
+(put 'intero-targets                   'safe-local-variable #'listp)
+(put 'flycheck-ghc-language-extensions 'safe-local-variable #'listp)
+(put 'hi2-where-post-offset            'safe-local-variable #'numberp)
+(put 'hi2-left-offset                  'safe-local-variable #'numberp)
+(put 'hi2-layout-offset                'safe-local-variable #'numberp)
 
 ;; Python mode ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package python
@@ -1412,9 +1403,8 @@
            )))
       "* [[file:/%F::%(with-current-buffer (org-capture-get :original-buffer) (number-to-string (line-number-at-pos)))][%(haskell-guess-module-name-from-file-name (buffer-file-name (org-capture-get :original-buffer)))]]"
       :immediate-finish
-      :kill-buffer))
-   )
-  )
+      :kill-buffer))))
+(put 'org-default-notes-file           'safe-local-variable #'stringp)
 
 ;; Vim-like folding
 (use-package vimish-fold
