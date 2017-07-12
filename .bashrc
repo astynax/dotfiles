@@ -179,3 +179,7 @@ export PIPENV_VENV_IN_PROJECT=1
 export NVM_DIR="/home/astynax/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
 
+if [[ -f "$HOME/.nix-profile/etc/profile.d/nix.sh" ]]; then
+    source "$HOME/.nix-profile/etc/profile.d/nix.sh"
+fi
+
