@@ -18,7 +18,7 @@
  '(magit-log-arguments (quote ("--graph" "--color" "--decorate")))
  '(package-selected-packages
    (quote
-    (helm-xref helm-ag helm-projectile helm ido-completing-read+ plantuml-mode bifocal yaml-mode seq dired-subtree ace-link pocket-mode company-web company-cabal smex org-brain terminal-here emmet-mode web-mode counsel counsel-projectile ob-restclient zoom-window zeal-at-point yankpad window-numbering whole-line-or-region which-key volatile-highlights vimish-fold use-package unkillable-scratch undo-tree toml-mode switch-window swiper sr-speedbar solarized-theme smartparens shrink-whitespace rust-mode ripgrep rainbow-delimiters purescript-mode projectile org names markdown-mode magit lua-mode js2-mode intero idomenu ido-vertical-mode ido-occur hindent hi2 guide-key git-timemachine ghc fullframe flycheck-rust flycheck-purescript flycheck-haskell flycheck-elm flycheck-color-mode-line flx-ido fireplace expand-region eno elpy elm-mode dumb-jump discover-my-major dired-single dired-hacks-utils dired-details+ company-restclient company-flx comment-dwim-2 clojure-mode-extra-font-locking clj-refactor caseformat beacon avy-zap auto-indent-mode align-cljlet aggressive-indent ag ace-mc)))
+    (backup-walker backup-walket base16-theme helm-xref helm-ag helm-projectile helm plantuml-mode bifocal yaml-mode seq dired-subtree ace-link pocket-mode company-web company-cabal org-brain terminal-here emmet-mode web-mode counsel counsel-projectile ob-restclient zoom-window zeal-at-point yankpad window-numbering whole-line-or-region which-key volatile-highlights vimish-fold use-package unkillable-scratch undo-tree toml-mode switch-window swiper sr-speedbar solarized-theme smartparens shrink-whitespace rust-mode ripgrep rainbow-delimiters purescript-mode projectile org names markdown-mode magit lua-mode js2-mode intero hindent hi2 guide-key git-timemachine ghc fullframe flycheck-rust flycheck-purescript flycheck-haskell flycheck-elm flycheck-color-mode-line fireplace expand-region eno elpy elm-mode dumb-jump discover-my-major dired-single dired-hacks-utils dired-details+ company-restclient company-flx comment-dwim-2 clojure-mode-extra-font-locking clj-refactor caseformat beacon avy-zap auto-indent-mode align-cljlet aggressive-indent ag ace-mc)))
  '(safe-local-variable-values (quote ((create-lockfiles)))))
 
 ;; Variables ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -131,7 +131,7 @@
   :ensure t
   :config
   (setq solarized-distinct-fringe-background t)
-  (load-theme 'solarized-dark))
+  (load-theme 'solarized-light))
 
 ;; Behaviour ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -146,14 +146,35 @@
       auto-save-file-name-transforms
       `((".*" ,(format "%sauto-saves/\\2" user-emacs-directory) t))
 
+      my/backup-directory-per-session
+      (format "%sbackups/per-session" user-emacs-directory)
+
+      my/backup-directory-per-save
+      (format "%sbackups/per-save" user-emacs-directory)
+
       backup-directory-alist
-      `((".*" . ,(format "%sbackups/" user-emacs-directory)))
+      `((".*" . ,backup-directory-per-save))
 
       backup-by-copying t
-      kept-new-versions 4
+      kept-new-versions 10
       kept-old-versions 0
       delete-old-versions t
-      version-control t)
+      version-control t
+      vc-make-backup-files t)
+
+(defun force-backup-of-buffer ()
+  (when (not buffer-backed-up)
+    (let ((backup-directory-alist `((".*" . my/backup-directory-per-session)))
+          (kept-new-versions 3))
+      (backup-buffer)))
+  (let ((buffer-backed-up nil))
+    (backup-buffer)))
+
+(add-hook 'before-save-hook  'force-backup-of-buffer)
+
+(use-package backup-walker
+  :ensure t
+  :commands (backup-walker-start))
 
 ;; no TABs in source
 (setq-default indent-tabs-mode nil)
@@ -425,8 +446,9 @@
   (setq helm-M-x-fuzzy-match t
         helm-recentf-fuzzy-match t
         helm-buffers-fuzzy-matching t
-        helm-split-window-in-side-p t
-        helm-move-to-line-cycle-in-source t
+        helm-split-window-default-side 'below
+        helm-split-window-in-side-p nil
+        ;; helm-move-to-line-cycle-in-source t
         helm-scroll-amount 8)
 
   ;; autoresize
@@ -758,11 +780,12 @@
   ;; bind keys here because of mode-specific keymap
   (bind-keys
    :map haskell-mode-map
-   :prefix "C-c h"
+   :prefix "C-c SPC"
    :prefix-map my/haskell-map
 
    :map
    my/haskell-map
+   ("i" . hindent-reformat-buffer)
    ("v" . haskell-cabal-visit-file)
    ("m" . haskell-auto-insert-module-template)
    ("I" . haskell-sort-imports)
@@ -1004,7 +1027,8 @@
   :diminish undo-tree-mode
 
   :config
-  (global-undo-tree-mode))
+  (global-undo-tree-mode)
+  (setq undo-tree-auto-save-history t))
 
 ;; Git ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package magit
@@ -1351,8 +1375,7 @@
   (setq org-todo-keywords '((sequence "TODO" "IN-PROGRESS" "DONE"))
         org-enforce-todo-dependencies t
         org-hide-leading-stars t
-        ;; use ido for completion
-        org-completion-use-ido t
+        ;; org-completion-use-ido t ;; use ido for completion
         org-outline-path-complete-in-steps nil
         org-html-postamble nil
         )
