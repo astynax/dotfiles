@@ -153,7 +153,7 @@
       (format "%sbackups/per-save" user-emacs-directory)
 
       backup-directory-alist
-      `((".*" . ,backup-directory-per-save))
+      `((".*" . ,my/backup-directory-per-save))
 
       backup-by-copying t
       kept-new-versions 10
@@ -761,6 +761,7 @@
   (add-to-list
    'auto-mode-alist
    '("routes\\'" . haskell-yesod-parse-routes-mode))
+  (defvar my/haskell-map (make-keymap))
 
   :config
   (add-hook
