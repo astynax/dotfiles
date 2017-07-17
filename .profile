@@ -8,6 +8,10 @@
 # for ssh logins, install and configure the libpam-umask package.
 #umask 022
 
+if [[ -e "$HOME/.Xresources" ]]; then
+  xrdb -load "$HOME/.Xresources"
+fi
+
 # set PATH so it includes user's bin dirs
 _paths=(
     "$HOME/.software/racket/bin"
@@ -57,15 +61,22 @@ if [ "$0" = "/usr/sbin/lightdm-session" -a "$DESKTOP_SESSION" = "i3" ]; then
     export $(gnome-keyring-daemon -s)
 fi
 
+export NVM_DIR="/home/astynax/.nvm"
+if [[ -e "$NVM_DIR/nvm.sh" ]]; then
+    . "$NVM_DIR/nvm.sh"  # This loads nvm
+fi
+
+# added by Nix installer
+if [[ -e "$HOME/.nix-profile/etc/profile.d/nix.sh" ]]; then
+    . "$HOME/.nix-profile/etc/profile.d/nix.sh";
+fi
+
+export PIPENV_VENV_IN_PROJECT=1
+
 # if running bash
 if [[ -n "$BASH_VERSION" ]]; then
     # include .bashrc if it exists
     if [[ -f "$HOME/.bashrc" ]]; then
 	. "$HOME/.bashrc"
     fi
-fi
-
-# added by Nix installer
-if [ -e "$HOME/.nix-profile/etc/profile.d/nix.sh" ]; then
-    . "$HOME/.nix-profile/etc/profile.d/nix.sh";
 fi

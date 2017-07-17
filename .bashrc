@@ -11,10 +11,9 @@ set +o histexpand
 # split words on this chars only (useful for ``for``)
 #IFS=$'\n\t'
 
-xrdb -load "$HOME/.Xresources"
-
 export EDITOR=editor
 export LESS="WR"
+export LV="-c"
 
 # virtualenv wrapper
 if [[ -f /usr/local/bin/virtualenvwrapper.sh ]]; then
@@ -125,21 +124,6 @@ if [[ -x /usr/bin/dircolors ]]; then
     LS_COLORS="$LS_COLORS*.ipynb=02;36:*.py=02;36:*.clj=02;36:*.hs=03;36:*.lhs=03;36:*.purs=03;36:*.elm=03;36:"
 fi
 
-# -------------------------------------------------------
-
-# less, as man pager, customization
-man() {
-    env \
-        LESS_TERMCAP_mb=$(tput blink) \
-        LESS_TERMCAP_md=$(tput bold) \
-        LESS_TERMCAP_me=$(tput sgr0) \
-        LESS_TERMCAP_se=$(tput rmso) \
-        LESS_TERMCAP_so=$(tput smso) \
-        LESS_TERMCAP_ue=$(tput sgr0) \
-        LESS_TERMCAP_us=$(tput smul;tput setf 3) \
-            man "$@"
-}
-
 # build-deps cleanup
 # http://www.webupd8.org/2010/10/undo-apt-get-build-dep-remove-build.html
 function aptitude-remove-dep() {
@@ -170,14 +154,6 @@ ghcidf () {
     if [[ -z "$1" ]]; then
         echo "Usage: ghcidf <file.[l]hs> [<ghcid-flags>]"
     else
-        ghcid $2 $3 $4 $5 -c "stack exec -- ghci" --test "main" $1
+       ghcid $2 $3 $4 $5 -c "stack exec -- ghci" --test "main" $1
     fi
 }
-
-export PIPENV_VENV_IN_PROJECT=1
-
-export NVM_DIR="/home/astynax/.nvm"
-if [[ -s "$NVM_DIR/nvm.sh" ]]; then
-    . "$NVM_DIR/nvm.sh"  # This loads nvm
-fi
-
