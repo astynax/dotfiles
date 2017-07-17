@@ -5,13 +5,14 @@ Xft.hinting: true
 Xft.autohint: true
 Xft.hintstyle: hintslight
 
-URxvt*font: -misc-fixed-medium-*-*--18-*-*-*-*-*-iso10646-1
-URxvt*boldFont: -misc-fixed-bold-*-*--18-*-*-*-*-*-iso10646-1
+!URxvt*font: -misc-fixed-medium-*-*--18-*-*-*-*-*-iso10646-1
+!URxvt*boldFont: -misc-fixed-bold-*-*--18-*-*-*-*-*-iso10646-1
+
+URxvt*font:             xft:Inconsolata LGC:pixelsize=15
+URxvt*boldFont:         xft:Inconsolata LGC:pixelsize=15:style=bold
 
 !URxvt*font: xft:Inconsolata LGC:medium:pixelsize=18:hinting=true
 !URxvt.letterSpace: -1
-
-!URxvt*font: xft:Anonymous Pro:medium:pixelsize=18:hinting=true
 
 URxvt*scrollBar_right: true
 ! URxvt*visualBell: true
