@@ -786,7 +786,6 @@
 
    :map
    my/haskell-map
-   ("i" . hindent-reformat-buffer)
    ("v" . haskell-cabal-visit-file)
    ("m" . haskell-auto-insert-module-template)
    ("I" . haskell-sort-imports)
@@ -832,6 +831,11 @@
     :load-path "~/.software/hindent/elisp"
 
     :ensure t
+
+    :bind
+    (:map
+     my/haskell-map
+     ("f" . hindent-reformat-buffer))
 
     :config
     (defvar my/suppress-hindent nil "Suppresses an autofromatting on save")
