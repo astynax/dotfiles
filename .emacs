@@ -245,15 +245,16 @@
         whitespace-line-column 80
         default-tab-width 4)
 
-  (add-hook 'prog-mode-hook
-            (lambda ()
-              "whitespace mode for prog buffers"
-              (setq require-final-newline t
-                    next-line-add-newlines nil)
-              (whitespace-mode t)
-              (toggle-truncate-lines t)
-              ;; trim triling spaces on save
-              (add-hook 'before-save-hook 'delete-trailing-whitespace))))
+  (add-hook
+   'prog-mode-hook
+   (lambda ()
+     "whitespace mode for prog buffers"
+     (setq require-final-newline t
+           next-line-add-newlines nil)
+     (whitespace-mode t)
+     (toggle-truncate-lines t)
+     ;; trim triling spaces on save
+     (add-hook 'before-save-hook 'delete-trailing-whitespace))))
 
 (use-package shrink-whitespace
   :ensure t
@@ -1033,7 +1034,9 @@
 
   :config
   (global-undo-tree-mode)
-  (setq undo-tree-auto-save-history t))
+  (setq undo-tree-auto-save-history t
+        undo-tree-history-directory-alist
+        `((".*" . ,(format "%sundo-tree-history" user-emacs-directory)))))
 
 ;; Git ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package magit
@@ -1631,17 +1634,13 @@
  '(org-level-3 ((t (:inherit variable-pitch :foreground "#268bd2" :height 1.0))))
  '(org-level-4 ((t (:inherit variable-pitch :foreground "#b58900" :height 1.0))))
  '(org-tag ((t (:weight normal :height 0.8))))
- '(swiper-match-face-1 ((t (:background "OrangeRed4"))))
- '(swiper-match-face-2 ((t (:background "DarkOrange4"))))
- '(swiper-match-face-3 ((t (:background "orange4"))))
- '(swiper-match-face-4 ((t (:background "gold4"))))
- '(swiper-match-face1 ((t (:box (:line-width 1 :color "dark orange")))))
- '(swiper-match-face2 ((t (:box (:line-width 1 :color "orange")))))
- '(swiper-match-face3 ((t (:box (:line-width 1 :color "gold")))))
- '(swiper-match-face4 ((t (:box (:line-width 1 :color "yellow")))))
+ '(swiper-match-face-1 ((t (:box (:line-width 1 :color "dark orange")))))
+ '(swiper-match-face-2 ((t (:box (:line-width 1 :color "orange")))))
+ '(swiper-match-face-3 ((t (:box (:line-width 1 :color "gold")))))
+ '(swiper-match-face-4 ((t (:box (:line-width 1 :color "yellow")))))
  '(vimish-fold-mouse-face ((t (:box (:line-width 1 :color "yellow")))))
  '(vimish-fold-overlay ((t (:box (:line-width 1 :color "dim gray")))))
- '(whitespace-line ((t (:background "OrangeRed4"))))
+ '(whitespace-line ((t (:background "moccasin" :underline (:color foreground-color :style wave)))))
  '(whitespace-tab ((t (:foreground "brown" :inverse-video nil :underline t)))))
 
 (put 'narrow-to-region 'disabled nil)
