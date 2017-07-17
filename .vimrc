@@ -25,10 +25,11 @@ set smartcase
 set statusline=%F%m%r%h%w\ [TYPE=%Y\ %{&ff}]\ [%l/%L\ (%p%%)]
 
 "Set color scheme
-set t_Co=256
+"let g:solarized_termcolors=256
+"let t_Co=256
 syntax enable
-set background=dark
-colorscheme solarized
+set background=light
+"colorscheme solarized
 
 "Enable indent folding
 set nofoldenable
