@@ -1,26 +1,51 @@
-Xft.dpi: 96
-Xft.antialias: true
-Xft.rgba: none
-Xft.hinting: true
-Xft.autohint: true
-Xft.hintstyle: hintslight
-
-!URxvt*font: -misc-fixed-medium-*-*--18-*-*-*-*-*-iso10646-1
-!URxvt*boldFont: -misc-fixed-bold-*-*--18-*-*-*-*-*-iso10646-1
+Xft.dpi:                96
+Xft.antialias:          true
+Xft.rgba:               none
+Xft.hinting:            true
+Xft.autohint:           true
+Xft.hintstyle:          hintslight
 
 URxvt*font:             xft:Inconsolata LGC:pixelsize=15
 URxvt*boldFont:         xft:Inconsolata LGC:pixelsize=15:style=bold
 
-!URxvt*font: xft:Inconsolata LGC:medium:pixelsize=18:hinting=true
-!URxvt.letterSpace: -1
-
-URxvt*scrollBar_right: true
+URxvt*scrollBar_right:  true
 ! URxvt*visualBell: true
-URxvt*urgentOnBell: true
-URxvt*scrollstyle: plain
-URxvt*internalBorder: 0
-URxvt*externalBorder: 0
-URxvt*fading: 0
+URxvt*urgentOnBell:     true
+URxvt*scrollstyle:      plain
+URxvt*internalBorder:   0
+URxvt*externalBorder:   0
+URxvt*fading:           0
+
+!=============================================================================
+! Tango colors
+
+#define Tango_Aluminium0    #eeeeec
+#define Tango_Aluminium1    #d3d7cf
+#define Tango_Aluminium2    #babdb6
+#define Tango_Butter0       #fce94f
+#define Tango_Butter1       #edd400
+#define Tango_Butter2       #c4a000
+#define Tango_Chameleon0    #8ae234
+#define Tango_Chameleon1    #73d216
+#define Tango_Chameleon2    #4e9a06
+#define Tango_Orange0       #fcaf3e
+#define Tango_Orange1       #f57900
+#define Tango_Orange2       #ce5c00
+#define Tango_Chocolate0    #e9b96e
+#define Tango_Chocolate1    #c17d11
+#define Tango_Chocolate2    #8f5902
+#define Tango_SkyBlue0      #729fcf
+#define Tango_SkyBlue1      #3465a4
+#define Tango_SkyBlue2      #204a87
+#define Tango_Plum0         #ad7fa8
+#define Tango_Plum1         #75507b
+#define Tango_Plum2         #5c3566
+#define Tango_Slate0        #888a85
+#define Tango_Slate1        #555753
+#define Tango_Slate2        #2e3436
+#define Tango_ScarletRed0   #ef2929
+#define Tango_ScarletRed1   #cc0000
+#define Tango_ScarletRed2   #a40000
 
 !=============================================================================
 ! Solarized color scheme for the X Window System
@@ -28,62 +53,114 @@ URxvt*fading: 0
 
 ! Common
 
-#define S_yellow        #b58900
-#define S_orange        #cb4b16
-#define S_red           #dc322f
-#define S_magenta       #d33682
-#define S_violet        #6c71c4
-#define S_blue          #268bd2
-#define S_cyan          #2aa198
-#define S_green         #859900
+#define SC_yellow        #b58900
+#define SC_orange        #cb4b16
+#define SC_red           #dc322f
+#define SC_magenta       #d33682
+#define SC_violet        #6c71c4
+#define SC_blue          #268bd2
+#define SC_cyan          #2aa198
+#define SC_green         #859900
 
 ! Dark
 
-! #define S_base03        #002b36
-! #define S_base02        #073642
-! #define S_base01        #586e75
-! #define S_base00        #657b83
-! #define S_base0         #839496
-! #define S_base1         #93a1a1
-! #define S_base2         #eee8d5
-! #define S_base3         #fdf6e3
+#define SD_base03        #002b36
+#define SD_base02        #073642
+#define SD_base01        #586e75
+#define SD_base00        #657b83
+#define SD_base0         #839496
+#define SD_base1         #93a1a1
+#define SD_base2         #eee8d5
+#define SD_base3         #fdf6e3
 
 ! Light
 
-#define S_base03        #fdf6e3
-#define S_base02        #eee8d5
-#define S_base01        #93a1a1
-#define S_base00        #839496
-#define S_base0         #657b83
-#define S_base1         #586e75
-#define S_base2         #073642
-#define S_base3 #002b36
+#define SL_base03        #fdf6e3
+#define SL_base02        #eee8d5
+#define SL_base01        #93a1a1
+#define SL_base00        #839496
+#define SL_base0         #657b83
+#define SL_base1         #586e75
+#define SL_base2         #073642
+#define SL_base3         #002b36
 
-URxvt*background:              S_base03
-URxvt*foreground:              S_base0
-URxvt*fadeColor:               S_base03
-URxvt*cursorColor:             S_base1
-URxvt*pointerColorBackground:  S_base01
-URxvt*pointerColorForeground:  S_base1
+URxvt*background:              SL_base03
+URxvt*foreground:              SL_base0
+URxvt*fadeColor:               SL_base03
+URxvt*cursorColor:             SL_base1
+URxvt*pointerColorBackground:  SL_base01
+URxvt*pointerColorForeground:  SL_base1
 
-URxvt*color0:                  S_base02
-URxvt*color1:                  S_red
-URxvt*color2:                  S_green
-URxvt*color3:                  S_yellow
-URxvt*color4:                  S_blue
-URxvt*color5:                  S_magenta
-URxvt*color6:                  S_cyan
-URxvt*color7:                  S_base2
-URxvt*color9:                  S_orange
-URxvt*color8:                  S_base03
-URxvt*color10:                 S_base01
-URxvt*color11:                 S_base00
-URxvt*color12:                 S_base0
-URxvt*color13:                 S_violet
-URxvt*color14:                 S_base1
-URxvt*color15:                 S_base3
+URxvt*color0:                  SL_base02
+URxvt*color1:                  SC_red
+URxvt*color2:                  SC_green
+URxvt*color3:                  SC_yellow
+URxvt*color4:                  SC_blue
+URxvt*color5:                  SC_magenta
+URxvt*color6:                  SC_cyan
+URxvt*color7:                  SL_base2
+URxvt*color8:                  SL_base1
+URxvt*color9:                  SC_orange
+URxvt*color10:                 Tango_Chameleon0
+URxvt*color11:                 Tango_Butter0
+URxvt*color12:                 Tango_SkyBlue0
+URxvt*color13:                 SC_violet
+URxvt*color14:                 #3fbfbf
+URxvt*color15:                 SL_base3
 
-!URxvt.intensityStyles: false
+! base16 light
+! https://github.com/chriskempson/base16-xresources/blob/master/xresources/base16-solarized-light-256.Xresources
+
+#define base00 #fdf6e3
+#define base01 #eee8d5
+#define base02 #93a1a1
+#define base03 #839496
+#define base04 #657b83
+#define base05 #586e75
+#define base06 #073642
+#define base07 #002b36
+#define base08 #dc322f
+#define base09 #cb4b16
+#define base0A #b58900
+#define base0B #859900
+#define base0C #2aa198
+#define base0D #268bd2
+#define base0E #6c71c4
+#define base0F #d33682
+
+!URxvt.foreground:   base05
+!URxvt.background:   base00
+!URxvt.cursorColor:  base05
+
+!URxvt.color0:       base00
+!URxvt.color1:       base08
+!URxvt.color2:       base0B
+!URxvt.color3:       base0A
+!URxvt.color4:       base0D
+!URxvt.color5:       base0E
+!URxvt.color6:       base0C
+!URxvt.color7:       base05
+
+!URxvt.color8:       base03
+!URxvt.color9:       base08
+!URxvt.color10:      base0B
+!URxvt.color11:      base0A
+!URxvt.color12:      base0D
+!URxvt.color13:      base0E
+!URxvt.color14:      base0C
+!URxvt.color15:      base07
+
+!! Note: colors beyond 15 might not be loaded (e.g., xterm, urxvt),
+!! use 'shell' template to set these if necessary
+!URxvt.color16:      base09
+!URxvt.color17:      base0F
+!URxvt.color18:      base01
+!URxvt.color19:      base02
+!URxvt.color20:      base04
+!URxvt.color21:      base06
+
+!============================================================================
+! Rofi
 
 rofi.width:                          100
 rofi.lines:                          15
