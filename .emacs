@@ -7,6 +7,7 @@
   "Opens user-init-file"
   (interactive)
   (find-file user-init-file))
+(global-set-key (kbd "M-<f12>") 'my/configure)
 
 ;;;; Variables
 (custom-set-variables
@@ -20,7 +21,7 @@
  '(magit-log-arguments (quote ("--graph" "--color" "--decorate")))
  '(package-selected-packages
    (quote
-    (outshine backup-walker backup-walket base16-theme helm-xref helm-ag helm-projectile helm plantuml-mode bifocal yaml-mode seq dired-subtree ace-link pocket-mode company-web company-cabal org-brain terminal-here emmet-mode web-mode counsel counsel-projectile ob-restclient zoom-window zeal-at-point yankpad window-numbering whole-line-or-region which-key volatile-highlights vimish-fold use-package unkillable-scratch undo-tree toml-mode switch-window swiper sr-speedbar solarized-theme smartparens shrink-whitespace rust-mode ripgrep rainbow-delimiters purescript-mode projectile org names markdown-mode magit lua-mode js2-mode intero hindent hi2 guide-key git-timemachine ghc fullframe flycheck-rust flycheck-purescript flycheck-haskell flycheck-elm flycheck-color-mode-line fireplace expand-region eno elpy elm-mode dumb-jump discover-my-major dired-single dired-hacks-utils dired-details+ company-restclient company-flx comment-dwim-2 clojure-mode-extra-font-locking clj-refactor caseformat beacon avy-zap auto-indent-mode align-cljlet aggressive-indent ag ace-mc)))
+    (helm-flycheck helm-swoop outshine backup-walker backup-walket base16-theme helm-xref helm-ag helm-projectile helm plantuml-mode bifocal yaml-mode seq dired-subtree ace-link pocket-mode company-web company-cabal org-brain terminal-here emmet-mode web-mode counsel counsel-projectile ob-restclient zoom-window zeal-at-point yankpad window-numbering whole-line-or-region which-key volatile-highlights vimish-fold use-package unkillable-scratch undo-tree toml-mode switch-window swiper sr-speedbar solarized-theme smartparens shrink-whitespace rust-mode ripgrep rainbow-delimiters purescript-mode projectile org names markdown-mode magit lua-mode js2-mode intero hindent hi2 guide-key git-timemachine ghc fullframe flycheck-rust flycheck-purescript flycheck-haskell flycheck-elm flycheck-color-mode-line fireplace expand-region eno elpy elm-mode dumb-jump discover-my-major dired-single dired-hacks-utils dired-details+ company-restclient company-flx comment-dwim-2 clojure-mode-extra-font-locking clj-refactor caseformat beacon avy-zap auto-indent-mode align-cljlet aggressive-indent ag ace-mc)))
  '(safe-local-variable-values (quote ((create-lockfiles)))))
 
 (defvar my/suppress-intero nil
@@ -34,6 +35,10 @@
 (defvar my/haskell-check-using-stack-ghc nil
   "If 't' then flycheck will use 'haskell-stack-ghc' instead of 'intero'")
 (put 'my/haskell-check-using-stack-ghc 'safe-local-variable #'booleanp)
+
+(defvar my/flycheck-haskell-prefer-cabal-path nil
+  "If 't' then flycheck will start checker at dir with .cabal-file")
+(put 'my/flycheck-haskell-prefer-cabal-path 'safe-local-variable #'booleanp)
 
 ;;;; Package menagement
 (require 'package)
@@ -326,6 +331,11 @@
   :config
   ;;(add-to-list 'unkillable-scratch "\\*scratch\\*")
   (unkillable-scratch 1))
+(defun my/switch-to-scratch ()
+  (interactive)
+  (switch-to-buffer "*scratch*"))
+(bind-key "M-<f11>" #'my/switch-to-scratch)
+
 ;;;; Client/server
 (use-package server
   :ensure t
@@ -693,11 +703,22 @@
         helm-autoresize-min-height 30)
   (helm-autoresize-mode 1)
 
-  (use-package helm-xref
-    :ensure t
-    :init
-    (setq xref-show-xrefs-function 'helm-xref-show-xrefs)
-    :commands (helm-xref-show-xrefs)))
+  ;; (use-package helm-xref
+  ;;   :ensure t
+  ;;   :init
+  ;;   (setq xref-show-xrefs-function 'helm-xref-show-xrefs)
+  ;;   :commands (helm-xref-show-xrefs))
+
+  (use-package helm-swoop
+    :bind
+    (:map
+     helm-command-map
+     ("M-s s" . helm-swoop)
+
+     :map
+     isearch-mode-map
+     ("M-s M-s" . helm-swoop-from-isearch)))
+  )
 
 ;;;; Avy/Ace/Eno
 (use-package avy
@@ -990,13 +1011,7 @@
 
     :ensure t
 
-    :bind
-    (:map
-     my/haskell-map
-     ("f" . hindent-reformat-buffer))
-
-    :config
-    (defvar my/suppress-hindent nil "Suppresses an autofromatting on save")
+    :init
     (add-hook 'haskell-mode-hook
               (lambda ()
                 (add-hook 'hack-local-variables-hook
@@ -1004,7 +1019,15 @@
                             (when (not my/suppress-hindent)
                               (setq hindent-reformat-buffer-on-save t)
                               (hindent-mode)))
-                          nil t))))
+                          nil t)))
+
+    :commands
+    (hindent-mode hindent-reformat-buffer)
+
+    :bind
+    (:map
+     my/haskell-map
+     ("f" . hindent-reformat-buffer)))
 
   (use-package company-cabal
     :ensure t
@@ -1064,7 +1087,17 @@
                     (end-of-line)
                     (newline)
                     (insert l1) (newline)
-                    (insert l2) (newline)))))))))
+                    (insert l2) (newline))))))))
+
+  ;; Make flycheck to use path to .cabal-file if local var was set
+  (defun my/override-flycheck-haskell-default-directory (proc &rest args)
+    (if my/flycheck-haskell-prefer-cabal-path
+        (funcall proc 'haskell-ghc)
+      (apply proc args)))
+  (advice-add 'flycheck-haskell--find-default-directory
+              :around
+              #'my/override-flycheck-haskell-default-directory))
+
 (put 'intero-targets                   'safe-local-variable #'listp)
 (put 'flycheck-ghc-language-extensions 'safe-local-variable #'listp)
 (put 'hi2-where-post-offset            'safe-local-variable #'numberp)
@@ -1356,6 +1389,7 @@
   ("C-c d" . zeal-at-point)
   ;;(add-to-list 'zeal-at-point-mode-alist '(smth-mode . "smth")
   )
+
 ;;;; Flycheck
 (use-package flycheck
   :ensure t
@@ -1367,7 +1401,15 @@
     :ensure t
     :config
     (add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode))
-  (setq flycheck-check-syntax-automatically '(save mode-enabled)))
+  (setq flycheck-check-syntax-automatically '(save mode-enabled))
+
+  (use-package helm-flycheck
+    :ensure t
+    :bind
+    (:map
+     flycheck-command-map
+     ("l" . helm-flycheck)
+     ("L" . flycheck-list-errors))))
 
 ;;;; Yasnippet
 (use-package yasnippet
