@@ -11,7 +11,9 @@ alias playlist-dl="youtube-dl -o \"%(playlist_title)s/%(playlist_index)s. %(titl
 
 alias lsmake="grep --color=never -oP \"^\S+:\" Makefile"
 
+alias e="emacs"
 alias ec="emacsclient -nq"
+alias eq="emacs -Q"
 
 alias psg="ps -eLF | grep"
 
