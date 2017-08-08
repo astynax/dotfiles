@@ -242,8 +242,9 @@ bar {
     # modifier Mod1
 
     # tray_output primary
-    tray_output HDMI1
-    tray_output eDP1
+    tray_output HDMI-1
+    tray_output eDP-1
+    tray_output DP-1
     # status_command ~/.i3/my_bar.sh
     status_command i3status -c "$HOME/.i3/status"
     colors {
