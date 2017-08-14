@@ -6,8 +6,7 @@ alias ll='ls -AlF --color --time-style=long-iso'
 alias la='ls -A'
 alias l='ls -f1'
 
-alias playlist-dl-audio="youtube-dl -x -o \"%(playlist_title)s/%(playlist_index)s. %(title)s.%(ext)s\""
-alias playlist-dl="youtube-dl -o \"%(playlist_title)s/%(playlist_index)s. %(title)s.%(ext)s\""
+alias playlist-dl="youtube-dl -o '~/Downloads/youtube/%(uploader)s/%(playlist_mb_title)s/%(playlist_index)s. %(title)s.%(ext)s'"
 
 alias lsmake="grep --color=never -oP \"^\S+:\" Makefile"
 
