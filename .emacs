@@ -21,7 +21,7 @@
  '(magit-log-arguments (quote ("--graph" "--color" "--decorate")))
  '(package-selected-packages
    (quote
-    (helm-flycheck helm-swoop outshine backup-walker backup-walket base16-theme helm-xref helm-ag helm-projectile helm plantuml-mode bifocal yaml-mode seq dired-subtree ace-link pocket-mode company-web company-cabal org-brain terminal-here emmet-mode web-mode counsel counsel-projectile ob-restclient zoom-window zeal-at-point yankpad window-numbering whole-line-or-region which-key volatile-highlights vimish-fold use-package unkillable-scratch undo-tree toml-mode switch-window swiper sr-speedbar solarized-theme smartparens shrink-whitespace rust-mode ripgrep rainbow-delimiters purescript-mode projectile org names markdown-mode magit lua-mode js2-mode intero hindent hi2 guide-key git-timemachine ghc fullframe flycheck-rust flycheck-purescript flycheck-haskell flycheck-elm flycheck-color-mode-line fireplace expand-region eno elpy elm-mode dumb-jump discover-my-major dired-single dired-hacks-utils dired-details+ company-restclient company-flx comment-dwim-2 clojure-mode-extra-font-locking clj-refactor caseformat beacon avy-zap auto-indent-mode align-cljlet aggressive-indent ag ace-mc)))
+    (company-try-hard helm-flycheck helm-swoop outshine backup-walker backup-walket base16-theme helm-xref helm-ag helm-projectile helm plantuml-mode bifocal yaml-mode seq dired-subtree ace-link pocket-mode company-web company-cabal org-brain terminal-here emmet-mode web-mode counsel counsel-projectile ob-restclient zoom-window zeal-at-point yankpad window-numbering whole-line-or-region which-key volatile-highlights vimish-fold use-package unkillable-scratch undo-tree toml-mode switch-window swiper sr-speedbar solarized-theme smartparens shrink-whitespace rust-mode ripgrep rainbow-delimiters purescript-mode projectile org names markdown-mode magit lua-mode js2-mode intero hindent hi2 guide-key git-timemachine ghc fullframe flycheck-rust flycheck-purescript flycheck-haskell flycheck-elm flycheck-color-mode-line fireplace expand-region eno elpy elm-mode dumb-jump discover-my-major dired-single dired-hacks-utils dired-details+ company-restclient company-flx comment-dwim-2 clojure-mode-extra-font-locking clj-refactor caseformat beacon avy-zap auto-indent-mode align-cljlet aggressive-indent ag ace-mc)))
  '(safe-local-variable-values (quote ((create-lockfiles)))))
 
 (defvar my/suppress-intero nil
@@ -238,8 +238,8 @@
 
 ;;; Behaviour
 ;;;; Keybindings
-(bind-keys
- ("M-/" . hippie-expand))
+;; (bind-keys
+;;  ("M-/" . hippie-expand))
 
 (global-unset-key (kbd "C-z"))
 
@@ -385,6 +385,9 @@
    ))
 
 ;;; Editing
+;;;; Misc
+(electric-pair-mode t)
+
 ;;;; Whitespaces
 (use-package whitespace
   :ensure t
@@ -1369,10 +1372,24 @@
 
   (setq
    company-tooltip-limit 20
-   company-tooltip-align-annotations 't
-   ;; company-idle-delay .3
    company-begin-commands '(self-insert-command)
-   )
+   company-selection-wrap-around t
+   company-show-numbers t
+   company-tooltip-align-annotations t
+   company-require-match nil
+   company-dabbrev-downcase nil
+   company-dabbrev-ignore-case nil)
+
+  (use-package company-try-hard
+    :ensure t
+
+    :commands company-try-hard
+
+    :bind
+    ("M-/" . company-try-hard)
+    (:map
+     company-active-map
+     ("M-/" . company-try-hard)))
 
   (use-package company-flx
     :ensure t
