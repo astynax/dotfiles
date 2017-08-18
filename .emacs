@@ -1386,10 +1386,10 @@
     :commands company-try-hard
 
     :bind
-    ("M-/" . company-try-hard)
+    ("C-c M-/" . company-try-hard)
     (:map
      company-active-map
-     ("M-/" . company-try-hard)))
+     ("C-c M-/" . company-try-hard)))
 
   (use-package company-flx
     :ensure t
@@ -1397,6 +1397,8 @@
     :config
     (add-hook 'company-mode-hook (lambda () (company-flx-mode +1)))))
 (put 'company-backends 'safe-local-variable #'listp)
+
+(bind-key "M-/" 'hippie-expand)
 
 ;;;; Zeal-at-point
 (use-package zeal-at-point
