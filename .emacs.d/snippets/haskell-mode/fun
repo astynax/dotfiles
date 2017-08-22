@@ -4,4 +4,4 @@
 # binding: direct-keybinding
 # --
 ${1:function-name} :: ${2:type}
-$1 = error "FIXME: Implement ${1:function-name}"
+$1 = error "FIXME: Implement $1"

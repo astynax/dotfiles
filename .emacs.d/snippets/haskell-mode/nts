@@ -2,4 +2,4 @@
 # name: newtype simple
 # key: nts
 # --
-newtype ${1:T} = ${1:T} ${2: }deriving (Show$0)
+newtype ${1:T} = $1 ${2:t} deriving (Show$0)
