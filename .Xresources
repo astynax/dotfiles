@@ -84,6 +84,15 @@ URxvt*fading:           0
 #define SL_base2         #073642
 #define SL_base3         #002b36
 
+! Darker colors
+
+#define Sb_red           #f31a16
+#define Sb_green         #a4bd00
+#define Sb_yellow        #e6ac00
+#define Sb_blue          #309ce8
+#define Sb_magenta       #e83089
+#define Sb_cyan          #1fc7b9
+
 URxvt*background:              SL_base03
 URxvt*foreground:              SL_base0
 URxvt*fadeColor:               SL_base03
@@ -101,11 +110,11 @@ URxvt*color6:                  SC_cyan
 URxvt*color7:                  SL_base2
 URxvt*color8:                  SL_base1
 URxvt*color9:                  SC_orange
-URxvt*color10:                 Tango_Chameleon0
-URxvt*color11:                 Tango_Butter0
-URxvt*color12:                 Tango_SkyBlue0
-URxvt*color13:                 SC_violet
-URxvt*color14:                 #3fbfbf
+URxvt*color10:                 Sb_green
+URxvt*color11:                 Sb_yellow
+URxvt*color12:                 Sb_blue
+URxvt*color13:                 Sb_violet
+URxvt*color14:                 Sb_cyan
 URxvt*color15:                 SL_base3
 
 ! base16 light
