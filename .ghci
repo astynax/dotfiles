@@ -1,4 +1,5 @@
 -- "chmod go-w to this!" --
+:set +m
 
 -- work with local .ghci
 :def r. const(return ":cmd readFile \".ghci\"")
@@ -7,3 +8,7 @@
 
 -- colorize a prompt
 :set prompt "\ESC[32mλ> \ESC[m"
+
+-- switch to Universum
+:def uni const(return ":set -XNoImplicitPrelude\nimport Universum as U\nimport qualified Prelude")
+
