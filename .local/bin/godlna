@@ -1,0 +1,2 @@
+#!/bin/sh
+minidlnad -f .minidlna/minidlna.conf -P ~/.minidlna/minidlna.pid -S -R
