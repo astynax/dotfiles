@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# A shortcut for fast poweroff
+shutdown -P now &
+

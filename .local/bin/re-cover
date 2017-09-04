@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# Resize (via ImageMagic) cover art to not-so-big resolution
+convert "$1" -resize 700x700 "$1"
+

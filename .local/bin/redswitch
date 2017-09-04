@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# Toggles the RedShift
+pkill -SIGUSR1 redshift
+

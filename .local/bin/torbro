@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# Launch a Tor Browser in detached mode
+~/.software/tor-browser_en-US/Browser/start-tor-browser --detach
+

@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+# Switches from one PulseAudio sink to another (and moves all the sources)
+SINK_INDEX1=0
+SINK_INDEX2=1
+ACTIVE_SINK=$(pacmd list-sinks | grep '* index:' | grep -o '[0-9]*')
+if [ "$ACTIVE_SINK" = $SINK_INDEX1 ] ; then
+  pacmd set-default-sink $SINK_INDEX2
+  pacmd list-sink-inputs | awk '/index:/{print $2}' | xargs -r -I{} pacmd move-sink-input {} $SINK_INDEX2
+else 
+  pacmd set-default-sink $SINK_INDEX1
+  pacmd list-sink-inputs | awk '/index:/{print $2}' | xargs -r -I{} pacmd move-sink-input {} $SINK_INDEX1
+fi

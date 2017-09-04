@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# Shows result of the DuckDuckGo "bang pattern" search in W3M
+[ ! -z "$*" ] && w3m "duckduckgo.com?q=!$*" || echo "Usage: bang python print"
+

@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# Grabs a selected area to the clipboard (via scrot & xclip)
+scrot -s /tmp/scrot.png && xclip -selection clipboard -t image/png /tmp/scrot.png && notify-send "Shot copied!"
+

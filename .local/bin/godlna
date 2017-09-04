@@ -1,2 +1,5 @@
 #!/bin/sh
+
+# Runs miniDLNA in non-daemon mode (I just want to share movie to TV sometimes)
 minidlnad -f .minidlna/minidlna.conf -P ~/.minidlna/minidlna.pid -S -R
+
