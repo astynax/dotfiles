@@ -531,10 +531,8 @@
    ("C-M->" . mc/mark-next-word-like-this)
    ("C-M-<" . mc/mark-previous-word-like-this)
    ("C-S-<mouse-1>" . mc/add-cursor-on-click)
-   )
 
-  :bind
-  (:map
+   :map
    my/mc-map
    ("+" . mc/mark-all-like-this)
    ("r" . set-rectangular-region-anchor)
@@ -962,14 +960,12 @@
      (yas-minor-mode nil) ;; TODO: make possible to disable only autofill-mode
      ))
 
-  ;; bind keys here because of mode-specific keymap
   (bind-keys
    :map haskell-mode-map
    :prefix "C-c SPC"
    :prefix-map my/haskell-map
 
-   :map
-   my/haskell-map
+   :map my/haskell-map
    ("v" . haskell-cabal-visit-file)
    ("m" . haskell-auto-insert-module-template)
    ("I" . haskell-sort-imports)
@@ -1043,7 +1039,9 @@
   (defun my/boot-haskell ()
     "Initialize haskell stuff"
     (interactive)
-
+    ;; case sensitive tags
+    (setq tags-case-fold-search nil)
+    ;; docs
     (eldoc-mode t)
     ;; auto-indentation
     (hi2-mode t)
