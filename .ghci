@@ -1,5 +1,4 @@
 -- "chmod go-w to this!" --
-:set +m
 
 -- work with local .ghci
 :def r. const(return ":cmd readFile \".ghci\"")
@@ -11,4 +10,7 @@
 
 -- switch to Universum
 :def uni const(return ":set -XNoImplicitPrelude\nimport Universum as U\nimport qualified Prelude")
+
+-- source commands from file
+:def source \fn -> return (":cmd readFile " ++ fn)
 
