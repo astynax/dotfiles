@@ -41,6 +41,7 @@ dmenu.run({
     "mark": {
         "mark ..": ["i3-input", "-F", "mark %s", "-l", "1", "-P", "Mark: "],
         "go to ..": ["i3-input", "-F", "[con_mark=%s] focus", "-l", "1", "-P", "Go to: "],
+        "swap with ..": ["i3-input", "-F", "swap container with mark %s", "-l", "1", "-P", "Swap with: "],
     },
     "split": {
         "horizontally": ["i3-msg", "split h"],
