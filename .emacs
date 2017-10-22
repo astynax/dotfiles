@@ -21,7 +21,7 @@
  '(magit-log-arguments (quote ("--graph" "--color" "--decorate")))
  '(package-selected-packages
    (quote
-    (projectile-ripgrep company-try-hard helm-flycheck helm-swoop outshine backup-walker backup-walket base16-theme helm-xref helm-ag helm-projectile helm plantuml-mode bifocal yaml-mode seq dired-subtree ace-link pocket-mode company-web company-cabal org-brain terminal-here emmet-mode web-mode counsel ob-restclient zoom-window zeal-at-point yankpad window-numbering whole-line-or-region which-key volatile-highlights vimish-fold use-package unkillable-scratch undo-tree toml-mode switch-window swiper sr-speedbar solarized-theme smartparens shrink-whitespace rust-mode ripgrep rainbow-delimiters purescript-mode projectile org names markdown-mode magit lua-mode js2-mode intero hindent hi2 guide-key git-timemachine ghc fullframe flycheck-rust flycheck-purescript flycheck-haskell flycheck-elm flycheck-color-mode-line fireplace expand-region eno elpy elm-mode discover-my-major dired-single dired-hacks-utils dired-details+ company-restclient company-flx comment-dwim-2 clojure-mode-extra-font-locking clj-refactor caseformat beacon avy-zap auto-indent-mode align-cljlet aggressive-indent ag ace-mc)))
+    (shakespeare-mode projectile-ripgrep company-try-hard helm-flycheck helm-swoop outshine backup-walker backup-walket base16-theme helm-xref helm-ag helm-projectile helm plantuml-mode bifocal yaml-mode seq dired-subtree ace-link pocket-mode company-web company-cabal org-brain terminal-here emmet-mode web-mode counsel ob-restclient zoom-window zeal-at-point yankpad window-numbering whole-line-or-region which-key volatile-highlights vimish-fold use-package unkillable-scratch undo-tree toml-mode switch-window swiper sr-speedbar solarized-theme smartparens shrink-whitespace rust-mode ripgrep rainbow-delimiters purescript-mode projectile org names markdown-mode magit lua-mode js2-mode intero hindent hi2 guide-key git-timemachine ghc fullframe flycheck-rust flycheck-purescript flycheck-haskell flycheck-elm flycheck-color-mode-line fireplace expand-region eno elpy elm-mode discover-my-major dired-single dired-hacks-utils dired-details+ company-restclient company-flx comment-dwim-2 clojure-mode-extra-font-locking clj-refactor caseformat beacon avy-zap auto-indent-mode align-cljlet aggressive-indent ag ace-mc)))
  '(safe-local-variable-values (quote ((create-lockfiles)))))
 
 (defvar my/suppress-intero nil
@@ -596,60 +596,6 @@
                 'my/smarter-move-beginning-of-line)
 
 ;;; Navigation
-;;;; Ido/Smex/Flx
-;; FLX + IDO + Smex ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (use-package ido
-;;   :ensure t
-
-;;   :config
-;;   (ido-mode t)
-;;   (ido-everywhere t)
-;;   (setq ido-use-virtual-buffers t
-;;         ido-confirm-unique-completion t)
-
-;;   (use-package ido-completing-read+
-;;     :ensure t
-
-;;     :config
-;;     (ido-ubiquitous-mode t))
-
-;;   (use-package flx-ido
-;;     :ensure t
-
-;;     :config
-;;     (flx-ido-mode t))
-
-;;   (use-package ido-vertical-mode
-;;     :ensure t
-
-;;     :config
-;;     (ido-vertical-mode t)
-;;     (setq ido-vertical-define-keys 'C-n-and-C-p-only))
-
-;;   (use-package smex
-;;     :ensure t
-
-;;     :config
-;;     (setq smex-save-file (expand-file-name ".smex-items" user-emacs-directory))
-;;     (smex-initialize)
-;;     (global-set-key [remap execute-extended-command] 'smex))
-
-;;   (use-package idomenu
-;;     :ensure t
-;;     :bind
-;;     (("M-g j" . idomenu))
-;;     ;; :config
-;;     ;; (setq imenu-auto-rescan t
-;;     ;;       imenu-use-popup-menu nil)
-;;     )
-
-;;   (use-package ido-occur
-;;     :ensure t
-
-;;     :bind
-;;     (("M-s o" . ido-occur)
-;;      ("M-s O" . ido-occur-at-point))))
-
 ;;;; Helm
 (use-package helm
   :ensure t
@@ -1037,6 +983,12 @@
     :config
     (add-to-list 'company-backends 'company-cabal))
 
+  (use-package shakespeare-mode
+    :ensure t
+    :mode
+    (("\\.hamlet\\'" . shakespeare-hamlet-mode)
+     ("\\.julius\\'" . shakespeare-julius-mode)))
+
   (defun my/boot-haskell ()
     "Initialize haskell stuff"
     (interactive)
@@ -1416,6 +1368,10 @@
 
   :diminish "Ⓕ"
 
+  :bind
+  (("<f7>" . flycheck-previous-error)
+   ("<f8>" . flycheck-next-error))
+
   :config
   (use-package flycheck-color-mode-line
     :ensure t
@@ -1426,7 +1382,8 @@
   (use-package helm-flycheck
     :ensure t
     :bind
-    (:map
+    (("<f6>" . helm-flycheck)
+     :map
      flycheck-command-map
      ("l" . helm-flycheck)
      ("L" . flycheck-list-errors))))
