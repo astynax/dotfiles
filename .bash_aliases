@@ -19,7 +19,9 @@ alias psg="ps -eLF | grep"
 alias clbin="curl -F 'clbin=<-' https://clbin.com"
 alias termbin="nc termbin.com 9999"
 
-alias cal="ncal -3bM"
+cal() {
+    ncal -bM ${1:--3}
+}
 
 htags() {
     hasktags -e $(find `pwd` -iname '*.hs' -and \( -not -path '*.stack-work*' \) -and \( -not -name 'Setup.hs' \) -and -type f)
