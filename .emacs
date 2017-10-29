@@ -21,7 +21,7 @@
  '(magit-log-arguments (quote ("--graph" "--color" "--decorate")))
  '(package-selected-packages
    (quote
-    (shakespeare-mode projectile-ripgrep company-try-hard helm-flycheck helm-swoop outshine backup-walker backup-walket base16-theme helm-xref helm-ag helm-projectile helm plantuml-mode bifocal yaml-mode seq dired-subtree ace-link pocket-mode company-web company-cabal org-brain terminal-here emmet-mode web-mode counsel ob-restclient zoom-window zeal-at-point yankpad window-numbering whole-line-or-region which-key volatile-highlights vimish-fold use-package unkillable-scratch undo-tree toml-mode switch-window swiper sr-speedbar solarized-theme smartparens shrink-whitespace rust-mode ripgrep rainbow-delimiters purescript-mode projectile org names markdown-mode magit lua-mode js2-mode intero hindent hi2 guide-key git-timemachine ghc fullframe flycheck-rust flycheck-purescript flycheck-haskell flycheck-elm flycheck-color-mode-line fireplace expand-region eno elpy elm-mode discover-my-major dired-single dired-hacks-utils dired-details+ company-restclient company-flx comment-dwim-2 clojure-mode-extra-font-locking clj-refactor caseformat beacon avy-zap auto-indent-mode align-cljlet aggressive-indent ag ace-mc)))
+    (company-quickhelp shakespeare-mode projectile-ripgrep company-try-hard helm-flycheck helm-swoop outshine backup-walker backup-walket base16-theme helm-xref helm-ag helm-projectile helm plantuml-mode bifocal yaml-mode seq dired-subtree ace-link pocket-mode company-web company-cabal org-brain terminal-here emmet-mode web-mode counsel ob-restclient zoom-window zeal-at-point yankpad window-numbering whole-line-or-region which-key volatile-highlights vimish-fold use-package unkillable-scratch undo-tree toml-mode switch-window swiper sr-speedbar solarized-theme smartparens shrink-whitespace rust-mode ripgrep rainbow-delimiters purescript-mode projectile org names markdown-mode magit lua-mode js2-mode intero hindent hi2 guide-key git-timemachine ghc fullframe flycheck-rust flycheck-purescript flycheck-haskell flycheck-elm flycheck-color-mode-line fireplace expand-region eno elpy elm-mode discover-my-major dired-single dired-hacks-utils dired-details+ company-restclient company-flx comment-dwim-2 clojure-mode-extra-font-locking clj-refactor caseformat beacon avy-zap auto-indent-mode align-cljlet aggressive-indent ag ace-mc)))
  '(safe-local-variable-values (quote ((create-lockfiles)))))
 
 (defvar my/suppress-intero nil
@@ -1154,10 +1154,7 @@
     :ensure t
     :config
     (add-hook 'flycheck-mode-hook
-              #'flycheck-elm-setup)
-    (add-hook
-     'elm-mode-hook
-     #'flycheck-mode))
+              #'flycheck-elm-setup))
 
   (when (executable-find "elm-oracle")
     (add-hook
@@ -1168,6 +1165,8 @@
   (add-hook
    'elm-mode-hook
    (lambda ()
+     (elm--find-dependency-file-path)
+     (flycheck-mode)
      (setq electric-indent-inhibit t)))
 
   (bind-keys
@@ -1348,7 +1347,19 @@
     :ensure t
 
     :config
-    (add-hook 'company-mode-hook (lambda () (company-flx-mode +1)))))
+    (add-hook 'company-mode-hook (lambda () (company-flx-mode +1))))
+
+  (use-package company-quickhelp
+    :ensure t
+    :diminish company-quickhelp-mode
+
+    :bind
+    (:map
+     company-active-map
+     ("C-h" . company-quickhelp-manual-begin))
+
+    :config
+    (company-quickhelp-mode t)))
 (put 'company-backends 'safe-local-variable #'listp)
 
 (bind-key "M-/" 'hippie-expand)
