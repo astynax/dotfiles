@@ -1,0 +1,4 @@
+# -*- mode: snippet -*-
+# name: imp
+# --
+import ${1:m$(capitalize yas-text)}$0

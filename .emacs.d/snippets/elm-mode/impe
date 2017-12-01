@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: impe
+# expand-env: ((f (lambda (x) (or (car (last (s-split "\\." x t))) ""))))
+# --
+import ${1:M$(capitalize yas-text)} exposing (${2:${1:$(funcall f yas-text)}})$0
