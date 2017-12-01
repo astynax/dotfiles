@@ -157,3 +157,7 @@ ghcidf () {
        ghcid $2 $3 $4 $5 -c "stack exec -- ghci" --test "main" $1
     fi
 }
+
+export NVM_DIR="$HOME/.nvm"
+[[ -s "$NVM_DIR/nvm.sh" ]] && source "$NVM_DIR/nvm.sh"
+[[ -s "$NVM_DIR/bash_completion" ]] && source "$NVM_DIR/bash_completion"

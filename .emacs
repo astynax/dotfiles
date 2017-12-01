@@ -21,16 +21,12 @@
  '(magit-log-arguments (quote ("--graph" "--color" "--decorate")))
  '(package-selected-packages
    (quote
-    (company-quickhelp shakespeare-mode projectile-ripgrep company-try-hard helm-flycheck helm-swoop outshine backup-walker backup-walket base16-theme helm-xref helm-ag helm-projectile helm plantuml-mode bifocal yaml-mode seq dired-subtree ace-link pocket-mode company-web company-cabal org-brain terminal-here emmet-mode web-mode counsel ob-restclient zoom-window zeal-at-point yankpad window-numbering whole-line-or-region which-key volatile-highlights vimish-fold use-package unkillable-scratch undo-tree toml-mode switch-window swiper sr-speedbar solarized-theme smartparens shrink-whitespace rust-mode ripgrep rainbow-delimiters purescript-mode projectile org names markdown-mode magit lua-mode js2-mode intero hindent hi2 guide-key git-timemachine ghc fullframe flycheck-rust flycheck-purescript flycheck-haskell flycheck-elm flycheck-color-mode-line fireplace expand-region eno elpy elm-mode discover-my-major dired-single dired-hacks-utils dired-details+ company-restclient company-flx comment-dwim-2 clojure-mode-extra-font-locking clj-refactor caseformat beacon avy-zap auto-indent-mode align-cljlet aggressive-indent ag ace-mc)))
- '(safe-local-variable-values (quote ((create-lockfiles)))))
+    (hl-todo diminish cider olivetti htmlize ox-pandoc psc-ide-emacs psc-ide-mode psc-ide company-quickhelp shakespeare-mode projectile-ripgrep company-try-hard helm-flycheck helm-swoop outshine backup-walker backup-walket helm-xref helm-ag helm-projectile helm plantuml-mode bifocal yaml-mode seq dired-subtree ace-link pocket-mode company-web company-cabal org-brain terminal-here emmet-mode web-mode counsel ob-restclient zoom-window zeal-at-point yankpad window-numbering whole-line-or-region which-key volatile-highlights vimish-fold use-package unkillable-scratch undo-tree toml-mode switch-window swiper sr-speedbar solarized-theme smartparens shrink-whitespace rust-mode ripgrep rainbow-delimiters purescript-mode projectile org names markdown-mode magit lua-mode js2-mode intero hindent hi2 guide-key git-timemachine ghc fullframe flycheck-rust flycheck-purescript flycheck-haskell flycheck-elm flycheck-color-mode-line fireplace expand-region eno elpy elm-mode discover-my-major dired-single dired-hacks-utils dired-details+ company-restclient company-flx comment-dwim-2 clojure-mode-extra-font-locking caseformat beacon avy-zap auto-indent-mode align-cljlet aggressive-indent ag ace-mc)))
+ '(safe-local-variable-values (quote ((my/suppress-intero . t) (create-lockfiles)))))
 
 (defvar my/suppress-intero nil
   "Setting this to 't' will suppress 'intero-mode'")
 (put 'my/suppress-hindent              'safe-local-variable #'booleanp)
-
-(defvar my/suppress-hindent nil
-  "Setting this to 't' will prevent hindent auto-formatting")
-(put 'my/suppress-intero               'safe-local-variable #'booleanp)
 
 (defvar my/haskell-check-using-stack-ghc nil
   "If 't' then flycheck will use 'haskell-stack-ghc' instead of 'intero'")
@@ -89,6 +85,10 @@
 
 ;;;;; hl matching parenthesis
 (show-paren-mode)
+
+;;;; Mode line
+(setq mode-line-position
+      '((line-number-mode ("%l" (column-number-mode ":%c")))))
 
 ;;;; Font
 (setq
@@ -180,15 +180,6 @@
   (fullframe magit-log-all quit-window)
   (fullframe magit-log-current quit-window))
 
-;;;; Whole line or region
-(use-package whole-line-or-region
-  :ensure t
-
-  :diminish whole-line-or-region-mode
-
-  :config
-  (whole-line-or-region-mode t))
-
 ;;;; Popup windows manupulation
 (use-package popwin
   :ensure t
@@ -238,6 +229,95 @@
   :config
   (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
 
+;;;; Helm
+(use-package helm
+  :ensure t
+
+  :diminish helm-mode
+
+  :init
+  (setq helm-command-prefix-key "C-c h")
+
+  :bind
+  (("C-x b" . helm-mini)
+   ("C-x C-b" . helm-buffers-list)
+   ("C-x C-f" . helm-find-files)
+   ("C-h a" . helm-apropos)
+   ("M-s o" . helm-occur)
+   ("M-x" . helm-M-x)
+   ("M-y" . helm-show-kill-ring)
+
+   :map
+   helm-command-map
+   ("SPC" . helm-all-mark-rings)
+
+   :map
+   minibuffer-local-map
+   ("C-c C-l" . helm-minibuffer-history)
+
+   :map
+   isearch-mode-map
+   ("C-o" . helm-occur-from-isearch)
+
+   :map
+   search-map
+   ("C-o" . helm-occur-from-isearch)
+
+   :map
+   helm-map
+   ("<tab>" . helm-execute-persistent-action)
+   ("C-<tab>" . helm-select-action))
+
+  :config
+  (require 'helm-config)
+  (helm-mode 1)
+
+  (setq helm-M-x-fuzzy-match t
+        helm-recentf-fuzzy-match t
+        helm-buffers-fuzzy-matching t
+        helm-split-window-default-side 'below
+        helm-split-window-in-side-p nil
+        ;; helm-move-to-line-cycle-in-source t
+        helm-scroll-amount 8)
+
+  ;; autoresize
+  (setq helm-autoresize-max-height 0
+        helm-autoresize-min-height 30)
+  (helm-autoresize-mode 1)
+
+  (use-package helm-xref
+    :ensure t
+    :init
+    (setq xref-show-xrefs-function 'helm-xref-show-xrefs)
+    :commands (helm-xref-show-xrefs))
+
+  (use-package helm-swoop
+    :bind
+    (:map
+     helm-command-map
+     ("M-s s" . helm-swoop)
+
+     :map
+     isearch-mode-map
+     ("M-s M-s" . helm-swoop-from-isearch)))
+  )
+
+;;;; TODO/FIXME/etc keyword highlight
+(use-package hl-todo
+  :ensure t
+
+  :bind
+  ("M-s t" . hl-todo-occur)
+
+  :config
+  (global-hl-todo-mode)
+
+  (setq
+   hl-todo-keyword-faces
+   '(("TODO" . "#6c71c4")
+     ("FIXME" . "#dc322f")
+     ("NOTE" . "#2aa198"))))
+
 ;;; Behaviour
 ;;;; Keybindings
 ;; (bind-keys
@@ -256,26 +336,27 @@
       inhibit-startup-message t)
 
 ;;;; Autosaves & backup
-(setq auto-save-default nil
+(setq
+ auto-save-default nil
 
-      auto-save-file-name-transforms
-      `((".*" ,(format "%sauto-saves/\\2" user-emacs-directory) t))
+ auto-save-file-name-transforms
+ `((".*" ,(format "%sauto-saves/\\2" user-emacs-directory) t))
 
-      my/backup-directory-per-session
-      (format "%sbackups/per-session" user-emacs-directory)
+ my/backup-directory-per-session
+ (format "%sbackups/per-session" user-emacs-directory)
 
-      my/backup-directory-per-save
-      (format "%sbackups/per-save" user-emacs-directory)
+ my/backup-directory-per-save
+ (format "%sbackups/per-save" user-emacs-directory)
 
-      backup-directory-alist
-      `((".*" . ,my/backup-directory-per-save))
+ backup-directory-alist
+ `((".*" . ,my/backup-directory-per-save))
 
-      backup-by-copying t
-      kept-new-versions 10
-      kept-old-versions 0
-      delete-old-versions t
-      version-control t
-      vc-make-backup-files t)
+ backup-by-copying t
+ kept-new-versions 10
+ kept-old-versions 0
+ delete-old-versions t
+ version-control t
+ vc-make-backup-files t)
 
 (defun force-backup-of-buffer ()
   (when (not buffer-backed-up)
@@ -389,6 +470,15 @@
 ;;; Editing
 ;;;; Misc
 (electric-pair-mode t)
+
+;;;; Whole line or region
+(use-package whole-line-or-region
+  :ensure t
+
+  :diminish whole-line-or-region-local-mode
+
+  :config
+  (whole-line-or-region-mode t))
 
 ;;;; Whitespaces
 (use-package whitespace
@@ -596,79 +686,6 @@
                 'my/smarter-move-beginning-of-line)
 
 ;;; Navigation
-;;;; Helm
-(use-package helm
-  :ensure t
-
-  :diminish (helm-mode "ⓗ")
-
-  :init
-  (setq helm-command-prefix-key "C-c h")
-
-  :bind
-  (("C-x b" . helm-mini)
-   ("C-x C-b" . helm-buffers-list)
-   ("C-x C-f" . helm-find-files)
-   ("C-h a" . helm-apropos)
-   ("M-s o" . helm-occur)
-   ("M-x" . helm-M-x)
-   ("M-y" . helm-show-kill-ring)
-
-   :map
-   helm-command-map
-   ("SPC" . helm-all-mark-rings)
-
-   :map
-   minibuffer-local-map
-   ("C-c C-l" . helm-minibuffer-history)
-
-   :map
-   isearch-mode-map
-   ("C-o" . helm-occur-from-isearch)
-
-   :map
-   search-map
-   ("C-o" . helm-occur-from-isearch)
-
-   :map
-   helm-map
-   ("<tab>" . helm-execute-persistent-action)
-   ("C-<tab>" . helm-select-action))
-
-  :config
-  (require 'helm-config)
-  (helm-mode 1)
-
-  (setq helm-M-x-fuzzy-match t
-        helm-recentf-fuzzy-match t
-        helm-buffers-fuzzy-matching t
-        helm-split-window-default-side 'below
-        helm-split-window-in-side-p nil
-        ;; helm-move-to-line-cycle-in-source t
-        helm-scroll-amount 8)
-
-  ;; autoresize
-  (setq helm-autoresize-max-height 0
-        helm-autoresize-min-height 30)
-  (helm-autoresize-mode 1)
-
-  (use-package helm-xref
-    :ensure t
-    :init
-    (setq xref-show-xrefs-function 'helm-xref-show-xrefs)
-    :commands (helm-xref-show-xrefs))
-
-  (use-package helm-swoop
-    :bind
-    (:map
-     helm-command-map
-     ("M-s s" . helm-swoop)
-
-     :map
-     isearch-mode-map
-     ("M-s M-s" . helm-swoop-from-isearch)))
-  )
-
 ;;;; Avy/Ace/Eno
 (use-package avy
   :ensure t
@@ -869,14 +886,6 @@
     (add-hook 'cider-mode-hook 'rainbow-delimiters-mode)
     (setq cider-repl-result-prefix ";; => "))
 
-  (use-package clj-refactor
-    :ensure t
-    :config
-    (add-hook 'clojure-mode-hook
-              (lambda ()
-                (clj-refactor-mode 1)
-                (cljr-add-keybindings-with-prefix "C-c C-r"))))
-
   (add-hook 'clojure-mode-hook (lambda () (aggressive-indent-mode 1))))
 
 ;;;; Haskell
@@ -960,22 +969,23 @@
     :ensure t
 
     :init
-    (add-hook 'haskell-mode-hook
-              (lambda ()
-                (add-hook 'hack-local-variables-hook
-                          (lambda ()
-                            (when (not my/suppress-hindent)
-                              (setq hindent-reformat-buffer-on-save t)
-                              (hindent-mode)))
-                          nil t)))
+    (add-hook 'haskell-mode-hook #'hindent-mode)
 
     :commands
-    (hindent-mode hindent-reformat-buffer)
+    (hindent-mode
+     hindent-reformat-buffer
+     hindent-reformat-region
+     hindent-reformat-decl)
 
     :bind
     (:map
      my/haskell-map
-     ("f" . hindent-reformat-buffer)))
+     ("f b" . hindent-reformat-buffer)
+     ("f r" . hindent-reformat-region)
+     ("f d" . hindent-reformat-decl))
+
+    :config
+    (setq-default hindent-reformat-buffer-on-save nil))
 
   (use-package company-cabal
     :ensure t
@@ -1002,8 +1012,8 @@
     (setq indent-line-function (lambda () 'noindent)
           electric-indent-inhibit 1))
 
-  (setq hi2-layout-offset 4
-        hi2-left-offset 4
+  (setq hi2-layout-offset 2
+        hi2-left-offset 2
         hi2-where-post-offset 2)
 
   (add-hook 'haskell-mode-hook 'my/boot-haskell)
@@ -1014,7 +1024,7 @@
     (when (executable-find "hemmet")
       (let ((f (lambda (b e)
                  (shell-command-on-region
-                  b e "hemmet bem" t t "*hemmet error*" t))))
+                  b e "hemmet bem react-flux" t t "*hemmet error*" t))))
         (if (region-active-p)
             (funcall f (region-beginning) (region-end))
           (funcall f (line-beginning-position) (line-end-position)))
@@ -1059,17 +1069,13 @@
 (put 'hi2-where-post-offset            'safe-local-variable #'numberp)
 (put 'hi2-left-offset                  'safe-local-variable #'numberp)
 (put 'hi2-layout-offset                'safe-local-variable #'numberp)
+(put 'hindent-reformat-buffer-on-save  'safe-local-variable #'booleanp)
 
 ;;;; Python
 (use-package python
   :ensure t
 
   :mode ("\\.py\\'" . python-mode)
-
-  :commands (my/boot-python)
-
-  :init
-  (add-hook 'python-mode-hook 'my/boot-python)
 
   :config
   (use-package elpy
@@ -1098,17 +1104,16 @@
     (setq indent-tabs-mode nil
           python-indent-offset 4
           electric-indent-inhibit t
-          python-indent-guess-indent-offset nil)
-    )
+          python-indent-guess-indent-offset nil))
 
   (defun my/boot-python ()
     "Initialize python stuff"
     (interactive)
     (my/python-enforce-indentation)
     (flycheck-mode)
-    (flycheck-select-checker 'python-pylint)
-    )
-  )
+    (flycheck-select-checker 'python-pylint))
+
+  (add-hook 'python-mode-hook 'my/boot-python))
 
 ;;;; Rust
 (use-package rust-mode
@@ -1196,30 +1201,24 @@
 
 ;;;; PureScript
 (use-package purescript-mode
+  :if (executable-find "purs")
   :ensure t
 
   :mode "\\.purs\\'"
 
-  :commands
-  (purescript-mode)
-
   :config
-  (use-package flycheck-purescript
+  (use-package psc-ide
     :ensure t
+    :diminish psc-ide-mode
     :config
-    (eval-after-load 'flycheck
-      '(flycheck-purescript-setup)))
+    (defun my/purescript-mode-hook ()
+      (psc-ide-mode)
+      (company-mode)
+      (flycheck-mode)
+      (turn-on-purescript-indentation))
 
-  (defun my/boot-purescript ()
-    "Initialize purs stuff"
-    (auto-indent-mode -1)
-    (electric-indent-mode -1)
-    (setq purescript-indent-offset 2)
-    (purescript-indent-mode)
-    (flycheck-mode)
-    )
-
-  (add-hook 'purescript-mode-hook 'my/boot-purescript))
+    (add-hook 'purescript-mode-hook
+              'my/purescript-mode-hook)))
 
 ;;;; JavaScript
 (use-package js2-mode
@@ -1299,7 +1298,7 @@
 (use-package company
   :ensure t
 
-  :diminish "Ⓒ"
+  :diminish company-mode
 
   :bind
   (("C-c /" . company-files)
@@ -1380,7 +1379,8 @@
   :diminish "Ⓕ"
 
   :bind
-  (("<f7>" . flycheck-previous-error)
+  (("<f5>" . flycheck-buffer)
+   ("<f7>" . flycheck-previous-error)
    ("<f8>" . flycheck-next-error))
 
   :config
@@ -1405,7 +1405,7 @@
 
   :defer 15
 
-  :diminish (yas-minor-mode . "Ⓨ")
+  :diminish yas-minor-mode
 
   :bind
   (:map
@@ -1525,6 +1525,13 @@
    ("C-c M-RET" . org-insert-heading-after-current))
 
   :config
+  (use-package htmlize
+    :ensure t)
+
+  (use-package ox-pandoc
+    :if (executable-find "pandoc")
+    :ensure t)
+
   (add-hook 'org-mode-hook 'yas-minor-mode)
 
   (setq org-todo-keywords '((sequence "TODO" "IN-PROGRESS" "DONE"))
@@ -1687,6 +1694,8 @@
  '(vimish-fold-mouse-face ((t (:box (:line-width 1 :color "yellow")))))
  '(vimish-fold-overlay ((t (:box (:line-width 1 :color "dim gray")))))
  '(whitespace-line ((t (:background "moccasin" :underline (:color foreground-color :style wave)))))
- '(whitespace-tab ((t (:foreground "brown" :inverse-video nil :underline t)))))
+ '(whitespace-tab ((t (:foreground "brown" :inverse-video nil :underline t))))
+ '(hl-todo ((t (:bold t :background "#073642")))))
 
+;;;; Place for Emacs to append to
 (put 'narrow-to-region 'disabled nil)
