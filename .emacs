@@ -21,7 +21,7 @@
  '(magit-log-arguments (quote ("--graph" "--color" "--decorate")))
  '(package-selected-packages
    (quote
-    (hl-todo diminish cider olivetti htmlize ox-pandoc psc-ide-emacs psc-ide-mode psc-ide company-quickhelp shakespeare-mode projectile-ripgrep company-try-hard helm-flycheck helm-swoop outshine backup-walker backup-walket helm-xref helm-ag helm-projectile helm plantuml-mode bifocal yaml-mode seq dired-subtree ace-link pocket-mode company-web company-cabal org-brain terminal-here emmet-mode web-mode counsel ob-restclient zoom-window zeal-at-point yankpad window-numbering whole-line-or-region which-key volatile-highlights vimish-fold use-package unkillable-scratch undo-tree toml-mode switch-window swiper sr-speedbar solarized-theme smartparens shrink-whitespace rust-mode ripgrep rainbow-delimiters purescript-mode projectile org names markdown-mode magit lua-mode js2-mode intero hindent hi2 guide-key git-timemachine ghc fullframe flycheck-rust flycheck-purescript flycheck-haskell flycheck-elm flycheck-color-mode-line fireplace expand-region eno elpy elm-mode discover-my-major dired-single dired-hacks-utils dired-details+ company-restclient company-flx comment-dwim-2 clojure-mode-extra-font-locking caseformat beacon avy-zap auto-indent-mode align-cljlet aggressive-indent ag ace-mc)))
+    (hydra hl-todo diminish cider olivetti htmlize ox-pandoc psc-ide-emacs psc-ide-mode psc-ide company-quickhelp shakespeare-mode projectile-ripgrep company-try-hard helm-flycheck helm-swoop outshine backup-walker backup-walket helm-xref helm-ag helm-projectile helm plantuml-mode bifocal yaml-mode seq dired-subtree ace-link pocket-mode company-web company-cabal org-brain terminal-here emmet-mode web-mode counsel ob-restclient zoom-window zeal-at-point yankpad window-numbering whole-line-or-region which-key volatile-highlights vimish-fold use-package unkillable-scratch undo-tree toml-mode switch-window swiper sr-speedbar solarized-theme smartparens shrink-whitespace rust-mode ripgrep rainbow-delimiters purescript-mode projectile org names markdown-mode magit lua-mode js2-mode intero hindent hi2 guide-key git-timemachine ghc fullframe flycheck-rust flycheck-purescript flycheck-haskell flycheck-elm flycheck-color-mode-line fireplace expand-region eno elpy elm-mode discover-my-major dired-single dired-hacks-utils dired-details+ company-restclient company-flx comment-dwim-2 clojure-mode-extra-font-locking caseformat beacon avy-zap auto-indent-mode align-cljlet aggressive-indent ag ace-mc)))
  '(safe-local-variable-values (quote ((my/suppress-intero . t) (create-lockfiles)))))
 
 (defvar my/suppress-intero nil
@@ -82,6 +82,7 @@
 ;;;;; Cursor look
 (blink-cursor-mode -1)
 (setq cursor-type 'bar)
+(setq x-stretch-cursor t)
 
 ;;;;; hl matching parenthesis
 (show-paren-mode)
@@ -106,6 +107,25 @@
 
 (my/set-font my/font-anonymous)
 
+;;;; Global symbol prettify
+(global-prettify-symbols-mode t)
+
+;;;; Hydra
+(use-package hydra
+  :ensure t)
+
+;;;; Which key
+(use-package which-key
+  :ensure t
+
+  :diminish which-key-mode
+
+  :config
+  (setq which-key-popup-type 'side-window
+        which-key-side-window-location 'bottom
+        which-key-side-window-max-height 0.25)
+  (which-key-mode))
+
 ;;;; Global text scale
 ;; source: https://www.emacswiki.org/emacs/GlobalTextScaleMode
 (define-globalized-minor-mode
@@ -120,13 +140,24 @@
   (setq-default text-scale-mode-amount (+ text-scale-mode-amount inc))
   (global-text-scale-mode 1))
 
-(bind-keys
- ("C-x C-+" . (lambda () (interactive) (global-text-scale-adjust 1)))
- ("C-x C-=" . (lambda () (interactive) (global-text-scale-adjust 1)))
- ("C-x C--" . (lambda () (interactive) (global-text-scale-adjust -1)))
- ("C-x C-0" . (lambda () (interactive)
-                (global-text-scale-adjust (- text-scale-mode-amount))
-                (global-text-scale-mode -1))))
+(defun global-text-scale/zoom-in ()
+  (interactive)
+  (global-text-scale-adjust 1))
+
+(defun global-text-scale/zoom-out ()
+  (interactive)
+  (global-text-scale-adjust -1))
+
+(defun global-text-scale/reset ()
+  (interactive)
+  (global-text-scale-adjust (- text-scale-mode-amount))
+  (global-text-scale-mode -1))
+
+(defhydra hydra-global-text-scale (global-map "C-c z")
+  "Zoom"
+  ("=" global-text-scale/zoom-in "Zoom in")
+  ("-" global-text-scale/zoom-out "Zoom out")
+  ("0" global-text-scale/reset "Reset zoom"))
 
 ;;;; Theme
 (use-package solarized-theme
@@ -139,9 +170,9 @@
 (use-package diminish
   :ensure t
   :config
-  (diminish 'eldoc-mode "§"))
+  (diminish 'eldoc-mode))
 
-;;;; Window-number
+;;;; Window numbering and switching
 (use-package window-numbering
   :ensure t
 
@@ -159,16 +190,6 @@
 
   :bind
   ("C-x o" . switch-window))
-
-;;;; Zoom window
-(use-package zoom-window
-  :ensure t
-
-  :bind
-  ("C-x C-z" . zoom-window-zoom)
-
-  :config
-  (setq zoom-window-mode-line-color "DarkGreen"))
 
 ;;;; Fullframe
 (use-package fullframe
@@ -211,17 +232,6 @@
   :config
   (volatile-highlights-mode 1))
 
-;;;; Which key
-(use-package which-key
-  :ensure t
-
-  :diminish which-key-mode
-
-  :config
-  (setq which-key-popup-type 'side-window
-        which-key-side-window-location 'bottom
-        which-key-side-window-max-height 0.25)
-  (which-key-mode))
 ;;;; Rainbow delimiters
 (use-package rainbow-delimiters
   :ensure t
@@ -542,7 +552,8 @@
 
   :bind
   (("M-]" . er/expand-region)
-   ("M-[" . er/contract-region)))
+   ("M-[" . er/contract-region)
+   ))
 
 ;;;; Case formatting
 (use-package caseformat
@@ -949,6 +960,8 @@
 
     :config
     (unbind-key "M-." intero-mode-map)
+    (unbind-key "C-c <tab>" intero-mode-map)
+
     (defvar my/suppress-intero nil "Suppresses an intero-mode")
     (add-hook 'haskell-mode-hook
               (lambda ()
@@ -1405,7 +1418,13 @@
 
   :defer 15
 
-  :diminish yas-minor-mode
+  :init
+  (add-hook 'prog-mode-hook 'yas-minor-mode)
+  (add-hook 'html-mode-hook 'yas-minor-mode)
+
+  :commands (yas-minor-mode)
+
+  :diminish (yas-minor-mode . "Ⓨ")
 
   :bind
   (:map
@@ -1421,8 +1440,6 @@
   (yas-reload-all)
   (when (file-exists-p "~/.emacs.d/snippets")
     (add-to-list 'yas/snippet-dirs "~/.emacs.d/snippets"))
-  (add-hook 'prog-mode-hook 'yas-minor-mode)
-  (add-hook 'html-mode-hook 'yas-minor-mode)
   )
 
 ;;;; Grep'likes
@@ -1682,6 +1699,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(hl-todo ((t (:bold t :background "#073642"))))
  '(org-level-1 ((t (:inherit variable-pitch :foreground "#cb4b16" :height 1.0))))
  '(org-level-2 ((t (:inherit variable-pitch :foreground "#859900" :height 1.0))))
  '(org-level-3 ((t (:inherit variable-pitch :foreground "#268bd2" :height 1.0))))
@@ -1694,8 +1712,7 @@
  '(vimish-fold-mouse-face ((t (:box (:line-width 1 :color "yellow")))))
  '(vimish-fold-overlay ((t (:box (:line-width 1 :color "dim gray")))))
  '(whitespace-line ((t (:background "moccasin" :underline (:color foreground-color :style wave)))))
- '(whitespace-tab ((t (:foreground "brown" :inverse-video nil :underline t))))
- '(hl-todo ((t (:bold t :background "#073642")))))
+ '(whitespace-tab ((t (:foreground "brown" :inverse-video nil :underline t)))))
 
 ;;;; Place for Emacs to append to
 (put 'narrow-to-region 'disabled nil)
