@@ -112,6 +112,9 @@ bindsym $mod+m exec --no-startup-id "echo 'toggle\nnext\nprev\nplay\nstop' | rof
 # PulseAudio Volume
 bindsym $mod+Shift+v exec --no-startup-id "~/.i3/sound_volume"
 
+# Toggle trackpoint & trackpad
+bindsym $mod+F5 exec --no-startup-id "~/.i3/toggle_trackpoint"
+
 # keepassx
 bindsym $mod+x exec --no-startup-id "keepassx"
 

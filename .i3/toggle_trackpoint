@@ -1,0 +1,18 @@
+#!/bin/sh
+
+set -e
+
+export STICK="$(xinput list --name-only | grep TrackPoint)"
+export PAD="$(xinput list --name-only | grep TouchPad)"
+export PROP="$(xinput list-props "$STICK" | grep -e ".*Enabled.*1$")"
+
+if [ -z "$PROP" ]; then
+    xinput enable "$STICK"
+    xinput disable "$PAD"
+    notify-send "Use TrackPoint, Luke!"
+else
+    xinput disable "$STICK"
+    xinput enable "$PAD"
+    notify-send "Use TouchPad, Luke!"
+fi
+
