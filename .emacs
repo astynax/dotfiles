@@ -316,11 +316,16 @@
 (use-package hl-todo
   :ensure t
 
+  :init
+  (global-hl-todo-mode)
+
+  :commands
+  (global-hl-todo-mode)
+
   :bind
   ("M-s t" . hl-todo-occur)
 
   :config
-  (global-hl-todo-mode)
 
   (setq
    hl-todo-keyword-faces
@@ -886,10 +891,6 @@
   (use-package clojure-mode-extra-font-locking
     :ensure t)
 
-  ;; TODO: remove when clj-refactor will be fixed!
-  (use-package seq
-    :ensure t)
-
   (use-package cider
     :ensure t
     :config
@@ -909,7 +910,18 @@
   (add-to-list
    'auto-mode-alist
    '("routes\\'" . haskell-yesod-parse-routes-mode))
-  (defvar my/haskell-map (make-keymap))
+
+  :bind
+  (:map
+   haskell-mode-map
+   :prefix "C-c SPC"
+   :prefix-map my/haskell-map
+
+   ("v" . haskell-cabal-visit-file)
+   ("m" . haskell-auto-insert-module-template)
+   ("I" . haskell-sort-imports)
+   ("y" . haskell-hayoo)
+   ("SPC" . haskell-hide-toggle))
 
   :config
   (add-hook
@@ -926,31 +938,26 @@
      (yas-minor-mode nil) ;; TODO: make possible to disable only autofill-mode
      ))
 
-  (bind-keys
-   :map haskell-mode-map
-   :prefix "C-c SPC"
-   :prefix-map my/haskell-map
-
-   :map my/haskell-map
-   ("v" . haskell-cabal-visit-file)
-   ("m" . haskell-auto-insert-module-template)
-   ("I" . haskell-sort-imports)
-   ("y" . haskell-hayoo)
-   ("SPC" . haskell-hide-toggle))
-
   (use-package hi2
     :ensure t
 
     :diminish hi2-mode
 
+    :bind
+    (:map
+     hi2-mode-map
+     ("<tab>" . hi2-indent-line))
+
     :config
-    (bind-key "<tab>" 'hi2-indent-line hi2-mode-map))
+    (setq hi2-layout-offset 2
+          hi2-left-offset 2
+          hi2-where-post-offset 2))
 
   (use-package intero
     :ensure t
     :demand
 
-    :diminish intero-mode
+    :diminish (intero-mode . "ⓘ")
 
     :bind
     (:map
@@ -963,17 +970,19 @@
     (unbind-key "C-c <tab>" intero-mode-map)
 
     (defvar my/suppress-intero nil "Suppresses an intero-mode")
-    (add-hook 'haskell-mode-hook
-              (lambda ()
-                (add-hook 'hack-local-variables-hook
-                          (lambda ()
-                            (if my/suppress-intero
-                                (setq flycheck-checker 'haskell-stack-ghc)
-                              (intero-mode)
-                              (when my/haskell-check-using-stack-ghc
-                                (setq flycheck-checker 'haskell-stack-ghc)))
-                            (flycheck-mode))
-                          nil t))))
+    (add-hook
+     'haskell-mode-hook
+     (lambda ()
+       (add-hook
+        'hack-local-variables-hook
+        (lambda ()
+          (if my/suppress-intero
+              (setq flycheck-checker 'haskell-stack-ghc)
+            (intero-mode)
+            (when my/haskell-check-using-stack-ghc
+              (setq flycheck-checker 'haskell-stack-ghc)))
+          (flycheck-mode))
+        nil t))))
 
   (use-package hindent
     :if (file-exists-p "~/.software/hindent/elisp")
@@ -1024,11 +1033,6 @@
     (auto-indent-mode -1)
     (setq indent-line-function (lambda () 'noindent)
           electric-indent-inhibit 1))
-
-  (setq hi2-layout-offset 2
-        hi2-left-offset 2
-        hi2-where-post-offset 2)
-
   (add-hook 'haskell-mode-hook 'my/boot-haskell)
 
   ;; hemmet
@@ -1222,7 +1226,9 @@
   :config
   (use-package psc-ide
     :ensure t
+
     :diminish psc-ide-mode
+
     :config
     (defun my/purescript-mode-hook ()
       (psc-ide-mode)
@@ -1347,10 +1353,8 @@
   (use-package company-try-hard
     :ensure t
 
-    :commands company-try-hard
-
     :bind
-    ("C-c M-/" . company-try-hard)
+    ("C-c M-/" . company-try-hard)  ;; FIXME: return back eventually
     (:map
      company-active-map
      ("C-c M-/" . company-try-hard)))
@@ -1658,6 +1662,11 @@
   :ensure t
 
   :diminish outline-minor-mode
+
+  :bind
+  (:map
+   outline-minor-mode-map
+   ("M-i" . outline-cycle))
 
   :init
   (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
