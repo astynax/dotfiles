@@ -21,8 +21,14 @@
  '(magit-log-arguments (quote ("--graph" "--color" "--decorate")))
  '(package-selected-packages
    (quote
-    (hydra hl-todo diminish cider olivetti htmlize ox-pandoc psc-ide-emacs psc-ide-mode psc-ide company-quickhelp shakespeare-mode projectile-ripgrep company-try-hard helm-flycheck helm-swoop outshine backup-walker backup-walket helm-xref helm-ag helm-projectile helm plantuml-mode bifocal yaml-mode seq dired-subtree ace-link pocket-mode company-web company-cabal org-brain terminal-here emmet-mode web-mode counsel ob-restclient zoom-window zeal-at-point yankpad window-numbering whole-line-or-region which-key volatile-highlights vimish-fold use-package unkillable-scratch undo-tree toml-mode switch-window swiper sr-speedbar solarized-theme smartparens shrink-whitespace rust-mode ripgrep rainbow-delimiters purescript-mode projectile org names markdown-mode magit lua-mode js2-mode intero hindent hi2 guide-key git-timemachine ghc fullframe flycheck-rust flycheck-purescript flycheck-haskell flycheck-elm flycheck-color-mode-line fireplace expand-region eno elpy elm-mode discover-my-major dired-single dired-hacks-utils dired-details+ company-restclient company-flx comment-dwim-2 clojure-mode-extra-font-locking caseformat beacon avy-zap auto-indent-mode align-cljlet aggressive-indent ag ace-mc)))
- '(safe-local-variable-values (quote ((my/suppress-intero . t) (create-lockfiles)))))
+    (reverse-im yasnippet-snippets hydra hl-todo diminish cider olivetti htmlize ox-pandoc psc-ide-emacs psc-ide-mode psc-ide company-quickhelp shakespeare-mode projectile-ripgrep company-try-hard helm-flycheck helm-swoop outshine backup-walker backup-walket helm-xref helm-ag helm-projectile helm plantuml-mode bifocal yaml-mode seq dired-subtree ace-link pocket-mode company-web company-cabal org-brain terminal-here emmet-mode web-mode counsel ob-restclient zoom-window zeal-at-point yankpad window-numbering whole-line-or-region which-key volatile-highlights vimish-fold use-package unkillable-scratch undo-tree toml-mode switch-window swiper sr-speedbar solarized-theme smartparens shrink-whitespace rust-mode ripgrep rainbow-delimiters purescript-mode projectile org names markdown-mode magit lua-mode js2-mode intero hindent hi2 guide-key git-timemachine ghc fullframe flycheck-rust flycheck-purescript flycheck-haskell flycheck-elm flycheck-color-mode-line fireplace expand-region eno elpy elm-mode discover-my-major dired-single dired-hacks-utils dired-details+ company-restclient company-flx comment-dwim-2 clojure-mode-extra-font-locking caseformat beacon avy-zap auto-indent-mode align-cljlet aggressive-indent ag ace-mc)))
+ '(reverse-im-input-methods (quote ("russian-computer")))
+ '(safe-local-variable-values
+   (quote
+    ((elm-format-on-save . t)
+     (haskell-stylish-on-save . t)
+     (my/suppress-intero . t)
+     (create-lockfiles)))))
 
 (defvar my/suppress-intero nil
   "Setting this to 't' will suppress 'intero-mode'")
@@ -273,10 +279,11 @@
    search-map
    ("C-o" . helm-occur-from-isearch)
 
-   :map
-   helm-map
-   ("<tab>" . helm-execute-persistent-action)
-   ("C-<tab>" . helm-select-action))
+   ;; :map
+   ;; helm-map
+   ;; ("<tab>" . helm-execute-persistent-action)
+   ;; ("C-<tab>" . helm-select-action)
+   )
 
   :config
   (require 'helm-config)
@@ -334,11 +341,19 @@
      ("NOTE" . "#2aa198"))))
 
 ;;; Behaviour
+;;;; reverse-im
+(use-package reverse-im
+  :ensure t
+  :diminish reverse-im-mode
+  :config
+  (reverse-im-activate "russian-computer"))
 ;;;; Keybindings
 ;; (bind-keys
 ;;  ("M-/" . hippie-expand))
 
 (global-unset-key (kbd "C-z"))
+
+(bind-key "C-c b" 'ibuffer)
 
 ;;;; UTF-8
 ;;(set-language-environment "UTF-8")
@@ -920,6 +935,8 @@
    ("v" . haskell-cabal-visit-file)
    ("m" . haskell-auto-insert-module-template)
    ("I" . haskell-sort-imports)
+   ("A" . haskell-align-imports)
+   ("S" . haskell-mode-stylish-buffer)
    ("y" . haskell-hayoo)
    ("SPC" . haskell-hide-toggle))
 
@@ -968,6 +985,10 @@
     :config
     (unbind-key "M-." intero-mode-map)
     (unbind-key "C-c <tab>" intero-mode-map)
+
+    (with-eval-after-load 'intero
+      (with-eval-after-load 'flycheck
+        (flycheck-add-next-checker 'intero '(warning . haskell-hlint))))
 
     (defvar my/suppress-intero nil "Suppresses an intero-mode")
     (add-hook
@@ -1081,12 +1102,14 @@
               :around
               #'my/override-flycheck-haskell-default-directory))
 
-(put 'intero-targets                   'safe-local-variable #'listp)
-(put 'flycheck-ghc-language-extensions 'safe-local-variable #'listp)
-(put 'hi2-where-post-offset            'safe-local-variable #'numberp)
-(put 'hi2-left-offset                  'safe-local-variable #'numberp)
-(put 'hi2-layout-offset                'safe-local-variable #'numberp)
-(put 'hindent-reformat-buffer-on-save  'safe-local-variable #'booleanp)
+(put 'intero-targets                     'safe-local-variable #'listp)
+(put 'flycheck-ghc-language-extensions   'safe-local-variable #'listp)
+(put 'flycheck-hlint-language-extensions 'safe-local-variable #'listp)
+(put 'hi2-where-post-offset              'safe-local-variable #'numberp)
+(put 'hi2-left-offset                    'safe-local-variable #'numberp)
+(put 'hi2-layout-offset                  'safe-local-variable #'numberp)
+(put 'hindent-reformat-buffer-on-save    'safe-local-variable #'booleanp)
+(put 'haskell-stylish-on-save            'safe-local-variable #'booleanp)
 
 ;;;; Python
 (use-package python
@@ -1441,6 +1464,9 @@
    ("TAB" . nil))
 
   :config
+  (use-package yasnippet-snippets
+    :ensure t)
+
   (yas-reload-all)
   (when (file-exists-p "~/.emacs.d/snippets")
     (add-to-list 'yas/snippet-dirs "~/.emacs.d/snippets"))
