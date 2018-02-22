@@ -124,40 +124,7 @@ if [[ -x /usr/bin/dircolors ]]; then
     LS_COLORS="$LS_COLORS*.ipynb=02;36:*.py=02;36:*.clj=02;36:*.hs=03;36:*.lhs=03;36:*.purs=03;36:*.elm=03;36:"
 fi
 
-# build-deps cleanup
-# http://www.webupd8.org/2010/10/undo-apt-get-build-dep-remove-build.html
-function aptitude-remove-dep() {
-    sudo aptitude markauto $(apt-cache showsrc "$1" | grep Build-Depends | perl -p -e 's/(?:[\[(].+?[\])]|Build-Depends:|,|\|)//g');
-}
-
-visit_efs() {
-    if [[ -z "$1" ]]; then
-        echo "Usage: cmd src [dest]"
-    else
-        if [[ -z "$2" ]]; then
-            local dest="/tmp/decrypted"
-        else
-            local dest="$2"
-        fi
-        if [[ ! -d "$dest" ]]; then
-            mkdir $dest
-        fi
-        encfs "$1" $dest && ranger $dest && fusermount -u $dest
-    fi
-}
-
-radio() {
-    mpv --no-video --audio-display=no --playlist=$HOME/Dropbox/tux_cfg/mpd_playlists/"`ls -1 $HOME/Dropbox/tux_cfg/mpd_playlists/ | percol`"
-}
-
-ghcidf () {
-    if [[ -z "$1" ]]; then
-        echo "Usage: ghcidf <file.[l]hs> [<ghcid-flags>]"
-    else
-       ghcid $2 $3 $4 $5 -c "stack exec -- ghci" --test "main" $1
-    fi
-}
-
 export NVM_DIR="$HOME/.nvm"
 [[ -s "$NVM_DIR/nvm.sh" ]] && source "$NVM_DIR/nvm.sh"
 [[ -s "$NVM_DIR/bash_completion" ]] && source "$NVM_DIR/bash_completion"
+
