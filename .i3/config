@@ -226,15 +226,21 @@ bindsym $mod+Shift+Control+e exec "i3-nagbar -t warning -m 'You pressed the exit
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
-        # These bindings trigger as soon as you enter the resize mode
-        bindsym $mod+j resize shrink width  10 px or 2 ppt 
-        bindsym $mod+l resize grow   width  10 px or 2 ppt
-        bindsym $mod+i resize shrink height 10 px or 2 ppt
-        bindsym $mod+k resize grow   height 10 px or 2 ppt
+    # resize
+    bindsym $mod+j resize shrink width  10 px or 2 ppt 
+    bindsym $mod+l resize grow   width  10 px or 2 ppt
+    bindsym $mod+i resize shrink height 10 px or 2 ppt
+    bindsym $mod+k resize grow   height 10 px or 2 ppt
 
-        # back to normal: Enter or Escape
-        bindsym Return mode "default"
-        bindsym Escape mode "default"
+    # move
+    bindsym $mod+Shift+i     move up
+    bindsym $mod+Shift+k     move down
+    bindsym $mod+Shift+j     move left
+    bindsym $mod+Shift+l     move right
+
+    # back to normal: Enter or Escape
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
 }
 bindsym $mod+r mode "resize"
 
