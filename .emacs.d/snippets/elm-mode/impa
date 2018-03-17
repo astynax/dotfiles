@@ -2,4 +2,4 @@
 # name: impa
 # expand-env: ((f (lambda (x) (or (car (last (s-split "\\." x t))) ""))))
 # --
-import ${1:m$(capitalize yas-text)} as ${1:$(funcall f yas-text)}${3: exposing (${2:${1:$(funcall f yas-text)}})}$0
+import ${1:M$(yas-text)} as ${1:$(funcall f yas-text)}${3: exposing (${2:${1:$(funcall f yas-text)}})}$0
