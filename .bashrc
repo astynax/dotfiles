@@ -66,7 +66,7 @@ HISTFILESIZE=2000
 PROMPT_COMMAND="history -a;history -n"
 
 # don`t add to history matching cmds
-HISTIGNORE="&:ls:ll:bg:fg:exit:history:ranger:off:q[q0-9]:=[0-9]:clear:encfs*:visit_efs*"
+HISTIGNORE="&:ls:ll:bg:fg:exit:history:ranger:r:off:clear:encfs*:visit_efs*"
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
