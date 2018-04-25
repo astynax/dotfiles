@@ -21,26 +21,7 @@
  '(magit-log-arguments (quote ("--graph" "--color" "--decorate")))
  '(package-selected-packages
    (quote
-    (ace-window go-mode web-mode reverse-im yasnippet-snippets hydra hl-todo diminish cider olivetti htmlize ox-pandoc psc-ide-emacs psc-ide-mode psc-ide company-quickhelp shakespeare-mode projectile-ripgrep company-try-hard helm-flycheck helm-swoop outshine backup-walker backup-walket helm-xref helm-ag helm-projectile helm plantuml-mode bifocal yaml-mode seq dired-subtree ace-link company-web company-cabal org-brain terminal-here emmet-mode counsel ob-restclient zoom-window zeal-at-point yankpad whole-line-or-region which-key volatile-highlights vimish-fold use-package unkillable-scratch undo-tree toml-mode swiper sr-speedbar solarized-theme smartparens shrink-whitespace rust-mode ripgrep rainbow-delimiters purescript-mode projectile org names markdown-mode magit lua-mode intero hindent hi2 guide-key git-timemachine ghc fullframe flycheck-rust flycheck-purescript flycheck-haskell flycheck-elm flycheck-color-mode-line fireplace expand-region eno elpy elm-mode discover-my-major dired-single dired-hacks-utils dired-details+ company-restclient company-flx comment-dwim-2 clojure-mode-extra-font-locking caseformat beacon avy-zap auto-indent-mode align-cljlet aggressive-indent ag ace-mc)))
- '(reverse-im-input-methods (quote ("russian-computer")))
- '(safe-local-variable-values
-   (quote
-    ((elm-format-on-save . t)
-     (haskell-stylish-on-save . t)
-     (my/suppress-intero . t)
-     (create-lockfiles)))))
-
-(defvar my/suppress-intero nil
-  "Setting this to 't' will suppress 'intero-mode'")
-(put 'my/suppress-hindent              'safe-local-variable #'booleanp)
-
-(defvar my/haskell-check-using-stack-ghc nil
-  "If 't' then flycheck will use 'haskell-stack-ghc' instead of 'intero'")
-(put 'my/haskell-check-using-stack-ghc 'safe-local-variable #'booleanp)
-
-(defvar my/flycheck-haskell-prefer-cabal-path nil
-  "If 't' then flycheck will start checker at dir with .cabal-file")
-(put 'my/flycheck-haskell-prefer-cabal-path 'safe-local-variable #'booleanp)
+    (ace-window go-mode web-mode reverse-im hydra hl-todo diminish cider olivetti htmlize ox-pandoc psc-ide-emacs psc-ide-mode psc-ide company-quickhelp shakespeare-mode projectile-ripgrep company-try-hard helm-flycheck helm-swoop outshine backup-walker backup-walket helm-xref helm-ag helm-projectile helm plantuml-mode bifocal yaml-mode seq dired-subtree ace-link company-web company-cabal org-brain terminal-here emmet-mode counsel ob-restclient zoom-window zeal-at-point yankpad whole-line-or-region which-key volatile-highlights vimish-fold use-package unkillable-scratch undo-tree toml-mode swiper sr-speedbar solarized-theme smartparens shrink-whitespace rust-mode ripgrep rainbow-delimiters purescript-mode projectile org names markdown-mode magit lua-mode intero hindent hi2 guide-key git-timemachine ghc fullframe flycheck-rust flycheck-purescript flycheck-haskell flycheck-elm flycheck-color-mode-line fireplace expand-region eno elpy elm-mode discover-my-major dired-single dired-hacks-utils dired-details+ company-restclient company-flx comment-dwim-2 clojure-mode-extra-font-locking caseformat beacon avy-zap auto-indent-mode align-cljlet aggressive-indent ag ace-mc))))
 
 ;;;; Package menagement
 (require 'package)
@@ -285,8 +266,8 @@
         helm-scroll-amount 8)
 
   ;; autoresize
-  (setq helm-autoresize-max-height 0
-        helm-autoresize-min-height 30)
+  (setq helm-autoresize-max-height 30
+        helm-autoresize-min-height 0)
   (helm-autoresize-mode 1)
 
   (use-package helm-xref
@@ -333,6 +314,8 @@
 (use-package reverse-im
   :ensure t
   :diminish reverse-im-mode
+  :custom
+  (reverse-im-input-methods '("russian-computer"))
   :config
   (reverse-im-activate "russian-computer"))
 ;;;; Keybindings
@@ -389,6 +372,8 @@
 (use-package backup-walker
   :ensure t
   :commands (backup-walker-start))
+
+(put 'create-lockfiles 'safe-local-variable #'booleanp)
 
 ;;;; Misc
 (setq x-select-enable-clipboard t
@@ -842,6 +827,10 @@
   (swiper-match-face-3 ((t (:box (:line-width 1 :color "gold")))))
   (swiper-match-face-4 ((t (:box (:line-width 1 :color "yellow"))))))
 
+;;;; Bookmarks
+(put 'bookmark-default-file 'safe-local-variable #'stringp)
+(put 'bookmark-save-flag 'safe-local-variable #'numberp)
+
 ;;;; Misc
 (defadvice pop-to-mark-command (around ensure-new-position activate)
   "When popping the mark, continue popping until the cursor actually moves"
@@ -978,7 +967,6 @@
       (with-eval-after-load 'flycheck
         (flycheck-add-next-checker 'intero '(warning . haskell-hlint))))
 
-    (defvar my/suppress-intero nil "Suppresses an intero-mode")
     (add-hook
      'haskell-mode-hook
      (lambda ()
@@ -994,19 +982,10 @@
         nil t))))
 
   (use-package hindent
-    :if (file-exists-p "~/.software/hindent/elisp")
-    :load-path "~/.software/hindent/elisp"
-
     :ensure t
 
     :init
     (add-hook 'haskell-mode-hook #'hindent-mode)
-
-    :commands
-    (hindent-mode
-     hindent-reformat-buffer
-     hindent-reformat-region
-     hindent-reformat-decl)
 
     :bind
     (:map
@@ -1088,6 +1067,18 @@
   (advice-add 'flycheck-haskell--find-default-directory
               :around
               #'my/override-flycheck-haskell-default-directory))
+
+(defvar my/suppress-intero nil
+  "Setting this to 't' will suppress 'intero-mode'")
+(put 'my/suppress-intero               'safe-local-variable #'booleanp)
+
+(defvar my/haskell-check-using-stack-ghc nil
+  "If 't' then flycheck will use 'haskell-stack-ghc' instead of 'intero'")
+(put 'my/haskell-check-using-stack-ghc 'safe-local-variable #'booleanp)
+
+(defvar my/flycheck-haskell-prefer-cabal-path nil
+  "If 't' then flycheck will start checker at dir with .cabal-file")
+(put 'my/flycheck-haskell-prefer-cabal-path 'safe-local-variable #'booleanp)
 
 (put 'intero-targets                     'safe-local-variable #'listp)
 (put 'flycheck-ghc-language-extensions   'safe-local-variable #'listp)
@@ -1194,7 +1185,8 @@
    'elm-mode-hook
    (lambda ()
      (elm--find-dependency-file-path)
-     (flycheck-mode)))
+     (flycheck-mode)
+     (elm-indent-mode -1)))
 
   (bind-keys
    :map elm-mode-map
@@ -1204,6 +1196,8 @@
 
   (setq elm-indent-look-past-empty-line nil)
   )
+
+(put 'elm-format-on-save 'safe-local-variable #'booleanp)
 
 ;;;; Go
 (use-package go-mode
@@ -1531,6 +1525,9 @@
         ;; org-completion-use-ido t ;; use ido for completion
         org-outline-path-complete-in-steps nil
         org-html-postamble nil
+        org-edit-src-content-indentation 0
+        org-ellipsis "…"
+        org-src-window-setup (quote current-window)
         )
 
   (setq org-src-preserve-indentation t)
