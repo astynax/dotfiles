@@ -7,6 +7,7 @@
 
 -- colorize a prompt
 :set prompt "\ESC[32mλ> \ESC[m"
+:set prompt-cont ""
 
 -- switch to Universum
 :def uni const(return ":set -XNoImplicitPrelude\nimport Universum as U\nimport qualified Prelude")
