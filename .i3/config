@@ -50,11 +50,11 @@ set $dmenu_apps "rofi -dmenu -i -p \"App:\""
 
 ################ RULES ######################################################
 for_window [class="^Keepassx$"] floating enable
-for_window [title="^Cerebro$"] floating enable
 for_window [class="^BasicWin$"] floating enable
 for_window [class="^Tk$"] floating enable
 for_window [class="^Update-manager$"] floating disable
 for_window [class="^xbiff$"] floating enable
+for_window [class="^Lazarus-ide$"] floating enable
 
 #workspace "1" output "eDP1"
 #workspace "3" output "eDP1"
