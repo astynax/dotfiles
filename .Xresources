@@ -113,7 +113,7 @@ URxvt*color9:                  SC_orange
 URxvt*color10:                 Sb_green
 URxvt*color11:                 Sb_yellow
 URxvt*color12:                 Sb_blue
-URxvt*color13:                 Sb_violet
+URxvt*color13:                 Tango_Plum0
 URxvt*color14:                 Sb_cyan
 URxvt*color15:                 SL_base3
 
