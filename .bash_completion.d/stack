@@ -1,0 +1,15 @@
+_stack()
+{
+    local cmdline
+    local IFS=$'
+'
+    CMDLINE=(--bash-completion-index $COMP_CWORD)
+
+    for arg in ${COMP_WORDS[@]}; do
+        CMDLINE=(${CMDLINE[@]} --bash-completion-word $arg)
+    done
+
+    COMPREPLY=( $(/home/astynax/.local/bin/stack "${CMDLINE[@]}") )
+}
+
+complete -o filenames -F _stack stack

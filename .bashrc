@@ -45,12 +45,6 @@ if [[ -f /etc/bash_completion ]] && ! shopt -oq posix; then
     . /etc/bash_completion
 fi
 
-STACK_BINARY=$(which stack)
-if [[ ! -z $STACK_BINARY ]]; then
-    eval "$(stack --bash-completion-script $STACK_BINARY)"
-fi
-unset STACK_BINARY
-
 # don't put duplicate lines in the history. See bash(1) for more options
 # ... or force ignoredups and ignorespace
 HISTCONTROL=ignoreboth:erasedups
