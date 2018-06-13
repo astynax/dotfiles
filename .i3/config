@@ -55,6 +55,7 @@ for_window [class="^Tk$"] floating enable
 for_window [class="^Update-manager$"] floating disable
 for_window [class="^xbiff$"] floating enable
 for_window [class="^Lazarus-ide$"] floating enable
+for_window [class="^Steam$"] border pixel 1
 
 #workspace "1" output "eDP1"
 #workspace "3" output "eDP1"
@@ -68,10 +69,7 @@ for_window [class="^Lazarus-ide$"] floating enable
 #workspace "5:Steam" output "eDP1"
 #workspace "6:DC++" output "eDP1"
 
-assign [class="^Skype$"] "3:IM"
-assign [title="^Gitter$"] "3:IM"
 assign [class="^telegram$"] "3:IM"
-
 assign [class="^Steam$"] "5:Steam"
 
 # borders
