@@ -21,7 +21,8 @@
  '(magit-log-arguments (quote ("--graph" "--color" "--decorate")))
  '(package-selected-packages
    (quote
-    (ace-window go-mode web-mode reverse-im hydra hl-todo diminish cider olivetti htmlize ox-pandoc psc-ide-emacs psc-ide-mode psc-ide company-quickhelp shakespeare-mode projectile-ripgrep company-try-hard helm-flycheck helm-swoop outshine backup-walker backup-walket helm-xref helm-ag helm-projectile helm plantuml-mode bifocal yaml-mode seq dired-subtree ace-link company-web company-cabal org-brain terminal-here emmet-mode counsel ob-restclient zoom-window zeal-at-point yankpad whole-line-or-region which-key volatile-highlights vimish-fold use-package unkillable-scratch undo-tree toml-mode swiper sr-speedbar solarized-theme smartparens shrink-whitespace rust-mode ripgrep rainbow-delimiters purescript-mode projectile org names markdown-mode magit lua-mode intero hindent hi2 guide-key git-timemachine ghc fullframe flycheck-rust flycheck-purescript flycheck-haskell flycheck-elm flycheck-color-mode-line fireplace expand-region eno elpy elm-mode discover-my-major dired-single dired-hacks-utils dired-details+ company-restclient company-flx comment-dwim-2 clojure-mode-extra-font-locking caseformat beacon avy-zap auto-indent-mode align-cljlet aggressive-indent ag ace-mc))))
+    (nix-mode ace-window go-mode web-mode reverse-im hydra hl-todo diminish cider htmlize ox-pandoc psc-ide-emacs psc-ide-mode psc-ide company-quickhelp shakespeare-mode projectile-ripgrep company-try-hard helm-flycheck helm-swoop outshine backup-walker backup-walket helm-xref helm-ag helm-projectile helm plantuml-mode bifocal yaml-mode seq dired-subtree ace-link company-web company-cabal org-brain terminal-here emmet-mode counsel ob-restclient zoom-window zeal-at-point yankpad whole-line-or-region which-key volatile-highlights vimish-fold use-package unkillable-scratch undo-tree toml-mode swiper sr-speedbar solarized-theme smartparens shrink-whitespace rust-mode ripgrep rainbow-delimiters purescript-mode projectile org names markdown-mode magit lua-mode intero hindent hi2 guide-key git-timemachine ghc fullframe flycheck-rust flycheck-purescript flycheck-haskell flycheck-elm flycheck-color-mode-line fireplace expand-region eno elpy elm-mode discover-my-major dired-single dired-hacks-utils dired-details+ company-restclient company-flx comment-dwim-2 clojure-mode-extra-font-locking caseformat beacon avy-zap auto-indent-mode align-cljlet aggressive-indent ag ace-mc)))
+ '(safe-local-variable-values (quote ((flycheck-check-syntax-automatically (quote nil))))))
 
 ;;;; Package menagement
 (require 'package)
@@ -1277,6 +1278,12 @@
 
   :mode "\\.toml\\'")
 
+;;;; Nix
+(use-package nix-mode
+  :ensure t
+
+  :mode "\\.nix\\'")
+
 ;;; IDE
 ;;;; Autocompletion
 (use-package company
@@ -1380,6 +1387,8 @@
      flycheck-command-map
      ("l" . helm-flycheck)
      ("L" . flycheck-list-errors))))
+
+(put 'flycheck-checker 'safe-local-variable #'symbolp)
 
 ;;;; Yasnippet
 (use-package yasnippet
