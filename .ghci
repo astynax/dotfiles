@@ -12,6 +12,9 @@
 -- switch to Universum
 :def uni const(return ":set -XNoImplicitPrelude\nimport Universum as U\nimport qualified Prelude")
 
+-- do some Turtle
+:def turt const(return ":set -XOverloadedStrings\nimport Turtle\nimport qualified Data.Text as T")
+
 -- source commands from file
 :def source \fn -> return (":cmd readFile " ++ fn)
 
