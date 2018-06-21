@@ -21,7 +21,7 @@
  '(magit-log-arguments (quote ("--graph" "--color" "--decorate")))
  '(package-selected-packages
    (quote
-    (nix-mode ace-window go-mode web-mode reverse-im hydra hl-todo diminish cider htmlize ox-pandoc psc-ide-emacs psc-ide-mode psc-ide company-quickhelp shakespeare-mode projectile-ripgrep company-try-hard helm-flycheck helm-swoop outshine backup-walker backup-walket helm-xref helm-ag helm-projectile helm plantuml-mode bifocal yaml-mode seq dired-subtree ace-link company-web company-cabal org-brain terminal-here emmet-mode counsel ob-restclient zoom-window zeal-at-point yankpad whole-line-or-region which-key volatile-highlights vimish-fold use-package unkillable-scratch undo-tree toml-mode swiper sr-speedbar solarized-theme smartparens shrink-whitespace rust-mode ripgrep rainbow-delimiters purescript-mode projectile org names markdown-mode magit lua-mode intero hindent hi2 guide-key git-timemachine ghc fullframe flycheck-rust flycheck-purescript flycheck-haskell flycheck-elm flycheck-color-mode-line fireplace expand-region eno elpy elm-mode discover-my-major dired-single dired-hacks-utils dired-details+ company-restclient company-flx comment-dwim-2 clojure-mode-extra-font-locking caseformat beacon avy-zap auto-indent-mode align-cljlet aggressive-indent ag ace-mc)))
+    (org-cliplink yasnippet-snippets google-translate nix-mode ace-window go-mode web-mode reverse-im hydra hl-todo diminish cider htmlize ox-pandoc psc-ide-emacs psc-ide-mode psc-ide company-quickhelp shakespeare-mode projectile-ripgrep company-try-hard helm-flycheck helm-swoop outshine backup-walker backup-walket helm-xref helm-ag helm-projectile helm plantuml-mode bifocal yaml-mode seq dired-subtree ace-link company-web company-cabal org-brain terminal-here emmet-mode counsel ob-restclient zoom-window zeal-at-point yankpad whole-line-or-region which-key volatile-highlights vimish-fold use-package unkillable-scratch undo-tree toml-mode swiper sr-speedbar solarized-theme smartparens shrink-whitespace rust-mode ripgrep rainbow-delimiters purescript-mode projectile org names markdown-mode magit lua-mode intero hindent hi2 guide-key git-timemachine ghc fullframe flycheck-rust flycheck-purescript flycheck-haskell flycheck-elm flycheck-color-mode-line fireplace expand-region eno elpy elm-mode discover-my-major dired-single dired-hacks-utils dired-details+ company-restclient company-flx comment-dwim-2 clojure-mode-extra-font-locking caseformat beacon avy-zap auto-indent-mode align-cljlet aggressive-indent ag ace-mc)))
  '(safe-local-variable-values (quote ((flycheck-check-syntax-automatically (quote nil))))))
 
 ;;;; Package menagement
@@ -946,7 +946,11 @@
     :config
     (setq hi2-layout-offset 2
           hi2-left-offset 2
-          hi2-where-post-offset 2))
+          hi2-where-post-offset 2)
+
+    (put 'hi2-where-post-offset 'safe-local-variable #'numberp)
+    (put 'hi2-left-offset 'safe-local-variable #'numberp)
+    (put 'hi2-layout-offset 'safe-local-variable #'numberp))
 
   (use-package intero
     :ensure t
@@ -968,19 +972,7 @@
       (with-eval-after-load 'flycheck
         (flycheck-add-next-checker 'intero '(warning . haskell-hlint))))
 
-    (add-hook
-     'haskell-mode-hook
-     (lambda ()
-       (add-hook
-        'hack-local-variables-hook
-        (lambda ()
-          (if my/suppress-intero
-              (setq flycheck-checker 'haskell-stack-ghc)
-            (intero-mode)
-            (when my/haskell-check-using-stack-ghc
-              (setq flycheck-checker 'haskell-stack-ghc)))
-          (flycheck-mode))
-        nil t))))
+    (put 'intero-targets 'safe-local-variable #'listp))
 
   (use-package hindent
     :ensure t
@@ -996,7 +988,8 @@
      ("f d" . hindent-reformat-decl))
 
     :config
-    (setq-default hindent-reformat-buffer-on-save nil))
+    (setq-default hindent-reformat-buffer-on-save nil)
+    (put 'hindent-reformat-buffer-on-save 'safe-local-variable #'booleanp))
 
   (use-package company-cabal
     :ensure t
@@ -1020,7 +1013,17 @@
     ;; auto-indentation
     (hi2-mode t)
     (auto-indent-mode -1)
-    (setq indent-line-function (lambda () 'noindent)))
+    (setq indent-line-function (lambda () 'noindent))
+    ;; configure flycheck
+    (add-hook
+     'hack-local-variables-hook
+     (lambda ()
+       (when my/use-intero
+         (intero-mode))
+       (when my/use-stack-ghc
+         (setq flycheck-checker 'haskell-stack-ghc))
+       (flycheck-mode))
+     nil t))
   (add-hook 'haskell-mode-hook 'my/boot-haskell)
 
   ;; hemmet
@@ -1051,14 +1054,15 @@
           (progn
             (kill-whole-line)
             (previous-line)
-            (loop for m in methods do
-                  (let* ((name (concat (downcase m) rname))
-                         (l1 (concat name " :: Handler TypedContent"))
-                         (l2 (concat name " = error \"" name " not implemented\"")))
-                    (end-of-line)
-                    (newline)
-                    (insert l1) (newline)
-                    (insert l2) (newline))))))))
+            (loop
+             for m in methods do
+             (let* ((name (concat (downcase m) rname))
+                    (l1 (concat name " :: Handler TypedContent"))
+                    (l2 (concat name " = error \"" name " not implemented\"")))
+               (end-of-line)
+               (newline)
+               (insert l1) (newline)
+               (insert l2) (newline))))))))
 
   ;; Make flycheck to use path to .cabal-file if local var was set
   (defun my/override-flycheck-haskell-default-directory (proc &rest args)
@@ -1069,26 +1073,19 @@
               :around
               #'my/override-flycheck-haskell-default-directory))
 
-(defvar my/suppress-intero nil
-  "Setting this to 't' will suppress 'intero-mode'")
-(put 'my/suppress-intero               'safe-local-variable #'booleanp)
+(defvar my/use-intero nil "'t' = use 'intero-mode'")
+(put 'my/use-intero 'safe-local-variable #'booleanp)
 
-(defvar my/haskell-check-using-stack-ghc nil
-  "If 't' then flycheck will use 'haskell-stack-ghc' instead of 'intero'")
+(defvar my/use-stack-ghc nil "'t' = flycheck with 'haskell-stack-ghc'")
 (put 'my/haskell-check-using-stack-ghc 'safe-local-variable #'booleanp)
 
 (defvar my/flycheck-haskell-prefer-cabal-path nil
   "If 't' then flycheck will start checker at dir with .cabal-file")
 (put 'my/flycheck-haskell-prefer-cabal-path 'safe-local-variable #'booleanp)
 
-(put 'intero-targets                     'safe-local-variable #'listp)
 (put 'flycheck-ghc-language-extensions   'safe-local-variable #'listp)
 (put 'flycheck-hlint-language-extensions 'safe-local-variable #'listp)
-(put 'hi2-where-post-offset              'safe-local-variable #'numberp)
-(put 'hi2-left-offset                    'safe-local-variable #'numberp)
-(put 'hi2-layout-offset                  'safe-local-variable #'numberp)
-(put 'hindent-reformat-buffer-on-save    'safe-local-variable #'booleanp)
-(put 'haskell-stylish-on-save            'safe-local-variable #'booleanp)
+(put 'haskell-stylish-on-save 'safe-local-variable #'booleanp)
 
 ;;;; Python
 (use-package python
@@ -1462,6 +1459,8 @@
     )
   )
 (put 'projectile-tags-file-name 'safe-local-variable #'stringp)
+(put 'projectile-globally-ignored-files 'safe-local-variable #'listp)
+(put 'projectile-globally-ignored-directories 'safe-local-variable #'listp)
 
 ;;;; Git/Magit
 (use-package magit
@@ -1528,18 +1527,17 @@
 
   (add-hook 'org-mode-hook 'yas-minor-mode)
 
-  (setq org-todo-keywords '((sequence "TODO" "IN-PROGRESS" "DONE"))
-        org-enforce-todo-dependencies t
-        org-hide-leading-stars t
-        ;; org-completion-use-ido t ;; use ido for completion
-        org-outline-path-complete-in-steps nil
-        org-html-postamble nil
-        org-edit-src-content-indentation 0
-        org-ellipsis "…"
-        org-src-window-setup (quote current-window)
-        )
-
-  (setq org-src-preserve-indentation t)
+  (setq
+   org-todo-keywords '((sequence "TODO" "IN-PROGRESS" "DONE"))
+   org-enforce-todo-dependencies t
+   org-hide-leading-stars t
+   ;; org-completion-use-ido t ;; use ido for completion
+   org-outline-path-complete-in-steps nil
+   org-html-postamble nil
+   org-edit-src-content-indentation 0
+   org-ellipsis "…"
+   org-src-window-setup (quote current-window)
+   org-src-preserve-indentation t)
 
   (require 'ob-shell)
   (require 'ob-python)
@@ -1553,6 +1551,14 @@
     (org-babel-do-load-languages
      'org-babel-load-languages
      my/org-babel-langs))
+
+  (use-package org-cliplink
+    :ensure t
+
+    :bind
+    (:map
+     org-mode-map
+     ("C-c l" . org-cliplink)))
 
   (use-package org-brain
     :ensure t
