@@ -84,10 +84,11 @@ bindsym $mod+Return exec "urxvtcd"
 bindsym $mod+Shift+Return exec urxvt
 
 # some menus
-#bindsym $mod+Shift+m exec --no-startup-id "ls -1 .screenlayout/*.sh      | dmenu -fn 'Inconsolata LGC' -l 5 -p 'Screen Layout' | xargs -r sh"
-#bindsym $mod+o       exec --no-startup-id "cd Dropbox/org && ls -1 *.org | dmenu -fn 'Inconsolata LGC' -l 5 -p 'ORG'           | xargs -r emacs"
 bindsym $mod+Shift+m exec --no-startup-id "ls -1 .screenlayout/*.sh      | rofi -dmenu -p 'Screen Layout:' | xargs -r sh"
 bindsym $mod+o       exec --no-startup-id "cd Dropbox/org && ls -1 *.org | rofi -dmenu -p 'ORG:'           | xargs -r emacs"
+
+# reset output
+bindsym $mod+Control+Shift+i exec --no-startup-id "~/.screenlayout/internal.sh"
 
 # kill focused window
 bindsym $mod+Shift+c kill
@@ -134,18 +135,6 @@ bindsym $mod+Shift+i     move up
 bindsym $mod+Shift+k     move down
 bindsym $mod+Shift+j     move left
 bindsym $mod+Shift+l     move right
-
-# focus between the outputs
-bindsym $mod+Control+i     focus output up
-bindsym $mod+Control+k     focus output down
-bindsym $mod+Control+j     focus output left
-bindsym $mod+Control+l     focus output right
-
-# move between the outputs
-bindsym $mod+Shift+Control+i     move output up; focus output up
-bindsym $mod+Shift+Control+k     move output down; focus output down
-bindsym $mod+Shift+Control+j     move output left; focus output left
-bindsym $mod+Shift+Control+l     move output right; focus output right
 
 # scratchpad
 bindsym $mod+Shift+z move scratchpad

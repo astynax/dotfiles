@@ -56,6 +56,7 @@ dmenu.run({
     "move w/s to": {
         "internal": ["i3-msg", "move workspace to output eDP-1"],
         "VGA": ["i3-msg", "move workspace to output DP-2"],
+        "DP-1": ["i3-msg", "move workspace to output DP-1"],
         "HDMI": ["i3-msg", "move workspace to output HDMI-1"]
     }
 }, {
