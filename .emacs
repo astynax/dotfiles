@@ -10,109 +10,212 @@
 
 (global-set-key (kbd "M-<f12>") 'my/configure)
 
-;;;; Variables
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   (quote
-    ("d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "3625c04fa4b8a802e96922d2db3f48c9cb2f93526e1dc24ba0b400e4ee4ccd8a" "b6f42c69cf96795c75b1e79e5cd8ca62f9f9a0cb07bf11d1e0b49f97785358f1" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
- '(magit-log-arguments (quote ("--graph" "--color" "--decorate")))
- '(package-selected-packages
-   (quote
-    (csound-mode yasnippet-snippets csv-mode geiser org-cliplink google-translate nix-mode ace-window go-mode web-mode reverse-im hydra hl-todo diminish cider htmlize ox-pandoc psc-ide-emacs psc-ide-mode psc-ide company-quickhelp shakespeare-mode projectile-ripgrep company-try-hard helm-flycheck helm-swoop outshine backup-walker backup-walket helm-xref helm-ag helm-projectile helm plantuml-mode bifocal yaml-mode seq dired-subtree ace-link company-web company-cabal org-brain terminal-here emmet-mode counsel ob-restclient zoom-window zeal-at-point yankpad whole-line-or-region which-key volatile-highlights vimish-fold use-package unkillable-scratch undo-tree toml-mode swiper sr-speedbar solarized-theme smartparens shrink-whitespace rust-mode ripgrep rainbow-delimiters purescript-mode projectile org names markdown-mode magit lua-mode intero hindent hi2 guide-key git-timemachine ghc fullframe flycheck-rust flycheck-purescript flycheck-haskell flycheck-elm flycheck-color-mode-line fireplace expand-region eno elpy elm-mode discover-my-major dired-single dired-hacks-utils dired-details+ company-restclient company-flx comment-dwim-2 clojure-mode-extra-font-locking caseformat beacon avy-zap auto-indent-mode align-cljlet aggressive-indent ag ace-mc)))
- '(safe-local-variable-values (quote ((flycheck-check-syntax-automatically (quote nil))))))
+(setq debug-on-error t)
 
-;;;; Package menagement
+;;; Package menagement
 (require 'package)
-(add-to-list 'package-archives
-             '("melpa" . "https://melpa.milkbox.net/packages/") t)
-(add-to-list 'package-archives
-             '("org" . "http://orgmode.org/elpa/"))
-(add-to-list 'package-archives
-             '("elpy" . "http://jorgenschaefer.github.io/packages/"))
+(setq package-archives
+      `(,@package-archives
+        ("melpa" . "https://melpa.org/packages/")
+        ("org" . "https://orgmode.org/elpa/")
+        ("elpy" . "https://jorgenschaefer.github.io/packages/")))
 (package-initialize)
 
-;;(setq package-pinned-packages '((cider . "melpa")))
+(setq package-enable-at-startup nil)
 
-;; ensure use-package
-(if (not (package-installed-p 'use-package))
-    (progn
-      (package-refresh-contents)
-      (package-install 'use-package)))
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
 
 (eval-when-compile
   (require 'use-package))
 
-;;;; Shared keymaps
-(bind-keys
- :prefix "C-c y"
- :prefix-map my/yas-map)
+(use-package use-package
+  :ensure nil
+
+  :custom
+  (use-package-always-ensure t)
+
+  :config
+  (put 'use-package 'lisp-indent-function 1))
+
+(use-package diminish)
+(use-package bind-key)
+
+;;; Customization
+(use-package custom
+  :ensure nil
+  :custom
+  (custom-safe-themes t "Trust all custom themes..."))
+
+(use-package cus-edit
+  :ensure nil
+  :custom
+  (custom-file null-device "Don't store customizations"))
+
+;;; Emacs itself
+(use-package emacs
+  :ensure nil
+
+  :init
+  (defalias 'yes-or-no-p 'y-or-n-p)
+  (put 'narrow-to-region 'disabled nil)
+
+  :custom
+  (inhibit-startup-screen t "No startup screen")
+  (initial-scratch-message "")
+  (indicate-empty-lines t)
+  (use-dialog-box nil "Disable dialog boxes")
+  (enable-recursive-minibuffers t "Allow minibuffer commands in the minibuffer")
+  (x-select-enable-clipboard t "Use clipboard")
+  (x-select-enable-primary t "Use primary buffer")
+  (save-interprogram-paste-before-kill t)
+  (apropos-do-all t)
+  (mouse-yank-at-point t "Yank at point using mouse")
+  (resize-mini-windows t)
+  (x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
+  ;; Window
+  (tool-bar-mode nil)
+  (scroll-bar-mode nil)
+  (menu-bar-mode nil)
+  (frame-title-format "Emacs: %b")
+  ;; Cursor
+  (line-number-mode t)
+  (column-number-mode t)
+  (blink-cursor-mode nil)
+  (x-stretch-cursor t)
+  (mode-line-position '((line-number-mode ("%l" (column-number-mode ":%c")))))
+  (shift-select-mode nil "No selection with <shift>")
+  ;; Exit confirmation
+  (kill-emacs-query-functions
+   (cons (lambda () (yes-or-no-p "Really Quit Emacs? "))
+         kill-emacs-query-functions))
+
+  :config
+  (global-prettify-symbols-mode)
+  (prefer-coding-system 'utf-8))
+
+(use-package frame
+  :ensure nil
+  :bind
+  ("C-z" . nil))
+
+(use-package faces
+  :ensure nil
+  :defer t
+  :config
+  (defun my/set-font (font)
+    (set-face-attribute 'default nil :font font)
+    (setq after-make-frame-functions
+          (lambda (&optional ARGS)
+            (set-face-attribute 'default nil :font font))))
+  (my/set-font
+   (font-spec
+    :family "Anonymous Pro"
+    :width 'normal
+    :size 20)))
+
+;;; Date/Time
+(use-package time
+  :ensure nil
+
+  :custom
+  (display-time-default-load-average nil)
+  (display-time-24hr-format t)
+  (calendar-week-start-day 1)
+  (calendar-date-style 'european))
+
+;;; Files
+(use-package files
+  :ensure nil
+
+  :preface
+  (setq
+   my/backup-directory-per-session
+   (format "%sbackups/per-session" user-emacs-directory)
+
+   my/backup-directory-per-save
+   (format "%sbackups/per-save" user-emacs-directory))
+
+  (defun my/force-backup-of-buffer ()
+    (when (not buffer-backed-up)
+      (let ((backup-directory-alist
+             `((".*" . ,my/backup-directory-per-session)))
+            (kept-new-versions 3))
+        (backup-buffer)))
+    (let ((buffer-backed-up nil))
+      (backup-buffer)))
+
+  :hook
+  (before-save . my/force-backup-of-buffer)
+
+  :custom
+  (require-final-newline t)
+  ;; backup settings
+  (backup-directory-alist `((".*" . ,my/backup-directory-per-save)))
+  (backup-by-copying t)
+  (delete-old-versions t)
+  (kept-new-versions 10)
+  (kept-old-versions 0)
+  (version-control t)
+  (vc-make-backup-files t)
+  ;; autosave
+  (auto-save-default nil)
+  ;; no TABs in source
+  (indent-tabs-mode nil)
+
+  :config
+  (put 'create-lockfiles 'safe-local-variable #'booleanp))
+
+(use-package autorevert
+  :ensure nil
+  :diminish auto-revert-mode)
+
+(use-package backup-walker
+  :commands (backup-walker-start))
 
 ;;; UI
-;;;; "tweaks"
-(setq indicate-empty-lines t)
+;;;; Highlights
+(use-package paren
+  :ensure nil
+  :config
+  (show-paren-mode t))
 
-;;;;; Window title
-(setq frame-title-format "Emacs: %b")
+(use-package hl-line
+  :ensure nil
+  :config
+  (global-hl-line-mode 1))
 
-;;;;; Bars
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
-(menu-bar-mode -1)
+(use-package rainbow-delimiters
+  :hook
+  (prog-mode . rainbow-delimiters-mode))
 
-;;;;; Cursor position
-(global-hl-line-mode t)
-(line-number-mode t)
-(column-number-mode t)
+(use-package volatile-highlights
+  :diminish
 
-;;;;; Cursor look
-(blink-cursor-mode -1)
-(setq cursor-type 'bar)
-(setq x-stretch-cursor t)
-
-;;;;; hl matching parenthesis
-(show-paren-mode)
-
-;;;; Mode line
-(setq mode-line-position
-      '((line-number-mode ("%l" (column-number-mode ":%c")))))
-
-;;;; Font
-(setq
- my/font-anonymous
- (font-spec :family "Anonymous Pro"
-            :width 'normal
-            :size 20)
- my/font my/font-anonymous)
-
-(defun my/set-font (font)
-  (set-face-attribute 'default nil :font font)
-  (setq after-make-frame-functions
-        (lambda (&optional ARGS)
-          (set-face-attribute 'default nil :font font))))
-
-(my/set-font my/font-anonymous)
-
-;;;; Global symbol prettify
-(global-prettify-symbols-mode t)
+  :config
+  (volatile-highlights-mode 1))
 
 ;;;; Hydra
-(use-package hydra
-  :ensure t)
+(use-package hydra)
+
+;;;; Uniquify
+(use-package uniquify
+  :ensure nil
+
+  :custom
+  (uniquify-buffer-name-style 'forward))
 
 ;;;; Which key
 (use-package which-key
-  :ensure t
+  :diminish
 
-  :diminish which-key-mode
+  :custom
+  (which-key-popup-type 'side-window)
+  (which-key-side-window-location 'bottom)
+  (which-key-side-window-max-height 0.25)
 
   :config
-  (setq which-key-popup-type 'side-window
-        which-key-side-window-location 'bottom
-        which-key-side-window-max-height 0.25)
   (which-key-mode))
 
 ;;;; Global text scale
@@ -142,7 +245,7 @@
   (global-text-scale-adjust (- text-scale-mode-amount))
   (global-text-scale-mode -1))
 
-(defhydra hydra-global-text-scale (global-map "C-c z")
+(defhydra hydra-global-text-scale (mode-specific-map "z")
   "Zoom"
   ("=" global-text-scale/zoom-in "Zoom in")
   ("-" global-text-scale/zoom-out "Zoom out")
@@ -150,30 +253,19 @@
 
 ;;;; Theme
 (use-package solarized-theme
-  :ensure t
+  :custom
+  (solarized-distinct-fringe-background t "Make the fringe to look distinct")
 
   :config
-  (setq solarized-distinct-fringe-background t)
   (load-theme 'solarized-light))
-
-;;;; Diminish'ing
-(use-package diminish
-  :ensure t
-
-  :config
-  (diminish 'eldoc-mode))
 
 ;;;; Window switching
 (use-package ace-window
-  :ensure t
-
   :bind
   ("M-o" . ace-window))
 
 ;;;; Fullframe
 (use-package fullframe
-  :ensure t
-
   :config
   (fullframe list-packages quit-window)
   (fullframe package-list-packages quit-window)
@@ -182,124 +274,170 @@
 
 ;;;; Popup windows manupulation
 (use-package popwin
-  :ensure t
-
   :config
   (popwin-mode))
 
 ;;;; Beacon
 ;; (visualizes cursor position)
 (use-package beacon
-  :ensure t
-
-  :diminish beacon-mode
+  :diminish
 
   :bind
   ("<f11>" . beacon-blink)
 
+  :custom
+  (beacon-color "#A06600")
+
   :config
-  (beacon-mode 1)
-  (setq beacon-color "#A06600"
-        beacon-push-mark 35
-        beacon-dont-blink-commands nil))
+  (beacon-mode))
+
+;;;; iBuffer
+(use-package ibuffer
+  :ensure nil
+  :bind
+  (:map
+   mode-specific-map
+   ("b" . ibuffer)))
 
 ;; h/l some actions like a killing, yanking, pasting e.t.c.
-(use-package volatile-highlights
-  :ensure t
-
-  :diminish volatile-highlights-mode
-
-  :config
-  (volatile-highlights-mode 1))
-
-;;;; Rainbow delimiters
-(use-package rainbow-delimiters
-  :ensure t
-
-  :hook (prog-mode . rainbow-delimiters-mode))
 
 ;;;; Helm
-(use-package helm
-  :ensure t
+;; (use-package helm
+;;   :diminish
 
-  :diminish helm-mode
+;;   :init
+;;   (setq helm-command-prefix-key "C-c h")
 
-  :init
-  (setq helm-command-prefix-key "C-c h")
+;;   :bind
+;;   ("C-h a" . helm-apropos)
+;;   ("M-s o" . helm-occur)
+;;   ("M-x" . helm-M-x)
+;;   ("M-y" . helm-show-kill-ring)
+
+;;   (:map
+;;    ctl-x-map
+;;    ("b" . helm-mini)
+;;    ("C-b" . helm-buffers-list)
+;;    ("C-f" . helm-find-files))
+
+;;   (:map
+;;    helm-command-map
+;;    ("SPC" . helm-all-mark-rings))
+
+;;   (:map
+;;    minibuffer-local-map
+;;    ("C-c C-l" . helm-minibuffer-history))
+
+;;   (:map
+;;    isearch-mode-map
+;;    ("C-o" . helm-occur-from-isearch))
+
+;;   (:map
+;;    search-map
+;;    ("C-o" . helm-occur-from-isearch))
+
+;;   :custom
+;;   (helm-M-x-fuzzy-match t)
+;;   (helm-recentf-fuzzy-match t)
+;;   (helm-buffers-fuzzy-matching t)
+;;   (helm-split-window-default-side 'below)
+;;   (helm-split-window-in-side-p nil)
+;;   (helm-scroll-amount 8)
+;;   ;; autoresize
+;;   (helm-autoresize-max-height 30)
+;;   (helm-autoresize-min-height 0)
+
+;;   :config
+;;   (require 'helm-config)
+;;   (helm-mode 1)
+;;   (helm-autoresize-mode 1))
+
+;; (use-package helm-xref
+;;   :after (helm)
+
+;;   :commands (helm-xref-show-xrefs)
+
+;;   :preface
+;;   (setq xref-show-xrefs-function 'helm-xref-show-xrefs))
+
+;; (use-package helm-swoop
+;;   :after (helm)
+
+;;   :bind
+;;   (:map
+;;    helm-command-map
+;;    ("M-s s" . helm-swoop))
+
+;;   (:map
+;;    isearch-mode-map
+;;    ("M-s M-s" . helm-swoop-from-isearch)))
+
+;; (use-package swiper-helm
+;;   :after (helm)
+
+;;   :bind
+;;   (:map
+;;    helm-command-map
+;;    ("s" . swiper-helm))
+
+;;   (:map
+;;    isearch-mode-map
+;;    ("M-s s" . swiper-helm-from-isearch)))
+
+(use-package ivy
+  :demand
+
+  :diminish
+
+  :custom
+  (ivy-use-virtual-buffers t)
+  (ivy-initial-inputs-alist nil)
+  (ivy-re-builders-alist
+   '((swiper . ivy--regex-plus)
+     (t      . ivy--regex-fuzzy)))
 
   :bind
-  ("C-x b" . helm-mini)
-  ("C-x C-b" . helm-buffers-list)
-  ("C-x C-f" . helm-find-files)
-  ("C-h a" . helm-apropos)
-  ("M-s o" . helm-occur)
-  ("M-x" . helm-M-x)
-  ("M-y" . helm-show-kill-ring)
-
   (:map
-   helm-command-map
-   ("SPC" . helm-all-mark-rings))
-
-  (:map
-   minibuffer-local-map
-   ("C-c C-l" . helm-minibuffer-history))
-
-  (:map
-   isearch-mode-map
-   ("C-o" . helm-occur-from-isearch))
-
-  (:map
-   search-map
-   ("C-o" . helm-occur-from-isearch))
+   ivy-minibuffer-map
+   ("TAB" . ivy-partial))
 
   :config
-  (require 'helm-config)
-  (helm-mode 1)
+  (ivy-mode 1))
 
-  (setq helm-M-x-fuzzy-match t
-        helm-recentf-fuzzy-match t
-        helm-buffers-fuzzy-matching t
-        helm-split-window-default-side 'below
-        helm-split-window-in-side-p nil
-        helm-scroll-amount 8)
+(use-package counsel
+  :demand
 
-  ;; autoresize
-  (setq helm-autoresize-max-height 30
-        helm-autoresize-min-height 0)
-  (helm-autoresize-mode 1))
+  :diminish
 
-(use-package helm-xref
-  :ensure t
+  :config
+  (counsel-mode 1))
 
-  :after (helm)
-
-  :init
-  (setq xref-show-xrefs-function 'helm-xref-show-xrefs)
-
-  :commands (helm-xref-show-xrefs))
-
-(use-package helm-swoop
-  :ensure t
-
-  :after (helm)
-
+(use-package swiper
   :bind
-  (:map
-   helm-command-map
-   ("M-s s" . helm-swoop))
+  ("M-s s" . swiper)
 
   (:map
    isearch-mode-map
-   ("M-s M-s" . helm-swoop-from-isearch)))
+   ("M-s s" . swiper-from-isearch)))
+
+(use-package ivy-rich
+  :custom
+  (ivy-rich-path-style 'abbrev)
+
+  :config
+  (ivy-rich-mode 1))
+
+(use-package smex)
+(use-package flx)
+(use-package ivy-hydra)
+
+(use-package ivy-xref
+  :custom
+  (xref-show-xrefs-function 'ivy-xref-show-xrefs))
 
 ;;;; TODO/FIXME/etc keyword highlight
 (use-package hl-todo
-  :ensure t
-
-  :init
-
-  :commands
-  (global-hl-todo-mode)
+  :demand
 
   :bind
   ("M-s t" . hl-todo-occur)
@@ -307,161 +445,72 @@
   :custom-face
   (hl-todo ((t (:bold t :background "#073642"))))
 
-  :config
-  (setq
-   hl-todo-keyword-faces
+  :custom
+  (hl-todo-keyword-faces
    '(("TODO" . "#6c71c4")
      ("FIXME" . "#dc322f")
      ("NOTE" . "#2aa198")))
 
+  :config
   (global-hl-todo-mode))
 
 ;;; Behaviour
 ;;;; reverse-im
 (use-package reverse-im
-  :ensure t
-
-  :diminish reverse-im-mode
+  :diminish
 
   :custom
   (reverse-im-input-methods '("russian-computer"))
+  (default-input-method "russian-computer")
 
   :config
   (reverse-im-activate "russian-computer"))
-;;;; Keybindings
-(global-unset-key (kbd "C-z"))
-
-(bind-key "C-c b" 'ibuffer)
-
-;;;; Startup messages e.t.c
-(setq initial-scratch-message ""
-      inhibit-startup-screen t
-      inhibit-startup-message t)
-
-;;;; Autosaves & backup
-(setq
- auto-save-default nil
-
- auto-save-file-name-transforms
- `((".*" ,(format "%sauto-saves/\\2" user-emacs-directory) t))
-
- my/backup-directory-per-session
- (format "%sbackups/per-session" user-emacs-directory)
-
- my/backup-directory-per-save
- (format "%sbackups/per-save" user-emacs-directory)
-
- backup-directory-alist
- `((".*" . ,my/backup-directory-per-save))
-
- backup-by-copying t
- kept-new-versions 10
- kept-old-versions 0
- delete-old-versions t
- version-control t
- vc-make-backup-files t)
-
-(defun my/force-backup-of-buffer ()
-  (when (not buffer-backed-up)
-    (let ((backup-directory-alist `((".*" . ,my/backup-directory-per-session)))
-          (kept-new-versions 3))
-      (backup-buffer)))
-  (let ((buffer-backed-up nil))
-    (backup-buffer)))
-
-(add-hook 'before-save-hook  'my/force-backup-of-buffer)
-
-(use-package backup-walker
-  :ensure t
-
-  :commands (backup-walker-start))
-
-(put 'create-lockfiles 'safe-local-variable #'booleanp)
-
-;;;; Misc
-(setq x-select-enable-clipboard t
-      x-select-enable-primary t
-      save-interprogram-paste-before-kill t
-      apropos-do-all t
-      mouse-yank-at-point t)
-
-;; No TABs in source
-(setq-default indent-tabs-mode nil)
-
-;; short "y/n" messages
-(defalias 'yes-or-no-p 'y-or-n-p)
-
-;; UTF-8
-(prefer-coding-system 'utf-8)
-(setq default-input-method "russian-computer")
-(when (display-graphic-p)
-  (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
-
-(require 'uniquify)
-
-;; No Shift-selection!
-(setq shift-select-mode nil)
-
-;; Exit confirmation
-(setq kill-emacs-query-functions
-      (cons (lambda () (yes-or-no-p "Really Quit Emacs? "))
-            kill-emacs-query-functions))
-
-(setq resize-mini-windows t)
-
-(setq calendar-week-start-day 1
-      calendar-date-style 'european)
 
 ;;;; Scratch
 (use-package unkillable-scratch
-  :ensure t
+  :preface
+  (defun my/switch-to-scratch ()
+    (interactive)
+    (switch-to-buffer "*scratch*"))
+
+  :bind
+  ("M-<f11>" . my/switch-to-scratch)
 
   :config
-  (unkillable-scratch 1))
-
-(defun my/switch-to-scratch ()
-  (interactive)
-  (switch-to-buffer "*scratch*"))
-
-(bind-key "M-<f11>" #'my/switch-to-scratch)
+  (unkillable-scratch))
 
 ;;;; Client/server
 (use-package server
-  :ensure t
-
   :config
   (unless (server-running-p)
     (server-start)))
 
 ;;;; Dired
-(put 'dired-find-alternate-file 'disabled nil)
+(use-package dired
+  :ensure nil
 
-(require 'dired)
-(require 'dired-x)
+  :custom
+  (dired-omit-files "^\\..*$")
+  (dired-recursive-deletes 'top)
+  (dired-listing-switches "-al --group-directories-first")
 
-(add-hook 'dired-load-hook
-          (lambda ()
-            (load "dired-x")
-            (setq dired-omit-files "^\\..*$")
-            (add-hook 'dired-mode-hook
-                      (lambda () (dired-omit-mode)))))
-
-(setq dired-recursive-deletes 'top
-      dired-listing-switches "-al --group-directories-first")
-
-(use-package dired-single
-  :ensure t)
-
-(use-package dired-details+
-  :ensure t
+  :hook
+  (dired . dired-omit-mode)
 
   :config
-  (setq dired-details-initially-hide nil
-        dired-details-propagate-flag nil))
+  (put 'dired-find-alternate-file 'disabled nil))
+
+(use-package dired-x
+  :ensure nil)
+
+(use-package dired-single)
+
+(use-package dired-details+
+  :custom
+  (dired-details-initially-hide nil)
+  (dired-details-propagate-flag nil))
 
 (use-package dired-subtree
-  :ensure t
-
   :bind
   (:map
    dired-mode-map
@@ -474,120 +523,93 @@
    ("<tab>" . dired-subtree-cycle)))
 
 ;;; Editing
-;;;; Misc
-(electric-pair-mode t)
+;;;; Electric
+(use-package electric
+  :hook
+  (prog-mode . electric-pair-local-mode))
 
 ;;;; Whole line or region
 (use-package whole-line-or-region
-  :ensure t
-
   :diminish whole-line-or-region-local-mode
 
   :config
-  (whole-line-or-region-mode t))
+  (whole-line-or-region-mode))
 
 ;;;; Whitespaces
 (use-package whitespace
-  :ensure t
+  :ensure nil
 
-  :diminish whitespace-mode
+  :diminish
+
+  :preface
+  (defun my/whitespace-mode ()
+    "whitespace mode for prog buffers"
+    (setq-local require-final-newline t)
+    (setq-local next-line-add-newlines nil)
+    (whitespace-mode t)
+    (toggle-truncate-lines t)
+    ;; trim triling spaces on save
+    (add-hook 'before-save-hook 'delete-trailing-whitespace t t))
+
+  :hook
+  (prog-mode . my/whitespace-mode)
 
   :custom-face
   (whitespace-line ((t (:background "moccasin" :underline (:color foreground-color :style wave)))))
   (whitespace-tab ((t (:foreground "brown" :inverse-video nil :underline t))))
 
-  :config
-  (setq
-   whitespace-style '(face lines-tail trailing tab-mark)
-   whitespace-line-column 80
-   default-tab-width 4)
-
-  (defun my/whitespace-mode ()
-    "whitespace mode for prog buffers"
-    (setq require-final-newline t
-          next-line-add-newlines nil)
-    (whitespace-mode t)
-    (toggle-truncate-lines t)
-    ;; trim triling spaces on save
-    (add-hook 'before-save-hook 'delete-trailing-whitespace))
-
-  (add-hook 'prog-mode-hook #'my/whitespace-mode))
+  :custom
+  (whitespace-style '(face lines-tail trailing tab-mark))
+  (whitespace-line-column 80)
+  (default-tab-width 4))
 
 (use-package shrink-whitespace
-  :ensure t
-
-  :config
-  (bind-key "M-\\" 'shrink-whitespace))
+  :bind
+  ("M-\\" . shrink-whitespace))
 
 ;;;; Smart commenting
 (use-package comment-dwim-2
-  :ensure t
-
   :bind
   ("M-;" . comment-dwim-2))
 
 ;;;; Indentation
-;; electric indent
-(defun my/disable-electric-indent-mode ()
-  (electric-indent-mode -1))
-
-(add-hook 'after-change-major-mode-hook #'my/disable-electric-indent-mode)
-
-;; autoindent (must be loader before yasnippet!)
-(use-package auto-indent-mode
-  :ensure t
-
-  :diminish auto-indent-mode
-
-  :config
-  (setq auto-indent-key-for-end-of-line-then-newline "<M-return>"
-        auto-indent-blank-lines-on-move nil
-        auto-indent-newline-function 'newline-and-indent
-        auto-indent-on-yank-or-paste nil
-        auto-indent-indent-style 'conservative))
-
 (use-package aggressive-indent
-  :ensure t
-
-  :diminish aggressive-indent-mode
-
-  :hook
-  (emacs-lisp-mode . aggressive-indent-mode))
+  :defer t)
 
 ;;;; Expand Region
 (use-package expand-region
-  :ensure t
-
   :bind
   ("M-]" . er/expand-region)
   ("M-[" . er/contract-region))
 
 ;;;; Case formatting
 (use-package caseformat
-  :ensure t
-
   :bind
   ("M-L" . caseformat-backward))
 
 ;;;; Undo tree
 (use-package undo-tree
-  :ensure t
+  :diminish
 
-  :diminish undo-tree-mode
+  :custom
+  (undo-tree-auto-save-history t)
+  (undo-tree-history-directory-alist
+   `((".*" . ,(format "%sundo-tree-history" user-emacs-directory))))
 
   :config
-  (global-undo-tree-mode)
-  (setq undo-tree-auto-save-history t
-        undo-tree-history-directory-alist
-        `((".*" . ,(format "%sundo-tree-history" user-emacs-directory)))))
+  (global-undo-tree-mode))
 
 ;;;; SmartParens
 (use-package smartparens
-  :ensure t
-
   :diminish (smartparens-mode . "🄢")
 
+  :preface
+  (defun my/no-electric-with-startparens ()
+    "Disables electric parens with smartparens enabled"
+    (electric-pair-local-mode -1))
+
   :hook
+  (smartparens-mode . my/no-electric-with-startparens)
   (emacs-lisp-mode . smartparens-strict-mode)
   (ielm-mode . smartparens-strict-mode)
   (lisp-mode . smartparens-strict-mode)
@@ -621,8 +643,6 @@
 
 ;;;; Multiple Cursors
 (use-package multiple-cursors
-  :ensure t
-
   :bind
   ("C->" . mc/mark-next-like-this)
   ("C-<" . mc/mark-previous-like-this)
@@ -641,8 +661,6 @@
    ("SPC" . ace-mc-add-multiple-cursors)))
 
 (use-package ace-mc
-  :ensure t
-
   :after (multiple-cursors))
 
 ;;;; Spell Checking
@@ -654,8 +672,6 @@
 
 ;;;; Vim'ish folding
 (use-package vimish-fold
-  :ensure t
-
   :bind
   (:prefix
    "C-c f"
@@ -688,10 +704,19 @@
 (global-set-key [remap move-beginning-of-line]
                 'my/smarter-move-beginning-of-line)
 
+;;;; ElDoc
+(use-package eldoc
+  :ensure nil
+  :diminish)
+
 ;;; Navigation
-;;;; Avy/Ace/Eno
+;;;; Avy
 (use-package avy
-  :ensure t
+  :init
+  (define-prefix-command 'my/avy-map 'my/avy-map "Avy")
+
+  :bind-keymap
+  ("M-g SPC" . my/avy-map)
 
   :bind
   ("M-SPC" . avy-goto-char)
@@ -704,10 +729,8 @@
    search-map
    ("M-SPC" . avy-isearch))
 
-  (:prefix
-   "M-g SPC"
-   :prefix-map my/avy-map
-   :menu-name "Avy"
+  (:map
+   my/avy-map
    ("w" . avy-goto-word-or-subword-1)
    ("l" . avy-goto-line))
 
@@ -720,8 +743,6 @@
     (funcall sfa 'avy-lead-face-2 "chocolate2")))
 
 (use-package avy-zap
-  :ensure t
-
   :after (avy)
 
   :bind
@@ -733,93 +754,9 @@
    ("z" . avy-zap-to-char)
    ("Z" . avy-zap-up-to-char)))
 
-(use-package ace-link
-  :ensure t
-
+(use-package link-hint
   :bind
-  ("M-g l" . ace-link)
-
-  :config
-  (ace-link-setup-default))
-
-(use-package eno
-  :ensure t
-
-  :init
-  (define-prefix-command 'my/eno/goto 'my/eno/goto "Eno:GoTo")
-  (define-prefix-command 'my/eno/copy 'my/eno/copy "Eno:Copy")
-  (define-prefix-command 'my/eno/cut 'my/eno/cut "Eno:Cut")
-  (define-prefix-command 'my/eno/paste 'my/eno/paste "Eno:Paste")
-
-  (bind-keys
-   :prefix "C-c e"
-   :prefix-map my/eno-map
-   ("g" . my/eno/goto)
-   ("M-w" . my/eno/copy)
-   ("C-w" . my/eno/cut)
-   ("C-y" . my/eno/paste))
-
-  :bind
-  (:map
-   my/eno/goto
-   ("w" . eno-word-goto)
-   ("l" . eno-line-goto)
-   ("'" . eno-str-goto)
-   ("[" . eno-paren-goto)
-   ("s" . eno-symbol-goto))
-
-  (:map
-   my/eno/copy
-   ("w" . eno-word-copy)
-   ("l" . eno-line-copy)
-   ("t" . eno-line-copy-to)
-   ("f" . eno-line-copy-from-to)
-   ("'" . eno-str-copy)
-   ("[" . eno-paren-copy)
-   ("s" . eno-symbol-copy)
-   ("S" . eno-symbol-copy-to)
-   ("M-s" . eno-symbol-copy-from-to))
-
-  (:map
-   my/eno/cut
-   ("w" . eno-word-cut)
-   ("l" . eno-line-cut)
-   ("t" . eno-line-cut-to)
-   ("f" . eno-line-cut-from-to)
-   ("'" . eno-str-cut)
-   ("[" . eno-paren-cut)
-   ("s" . eno-symbol-cut)
-   ("S" . eno-symbol-cut-to)
-   ("M-s" . eno-symbol-cut-from-to))
-
-  (:map
-   my/eno/paste
-   ("w" . eno-word-paste)
-   ("l" . eno-line-paste)
-   ("t" . eno-line-paste-to)
-   ("f" . eno-line-paste-from-to)
-   ("'" . eno-str-paste)
-   ("[" . eno-paren-paste)
-   ("s" . eno-symbol-paste)
-   ("S" . eno-symbol-paste-to)
-   ("M-s" . eno-symbol-paste-from-to)))
-
-;;;; Swiper
-(use-package swiper
-  :ensure t
-
-  :bind
-  ("M-s s" . swiper)
-
-  (:map
-   swiper-map
-   ("M-SPC" . swiper-avy))
-
-  :custom-face
-  (swiper-match-face-1 ((t (:box (:line-width 1 :color "dark orange")))))
-  (swiper-match-face-2 ((t (:box (:line-width 1 :color "orange")))))
-  (swiper-match-face-3 ((t (:box (:line-width 1 :color "gold")))))
-  (swiper-match-face-4 ((t (:box (:line-width 1 :color "yellow"))))))
+  ("M-g l" . link-hint-open-link))
 
 ;;;; Bookmarks
 (put 'bookmark-default-file 'safe-local-variable #'stringp)
@@ -845,15 +782,18 @@
 
 ;;; Languages
 ;;;; ELisp
-(defun my/elisp-mode-hook ()
-  (eldoc-mode))
+(use-package elisp-mode
+  :ensure nil
 
-(add-hook 'emacs-lisp-mode-hook #'my/elisp-mode-hook)
+  :config
+  (add-hook 'emacs-lisp-mode-hook #'eldoc-mode)
+  (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode))
+
+;;;; Racket (Geiser)
+(use-package geiser)
 
 ;;;; Clojure
 (use-package clojure-mode
-  :ensure t
-
   :hook
   (clojure-mode . aggressive-indent-mode)
   (clojure-mode . rainbow-delimiters-mode)
@@ -886,26 +826,20 @@
     (context 2)))
 
 (use-package clojure-mode-extra-font-locking
-  :ensure t
-
   :after (clojure-mode))
 
 (use-package cider
-  :ensure t
-
   :after (clojure-mode)
 
   :hook
   (cider-repl-mode . rainbow-delimiters-mode)
   (cider-mode . rainbow-delimiters-mode)
 
-  :config
-  (setq cider-repl-result-prefix ";; => "))
+  :custom
+  (cider-repl-result-prefix ";; => "))
 
 ;;;; Haskell
 (use-package haskell-mode
-  :ensure t
-
   :diminish haskell-mode
 
   :init
@@ -997,16 +931,7 @@
                (end-of-line)
                (newline)
                (insert l1) (newline)
-               (insert l2) (newline))))))))
-
-  ;; Make flycheck to use path to .cabal-file if local var was set
-  (defun my/override-flycheck-haskell-default-directory (proc &rest args)
-    (if my/flycheck-haskell-prefer-cabal-path
-        (funcall proc 'haskell-ghc)
-      (apply proc args)))
-  (advice-add 'flycheck-haskell--find-default-directory
-              :around
-              #'my/override-flycheck-haskell-default-directory))
+               (insert l2) (newline)))))))))
 
 (use-package hi2
   :ensure t
@@ -1087,9 +1012,6 @@
 
   :after (haskell-mode))
 
-(defvar my/flycheck-haskell-prefer-cabal-path nil
-  "If 't' then flycheck will start checker at dir with .cabal-file")
-(put 'my/flycheck-haskell-prefer-cabal-path 'safe-local-variable #'booleanp)
 (put 'flycheck-ghc-language-extensions   'safe-local-variable #'listp)
 (put 'flycheck-hlint-language-extensions 'safe-local-variable #'listp)
 (put 'haskell-stylish-on-save            'safe-local-variable #'booleanp)
@@ -1202,6 +1124,7 @@
   (setq elm-indent-look-past-empty-line nil))
 
 (put 'elm-format-on-save 'safe-local-variable #'booleanp)
+(put 'elm-compile-arguments 'safe-local-variable #'listp)
 
 (use-package flycheck-elm
   :ensure t
@@ -1227,7 +1150,7 @@
   :config
   (defun my/go-mode-hook ()
     (add-hook 'before-save-hook #'gofmt-before-save)
-    (setq whitespace-style '(face lines-tail trailing))
+    (setq-local whitespace-style '(face lines-tail trailing))
     (flycheck-mode)))
 
 ;;;; PureScript
@@ -1311,7 +1234,7 @@
 (use-package company
   :ensure t
 
-  :diminish company-mode
+  :diminish
 
   :bind
   ("C-c /" . company-files)
@@ -1325,30 +1248,25 @@
    ("C-n" . company-select-next)
    ("C-p" . company-select-previous))
 
+  :custom
+  (company-tooltip-limit 20)
+  (company-begin-commands '(self-insert-command))
+  (company-selection-wrap-around t)
+  (company-show-numbers t)
+  (company-tooltip-align-annotations t)
+  (company-require-match nil)
+  (company-dabbrev-downcase nil)
+  (company-dabbrev-ignore-case nil)
+
   :config
-  (global-company-mode t)
+  (put 'company-backends 'safe-local-variable #'listp)
+  (global-company-mode t))
 
-  (add-hook
-   'prog-mode-hook
-   (lambda ()
-     "stops dabbrev to downcase variants"
-     (setq company-dabbrev-downcase nil)))
+(use-package hippie
+  :ensure nil
 
-  (setq
-   company-tooltip-limit 20
-   company-begin-commands '(self-insert-command)
-   company-selection-wrap-around t
-   company-show-numbers t
-   company-tooltip-align-annotations t
-   company-require-match nil
-   company-dabbrev-downcase nil
-   company-dabbrev-ignore-case nil)
-
-  )
-
-(put 'company-backends 'safe-local-variable #'listp)
-
-(bind-key "M-/" 'hippie-expand)
+  :bind
+  ("M-/" . hippie-expand))
 
 (use-package company-try-hard
   :ensure t
@@ -1368,7 +1286,7 @@
   :after (company)
 
   :hook
-  (company-mode company-flx-mode))
+  (company-mode . company-flx-mode))
 
 (use-package company-quickhelp
   :ensure t
@@ -1385,28 +1303,25 @@
   :config
   (company-quickhelp-mode t))
 
-;;;; Zeal-at-point
-(use-package zeal-at-point
-  :if (executable-find "zeal")
-
-  :bind
-  ("C-c d" . zeal-at-point))
-
 ;;;; Flycheck
 (use-package flycheck
   :ensure t
 
   :diminish "Ⓕ"
 
+  :preface
+  (put 'flycheck-checker 'safe-local-variable #'symbolp)
+  (add-to-list 'safe-local-variable-values
+               '(flycheck-check-syntax-automatically 'nil))
+
+  :custom
+  (flycheck-check-syntax-automatically
+   '(save mode-enabled) "Only check on save")
+
   :bind
   ("<f5>" . flycheck-buffer)
   ("<f7>" . flycheck-previous-error)
-  ("<f8>" . flycheck-next-error)
-
-  :config
-  (setq flycheck-check-syntax-automatically '(save mode-enabled)))
-
-(put 'flycheck-checker 'safe-local-variable #'symbolp)
+  ("<f8>" . flycheck-next-error))
 
 (use-package flycheck-color-mode-line
   :ensure t
@@ -1416,20 +1331,24 @@
   :hook
   (flycheck-mode . flycheck-color-mode-line-mode))
 
-(use-package helm-flycheck
-  :ensure t
+;; (use-package helm-flycheck
+;;   :ensure t
 
-  :after (flycheck)
+;;   :after (flycheck)
 
-  :bind
-  ("<f6>" . helm-flycheck)
+;;   :bind
+;;   ("<f6>" . helm-flycheck)
 
-  (:map
-   flycheck-command-map
-   ("l" . helm-flycheck)
-   ("L" . flycheck-list-errors)))
+;;   (:map
+;;    flycheck-command-map
+;;    ("l" . helm-flycheck)
+;;    ("L" . flycheck-list-errors)))
 
 ;;;; Yasnippet
+(bind-keys
+ :prefix "C-c y"
+ :prefix-map my/yas-map)
+
 (use-package yasnippet
   :ensure t
 
@@ -1465,47 +1384,42 @@
 ;; sudo apt-get install silversearcher-ag
 (use-package ag
   :if (executable-find "ag")
-
-  :ensure t
-
-  :config
-  (setq ag-highlight-search t))
+  :custom
+  (ag-highlight-search t))
 
 ;; install from github
 (use-package ripgrep
-  :if (executable-find "rg")
-
-  :ensure t)
+  :if (executable-find "rg"))
 
 ;;;; Projectile
 (use-package projectile
-  :ensure t
-
   :custom
   (projectile-keymap-prefix (kbd "C-c p"))
+  (projectile-mode-line '(:eval (format "[%s]" (projectile-project-name))))
 
   :config
-  (projectile-mode)
+  (put 'projectile-tags-file-name 'safe-local-variable #'stringp)
+  (put 'projectile-globally-ignored-files 'safe-local-variable #'listp)
+  (put 'projectile-globally-ignored-directories 'safe-local-variable #'listp)
+  (projectile-mode))
 
-  (setq projectile-mode-line
-        '(:eval (format "[%s]" (projectile-project-name)))))
+;; (use-package helm-projectile
+;;   :after (projectile)
 
-(put 'projectile-tags-file-name 'safe-local-variable #'stringp)
-(put 'projectile-globally-ignored-files 'safe-local-variable #'listp)
-(put 'projectile-globally-ignored-directories 'safe-local-variable #'listp)
+;;   :config
+;;   (helm-projectile-on))
 
-(use-package helm-projectile
-  :ensure t
+(use-package counsel-projectile
+  :after (projectile counsel ivy)
 
-  :after (projectile)
+  :custom
+  (projectile-completion-system 'ivy)
 
   :config
-  (helm-projectile-on))
+  (counsel-projectile-mode))
 
 (use-package projectile-ripgrep
   :if (package-installed-p 'ripgrep)
-
-  :ensure t
 
   :after (projectile)
 
@@ -1518,6 +1432,9 @@
 (use-package magit
   :ensure t
 
+  :custom
+  (magit-log-arguments '("--graph" "--color" "--decorate"))
+
   :bind
   ("C-x g" . magit-status))
 
@@ -1528,10 +1445,8 @@
 
 ;;;; YankPad
 (use-package yankpad
-  :ensure t
-
-  :init
-  (setq yankpad-file "~/Dropbox/org/yankpad.org")
+  :custom
+  (yankpad-file "~/Dropbox/org/yankpad.org")
 
   :bind
   (:map
@@ -1541,8 +1456,6 @@
 
 ;;;; Terminal here
 (use-package terminal-here
-  :ensure t
-
   :bind
   (:prefix
    "C-c t"
@@ -1728,8 +1641,10 @@
   (outline-minor-mode . outshine-hook-function)
   (prog-mode . outline-minor-mode)
 
+  :custom
+  (outshine-preserve-delimiter-whitespace t)
+
   :config
-  (setq outshine-preserve-delimiter-whitespace t)
   (unbind-key "C-M-i" outline-minor-mode-map))
 
 ;;; Other modes
@@ -1743,30 +1658,3 @@
  5 nil
  (lambda ()
    (setq gc-cons-threshold 1000000)))
-
-;;;; Faces
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; after this line emacs writes all the stuff itself
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(hl-todo ((t (:bold t :background "#073642"))))
- '(org-level-1 ((t (:inherit variable-pitch :foreground "#cb4b16" :height 1.0))))
- '(org-level-2 ((t (:inherit variable-pitch :foreground "#859900" :height 1.0))))
- '(org-level-3 ((t (:inherit variable-pitch :foreground "#268bd2" :height 1.0))))
- '(org-level-4 ((t (:inherit variable-pitch :foreground "#b58900" :height 1.0))))
- '(org-tag ((t (:weight normal :height 0.8))))
- '(swiper-match-face-1 ((t (:box (:line-width 1 :color "dark orange")))))
- '(swiper-match-face-2 ((t (:box (:line-width 1 :color "orange")))))
- '(swiper-match-face-3 ((t (:box (:line-width 1 :color "gold")))))
- '(swiper-match-face-4 ((t (:box (:line-width 1 :color "yellow")))))
- '(vimish-fold-mouse-face ((t (:box (:line-width 1 :color "yellow")))))
- '(vimish-fold-overlay ((t (:box (:line-width 1 :color "dim gray")))))
- '(whitespace-line ((t (:background "moccasin" :underline (:color foreground-color :style wave)))))
- '(whitespace-tab ((t (:foreground "brown" :inverse-video nil :underline t)))))
-
-;;;; Place for Emacs to append to
-(put 'narrow-to-region 'disabled nil)
