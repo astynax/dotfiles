@@ -1,3 +1,5 @@
+set $cfg_dir ~/.config/i3
+
 set $mod Mod4
 
 font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
@@ -67,10 +69,10 @@ bindsym $mod+Shift+d exec --no-startup-id i3-dmenu-desktop --dmenu=$dmenu_apps
 bindsym $mod+m exec --no-startup-id "echo 'toggle\nnext\nprev\nplay\nstop' | rofi -dmenu -p 'MPD:' | xargs mpc"
 
 # PulseAudio Volume
-bindsym $mod+Shift+v exec --no-startup-id "~/.i3/sound_volume"
+bindsym $mod+Shift+v exec --no-startup-id "$cfg_dir/sound_volume"
 
 # Toggle trackpoint & trackpad
-bindsym $mod+F5 exec --no-startup-id "~/.i3/toggle_trackpoint"
+bindsym $mod+F5 exec --no-startup-id "$cfg_dir/toggle_trackpoint"
 
 # keepassx
 bindsym $mod+x exec --no-startup-id "keepassx"
@@ -98,7 +100,7 @@ bindsym $mod+Shift+z move scratchpad
 bindsym $mod+z scratchpad show
 
 # menus
-bindsym $mod+a exec --no-startup-id "~/.i3/dmenus/i3menu.py"
+bindsym $mod+a exec --no-startup-id "$cfg_dir/dmenus/i3menu.py"
 
 # tag & jump to tag
 bindsym $mod+Shift+F1 mark '1'
@@ -199,7 +201,7 @@ bar {
     tray_output HDMI-1
     tray_output eDP-1
     tray_output DP-1
-    status_command i3status -c "$HOME/.i3/status"
+    status_command i3status -c "$cfg_dir/status"
     colors {
         # solarized
         background         #073642
