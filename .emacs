@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t-*-
 ;;; Initialization
 ;; increase GC-limit up to 100M for boot speedup
 (setq gc-cons-threshold 100000000)
@@ -174,6 +175,42 @@
 (use-package backup-walker
   :commands (backup-walker-start))
 
+;;; Dired
+(use-package dired
+  :ensure nil
+
+  :custom
+  (dired-omit-files "^\\..*$")
+  (dired-recursive-deletes 'top)
+  (dired-listing-switches "-al --group-directories-first")
+
+  :hook
+  (dired . dired-omit-mode)
+
+  :config
+  (put 'dired-find-alternate-file 'disabled nil))
+
+(use-package dired-x
+  :ensure nil)
+
+(use-package dired-single)
+
+(use-package dired-details+
+  :custom
+  (dired-details-initially-hide nil)
+  (dired-details-propagate-flag nil))
+
+(use-package dired-subtree
+  :bind
+  (:map
+   dired-mode-map
+   ("]" . dired-subtree-insert)
+   ("[" . dired-subtree-remove)
+   ("}" . dired-subtree-only-this-file)
+   ("{" . dired-subtree-only-this-directory)
+   ("M-p" . dired-subtree-up)
+   ("M-n" . dired-subtree-down)
+   ("<tab>" . dired-subtree-cycle)))
 ;;; UI
 ;;;; Highlights
 (use-package paren
@@ -301,105 +338,34 @@
 
 ;; h/l some actions like a killing, yanking, pasting e.t.c.
 
-;;;; Helm
-;; (use-package helm
-;;   :diminish
-
-;;   :init
-;;   (setq helm-command-prefix-key "C-c h")
-
-;;   :bind
-;;   ("C-h a" . helm-apropos)
-;;   ("M-s o" . helm-occur)
-;;   ("M-x" . helm-M-x)
-;;   ("M-y" . helm-show-kill-ring)
-
-;;   (:map
-;;    ctl-x-map
-;;    ("b" . helm-mini)
-;;    ("C-b" . helm-buffers-list)
-;;    ("C-f" . helm-find-files))
-
-;;   (:map
-;;    helm-command-map
-;;    ("SPC" . helm-all-mark-rings))
-
-;;   (:map
-;;    minibuffer-local-map
-;;    ("C-c C-l" . helm-minibuffer-history))
-
-;;   (:map
-;;    isearch-mode-map
-;;    ("C-o" . helm-occur-from-isearch))
-
-;;   (:map
-;;    search-map
-;;    ("C-o" . helm-occur-from-isearch))
-
-;;   :custom
-;;   (helm-M-x-fuzzy-match t)
-;;   (helm-recentf-fuzzy-match t)
-;;   (helm-buffers-fuzzy-matching t)
-;;   (helm-split-window-default-side 'below)
-;;   (helm-split-window-in-side-p nil)
-;;   (helm-scroll-amount 8)
-;;   ;; autoresize
-;;   (helm-autoresize-max-height 30)
-;;   (helm-autoresize-min-height 0)
-
-;;   :config
-;;   (require 'helm-config)
-;;   (helm-mode 1)
-;;   (helm-autoresize-mode 1))
-
-;; (use-package helm-xref
-;;   :after (helm)
-
-;;   :commands (helm-xref-show-xrefs)
-
-;;   :preface
-;;   (setq xref-show-xrefs-function 'helm-xref-show-xrefs))
-
-;; (use-package helm-swoop
-;;   :after (helm)
-
-;;   :bind
-;;   (:map
-;;    helm-command-map
-;;    ("M-s s" . helm-swoop))
-
-;;   (:map
-;;    isearch-mode-map
-;;    ("M-s M-s" . helm-swoop-from-isearch)))
-
-;; (use-package swiper-helm
-;;   :after (helm)
-
-;;   :bind
-;;   (:map
-;;    helm-command-map
-;;    ("s" . swiper-helm))
-
-;;   (:map
-;;    isearch-mode-map
-;;    ("M-s s" . swiper-helm-from-isearch)))
-
+;;;; Ivy
 (use-package ivy
   :demand
 
-  :diminish
+  :diminish ivy-mode
 
   :custom
   (ivy-use-virtual-buffers t)
   (ivy-initial-inputs-alist nil)
   (ivy-re-builders-alist
-   '((swiper . ivy--regex-plus)
-     (t      . ivy--regex-fuzzy)))
+   '((swiper           . ivy--regex-plus)
+     (counsel-git-grep . ivy--regex-plus)
+     (counsel-grep     . ivy--regex-plus)
+     (counsel-ag       . ivy--regex-plus)
+     (counsel-rg       . ivy--regex-plus)
+     (t                . ivy--regex-fuzzy)))
 
   :bind
   (:map
    ivy-minibuffer-map
    ("TAB" . ivy-partial))
+
+  (:map
+   mode-specific-map
+   (:prefix
+    "i"
+    :prefix-map my/ivy-map
+    ("r" . ivy-resume)))
 
   :config
   (ivy-mode 1))
@@ -485,44 +451,12 @@
   (unless (server-running-p)
     (server-start)))
 
-;;;; Dired
-(use-package dired
-  :ensure nil
-
-  :custom
-  (dired-omit-files "^\\..*$")
-  (dired-recursive-deletes 'top)
-  (dired-listing-switches "-al --group-directories-first")
-
-  :hook
-  (dired . dired-omit-mode)
-
-  :config
-  (put 'dired-find-alternate-file 'disabled nil))
-
-(use-package dired-x
-  :ensure nil)
-
-(use-package dired-single)
-
-(use-package dired-details+
-  :custom
-  (dired-details-initially-hide nil)
-  (dired-details-propagate-flag nil))
-
-(use-package dired-subtree
-  :bind
-  (:map
-   dired-mode-map
-   ("]" . dired-subtree-insert)
-   ("[" . dired-subtree-remove)
-   ("}" . dired-subtree-only-this-file)
-   ("{" . dired-subtree-only-this-directory)
-   ("M-p" . dired-subtree-up)
-   ("M-n" . dired-subtree-down)
-   ("<tab>" . dired-subtree-cycle)))
-
 ;;; Editing
+;;;; Subwords
+(use-package subword
+  :ensure nil
+  :diminish subword-mode)
+
 ;;;; Electric
 (use-package electric
   :hook
@@ -534,6 +468,15 @@
 
   :config
   (whole-line-or-region-mode))
+
+;;;; Indirect region editing
+(use-package edit-indirect
+  :ensure t
+
+  :bind
+  (:map
+   mode-specific-map
+   ("'" . edit-indirect-region)))
 
 ;;;; Whitespaces
 (use-package whitespace
@@ -732,15 +675,7 @@
   (:map
    my/avy-map
    ("w" . avy-goto-word-or-subword-1)
-   ("l" . avy-goto-line))
-
-  :config
-  (let ((sfa '(lambda (fc bg)
-                (set-face-attribute
-                 fc nil :background bg :foreground "white"))))
-    (funcall sfa 'avy-lead-face "chocolate4")
-    (funcall sfa 'avy-lead-face-0 "chocolate3")
-    (funcall sfa 'avy-lead-face-2 "chocolate2")))
+   ("l" . avy-goto-line)))
 
 (use-package avy-zap
   :after (avy)
@@ -865,47 +800,58 @@
    ("y" . haskell-hayoo)
    ("SPC" . haskell-hide-toggle))
 
+  (:map
+   haskell-mode-map
+   ("C-c s" . my/snakify-region)
+   ("<f9>" . my/haskell-jump-to-loc))
+
+  :hook
+  (haskell-mode . haskell-decl-scan-mode)
+  (haskell-mode . subword-mode)
+  (haskell-mode . hi2-mode)
+  (haskell-mode . eldoc-mode)
+  (haskell-mode . flycheck-mode)
+  (haskell-mode . my/boot-haskell)
+  (haskell-yesod-parse-routes-mode
+   . my/haskell-yesod-parse-routes-mode-hook)
+
   :config
   (defun my/haskell-yesod-parse-routes-mode-hook ()
-    ;; Disables the line wrapping and auto-fill-mode
+    "Disables the line wrapping and auto-fill-mode"
     (toggle-truncate-lines t))
 
-  (add-hook 'haskell-yesod-parse-routes-mode-hook
-            #'my/haskell-yesod-parse-routes-mode-hook)
+  (defun my/haskell-jump-to-loc ()
+    "Opens the location of error from primary buffer"
+    (interactive)
+    (-let (((path line col ...)
+            (split-string (gui-get-primary-selection) ":")))
+      (find-file-existing path)
+      (goto-line (string-to-number line))
+      (move-to-column (max 0 (- (string-to-number col) 1)))))
 
   (defun my/hack-locals-for-haskell ()
     (when my/use-intero
-      (intero-mode))
-    (flycheck-mode))
+      (intero-mode)))
 
   (defun my/boot-haskell ()
     "Initialize haskell stuff"
     (interactive)
-    (haskell-decl-scan-mode)
-    ;; case sensitive tags
     (setq tags-case-fold-search nil)
-    ;; docs
-    (eldoc-mode t)
-    ;; auto-indentation
-    (hi2-mode t)
-    (auto-indent-mode -1)
-    (setq indent-line-function (lambda () 'noindent))
-    ;; configure flycheck
     (add-hook 'hack-local-variables-hook
               #'my/hack-locals-for-haskell
               nil t))
-  (add-hook 'haskell-mode-hook 'my/boot-haskell)
+
+  ;; snakify
+  (defun my/snakify-region (&optional b e)
+    (interactive "r")
+    (call-process-region
+     b e "snakify" t (current-buffer) t))
 
   ;; hemmet
-  (defun my/hemmet-expand-region ()
-    (interactive)
-    (when (executable-find "hemmet")
-      (let ((f (lambda (b e)
-                 (shell-command-on-region
-                  b e "hemmet bem react-flux" t t "*hemmet error*" t))))
-        (if (region-active-p)
-            (funcall f (region-beginning) (region-end))
-          (funcall f (line-beginning-position) (line-end-position))))))
+  (defun my/hemmet-expand-region (&optional b e)
+    (interactive "r")
+    (shell-command-on-region
+     b e "hemmet bem react-flux" (current-buffer) t "*hemmet error*" t))
 
   ;; yesod handlers scaffolding
   (defun my/haskell-scaffold-yesod-handlers ()
@@ -1015,6 +961,7 @@
 (put 'flycheck-ghc-language-extensions   'safe-local-variable #'listp)
 (put 'flycheck-hlint-language-extensions 'safe-local-variable #'listp)
 (put 'haskell-stylish-on-save            'safe-local-variable #'booleanp)
+(put 'haskell-hayoo-url                  'safe-local-variable #'stringp)
 
 ;;;; Python
 (use-package python
@@ -1266,7 +1213,12 @@
   :ensure nil
 
   :bind
-  ("M-/" . hippie-expand))
+  ([remap dabbrev-expand] . hippie-expand)
+
+  :config
+  (ert--remove-from-list
+   'hippie-expand-try-functions-list
+   'try-expand-line))
 
 (use-package company-try-hard
   :ensure t
@@ -1331,19 +1283,6 @@
   :hook
   (flycheck-mode . flycheck-color-mode-line-mode))
 
-;; (use-package helm-flycheck
-;;   :ensure t
-
-;;   :after (flycheck)
-
-;;   :bind
-;;   ("<f6>" . helm-flycheck)
-
-;;   (:map
-;;    flycheck-command-map
-;;    ("l" . helm-flycheck)
-;;    ("L" . flycheck-list-errors)))
-
 ;;;; Yasnippet
 (bind-keys
  :prefix "C-c y"
@@ -1395,19 +1334,14 @@
 (use-package projectile
   :custom
   (projectile-keymap-prefix (kbd "C-c p"))
-  (projectile-mode-line '(:eval (format "[%s]" (projectile-project-name))))
+  (projectile-mode-line-function
+   (lambda () (format "[%s]" (projectile-project-name))))
 
   :config
   (put 'projectile-tags-file-name 'safe-local-variable #'stringp)
   (put 'projectile-globally-ignored-files 'safe-local-variable #'listp)
   (put 'projectile-globally-ignored-directories 'safe-local-variable #'listp)
   (projectile-mode))
-
-;; (use-package helm-projectile
-;;   :after (projectile)
-
-;;   :config
-;;   (helm-projectile-on))
 
 (use-package counsel-projectile
   :after (projectile counsel ivy)
@@ -1632,10 +1566,10 @@
 
   :diminish outline-minor-mode
 
-  :bind
-  (:map
-   outline-minor-mode-map
-   ("M-i" . outline-cycle))
+  ;; :bind
+  ;; (:map
+  ;;  outline-minor-mode-map
+  ;;  ("M-i" . outline-cycle))
 
   :hook
   (outline-minor-mode . outshine-hook-function)
@@ -1643,9 +1577,7 @@
 
   :custom
   (outshine-preserve-delimiter-whitespace t)
-
-  :config
-  (unbind-key "C-M-i" outline-minor-mode-map))
+  (outshine-cycle-emulate-tab t))
 
 ;;; Other modes
 ;;;; Fireplace
