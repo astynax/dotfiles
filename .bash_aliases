@@ -1,33 +1,23 @@
 #!/bin/bash
-#alias mp3gain_subs="for a in *; do pushd \"$a\"; mp3gain -a *.mp3; popd; done"
 
 # some more ls aliases
-alias ll='ls -AlF --color --time-style=long-iso'
-alias la='ls -A'
-alias l='ls -f1'
+alias ls='/bin/ls -Fv --color=always'
+alias ll='/bin/ls -FvlGh --color=always --time-style=long-iso'
+alias la='/bin/ls -FvA --color=always'
+alias l='/bin/ls -af1v'
 
 alias playlist-dl="youtube-dl -o '~/Downloads/youtube/%(uploader)s/%(playlist_mb_title)s/%(playlist_index)s. %(title)s.%(ext)s'"
-
-alias lsmake="grep --color=never -oP \"^\S+:\" Makefile"
 
 alias e="emacs"
 alias ec="emacsclient -nq"
 alias eq="emacs -Q"
+alias enq="emacs -Q -nw"
 
-alias psg="ps -eLF | grep"
-
-alias clbin="curl -F 'clbin=<-' https://clbin.com"
-alias termbin="nc termbin.com 9999"
+alias path='echo -e ${PATH//:/\\n}'
 
 cal() {
     ncal -bM ${1:--3}
 }
-
-htags() {
-    hasktags -e $(find `pwd` -iname '*.hs' -and \( -not -path '*.stack-work*' \) -and \( -not -name 'Setup.hs' \) -and -type f)
-}
-
-alias tldr="TLDR_COLOR_BLANK=white TLDR_COLOR_EXAMPLE=green TLDR_COLOR_COMMAND=red TLDR_COLOR_NAME=cyan TLDR_COLOR_DESCRIPTION=white tldr"
 
 xcd() {
     cd `/usr/bin/xd $*`
@@ -35,6 +25,20 @@ xcd() {
 
 gostack() {
     env PATH=$(stack path --compiler-tools-bin):$PATH debian_chroot=stacked bash
+}
+
+mcd () {
+    mkdir -p -- "$*" ; builtin cd -- "$*" ;
+}
+
+mans () {
+    man $1 | grep -iC2 --color=always $2 | less ;
+}
+
+buf () {
+    local filename=$1
+    local filetime=$(date +%Y%m%d_%H%M%S)
+    cp -a "${filename}" "${filename}_${filetime}"
 }
 
 # build-deps cleanup

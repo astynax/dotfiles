@@ -118,7 +118,3 @@ if [[ -x /usr/bin/dircolors ]]; then
     LS_COLORS="$LS_COLORS*.ipynb=02;36:*.py=02;36:*.clj=02;36:*.hs=03;36:*.lhs=03;36:*.purs=03;36:*.elm=03;36:"
 fi
 
-export NVM_DIR="$HOME/.nvm"
-[[ -s "$NVM_DIR/nvm.sh" ]] && source "$NVM_DIR/nvm.sh"
-[[ -s "$NVM_DIR/bash_completion" ]] && source "$NVM_DIR/bash_completion"
-
