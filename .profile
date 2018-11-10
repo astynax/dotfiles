@@ -15,8 +15,6 @@ fi
 # set PATH so it includes user's bin dirs
 _paths=(
     "$HOME/.software/racket/bin"
-    "$HOME/.software/go/bin"
-    "$HOME/.software/nodejs/bin"
     "$HOME/.software/ranger/scripts"
     "$HOME/lib"
     "$HOME/.cabal/bin"
@@ -49,8 +47,6 @@ fi
 # workaround for @unable connect to the bus..."
 export NO_AT_BRIDGE=1
 
-[[ -d "$HOME/.software/go" ]] && export GOROOT="$HOME/.software/go" || true
-
 # fix for ubuntu-control-center (& others?)
 if [ $XDG_CURRENT_DESKTOP="i3" ]; then
     XDG_CURRENT_DESKTOP="Unity"
@@ -66,12 +62,9 @@ if [[ -e "$NVM_DIR/nvm.sh" ]]; then
     . "$NVM_DIR/nvm.sh"  # This loads nvm
 fi
 
-# added by Nix installer
-if [[ -e "$HOME/.nix-profile/etc/profile.d/nix.sh" ]]; then
-    . "$HOME/.nix-profile/etc/profile.d/nix.sh";
-fi
-
 export PIPENV_VENV_IN_PROJECT=1
+
+if [ -e /home/astynax/.nix-profile/etc/profile.d/nix.sh ]; then . /home/astynax/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
 
 # if running bash
 if [[ -n "$BASH_VERSION" ]]; then
