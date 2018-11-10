@@ -1,3 +1,4 @@
+# base of all the scripts and configs 
 set $cfg_dir ~/.config/i3
 
 set $mod Mod4
@@ -15,6 +16,7 @@ workspace_layout tabbed
 workspace_auto_back_and_forth yes
 
 focus_follows_mouse no
+mouse_warping none
 
 ############### COLORS ######################################################
 
@@ -139,6 +141,9 @@ bindsym $mod+bracketleft focus parent
 
 # focus the child container
 bindsym $mod+bracketright focus child
+
+# focus other output
+bindsym $mod+Tab focus output right
 
 # switch to workspace
 bindsym $mod+1 workspace number 1
