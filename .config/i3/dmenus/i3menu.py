@@ -25,17 +25,18 @@ QUICKSWITCH = (
     "-nb=#202020 -nf=#7f7f7f -sb=#7fFF3f -sf=#000000 -p \"SWITCH:\""
 )
 
+SWAP_WITH = (
+    "sh", "-c", "wmfocus -p | xargs -I {} i3-msg swap container with con_id {}"
+)
+
 dmenu.run({
-    "lock": ["i3lock", "-c 000000"],
     "border": {
         "none": ["i3-msg", "border none"],
         "1 pixel": ["i3-msg", "border 1pixel"],
         "normal": ["i3-msg", "border normal"],
+        "title": ["i3-msg", "border normal 0"],
     },
-    "scratchpad": {
-        "put": ["i3-msg", "move scratchpad"],
-        "show": ["i3-msg", "scratchpad show"],
-    },
+    "swap with": SWAP_WITH,
     "run": {
         "cmd": DMENU_RUN,
         "app": DMENU_APP,
@@ -45,13 +46,6 @@ dmenu.run({
         "mark ..": ["i3-input", "-F", "mark %s", "-l", "1", "-P", "Mark: "],
         "go to ..":
         ["i3-input", "-F", "[con_mark=%s] focus", "-l", "1", "-P", "Go to: "],
-        "swap with ..":
-        ["i3-input", "-F", "swap container with mark %s",
-         "-l", "1", "-P", "Swap with: "],
-    },
-    "split": {
-        "horizontally": ["i3-msg", "split h"],
-        "vertically": ["i3-msg", "split v"],
     },
     "move w/s to": {
         "internal": ["i3-msg", "move workspace to output eDP-1"],

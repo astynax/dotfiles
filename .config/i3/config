@@ -143,7 +143,7 @@ bindsym $mod+bracketleft focus parent
 bindsym $mod+bracketright focus child
 
 # focus other output
-bindsym $mod+Tab focus output right
+bindsym $mod+Tab exec --no-startup-id wmfocus
 
 # switch to workspace
 bindsym $mod+1 workspace number 1
