@@ -11,8 +11,6 @@
 
 (global-set-key (kbd "M-<f12>") 'my/configure)
 
-(setq debug-on-error t)
-
 ;;; Package menagement
 (require 'package)
 (setq package-archives
@@ -1180,6 +1178,7 @@
 ;;;; Autocompletion
 (use-package company
   :ensure t
+  :demand
 
   :diminish
 
@@ -1329,6 +1328,8 @@
 ;; install from github
 (use-package ripgrep
   :if (executable-find "rg"))
+
+(use-package wgrep)
 
 ;;;; Projectile
 (use-package projectile
@@ -1566,10 +1567,10 @@
 
   :diminish outline-minor-mode
 
-  ;; :bind
-  ;; (:map
-  ;;  outline-minor-mode-map
-  ;;  ("M-i" . outline-cycle))
+  :bind
+  (:map
+   outline-minor-mode-map
+   ([C-tab] . outshine-cycle-buffer))
 
   :hook
   (outline-minor-mode . outshine-hook-function)
@@ -1577,7 +1578,11 @@
 
   :custom
   (outshine-preserve-delimiter-whitespace t)
-  (outshine-cycle-emulate-tab t))
+  (outshine-cycle-emulate-tab t)
+
+  :config
+  ;; unbind M-tab
+  (unbind-key "C-M-i" outline-minor-mode-map))
 
 ;;; Other modes
 ;;;; Fireplace
