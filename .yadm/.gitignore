@@ -68,3 +68,8 @@
 !/.toprc
 !/.vimrc
 !/.xxkbrc
+
+##### .generators #####
+!/.generators/
+/.generators/_build
+

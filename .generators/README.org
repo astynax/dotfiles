@@ -1,0 +1,9 @@
+#+TITLE: Dotfile generators
+
+* How to
+  #+BEGIN_SRC shell
+  $ ./Build.hs
+  #+END_SRC
+* Generators
+- ~./mkDirColors.hs~ generates ~~/.dircolors~
+
