@@ -24,11 +24,14 @@ class My(ColorScheme):
                 attr = reverse
             else:
                 attr = normal
+
             if context.empty or context.error:
                 attr |= blink
                 bg = red
+
             if context.border:
                 fg = default
+
             if context.media:
                 if context.image:
                     fg = yellow
@@ -36,53 +39,54 @@ class My(ColorScheme):
                     attr |= bold
                     fg = red
                 else:
-                    fg = magenta
+                    attr |= bold
+                    fg = yellow
+
+            if context.document:
+                attr |= bold
+                fg = cyan
+
             if context.container:
-                fg = red
+                attr |= bold
+                fg = magenta
+
             if context.directory:
-                # attr |= bold
+                attr |= bold
                 fg = blue
+
             elif context.executable and not \
                     any((context.media, context.container,
                         context.fifo, context.socket)):
                 attr |= bold
-                fg = white
+                fg = green
+
             if context.socket:
                 fg = magenta
-                # attr |= bold
+
             if context.fifo or context.device:
-                fg = yellow
-                #if context.device:
-                    # attr |= bold
-            #if context.link:
-            #    fg = context.good and cyan or magenta
+                fg = magenta
+
             if context.tag_marker and not context.selected:
-                # attr |= bold
                 if fg in (red, magenta):
                     fg = white
                 else:
                     fg = red
+                    
             if not context.selected and (context.cut or context.copied):
-                fg = green
                 attr |= bold
+                fg = green
+
             if context.main_column:
-                # if context.selected:
-                #     attr |= underline
                 if context.marked:
                     attr |= underline
-                    # fg = yellow
+
             if context.badinfo:
                 attr |= blink
-                # if attr & reverse:
-                #     bg = magenta
-                # else:
-                #     fg = magenta
 
             if context.inactive_pane:
                 fg = cyan
 
         elif context.in_titlebar:
-            # attr |= bold
             if context.hostname:
                 if context.bad:
                     attr |= blink
@@ -112,15 +116,6 @@ class My(ColorScheme):
                     fg = red
             if context.loaded:
                 bg = self.progress_bar_color
-            if context.vcsinfo:
-                fg = blue
-                attr &= ~bold
-            if context.vcscommit:
-                fg = yellow
-                attr &= ~bold
-            if context.vcsdate:
-                fg = cyan
-                attr &= ~bold
 
         if context.text:
             if context.highlight:
@@ -138,33 +133,5 @@ class My(ColorScheme):
                     fg = self.progress_bar_color
                 else:
                     bg = self.progress_bar_color
-
-        if context.vcsfile and not context.selected:
-            attr &= ~bold
-            if context.vcsconflict:
-                fg = magenta
-            elif context.vcschanged:
-                fg = red
-            elif context.vcsunknown:
-                fg = red
-            elif context.vcsstaged:
-                fg = green
-            elif context.vcssync:
-                fg = green
-            elif context.vcsignored:
-                fg = default
-
-        elif context.vcsremote and not context.selected:
-            attr &= ~bold
-            if context.vcssync or context.vcsnone:
-                fg = green
-            elif context.vcsbehind:
-                fg = red
-            elif context.vcsahead:
-                fg = blue
-            elif context.vcsdiverged:
-                fg = magenta
-            elif context.vcsunknown:
-                fg = red
 
         return fg, bg, attr
