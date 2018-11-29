@@ -3,7 +3,7 @@
 set -e
 
 export STICK="$(xinput list --name-only | grep TrackPoint)"
-export PAD="$(xinput list --name-only | grep TouchPad)"
+export PAD="$(xinput list --name-only | grep Synaptic)"
 export PROP="$(xinput list-props "$STICK" | grep -e ".*Enabled.*1$")"
 
 if [ -z "$PROP" ]; then

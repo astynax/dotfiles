@@ -27,14 +27,14 @@ order += "load"
 order += "tztime local"
 
 wireless wlp4s0 {
-        format_up = "wlan: (%quality @ %essid) %ip"
-        format_down = "wlan: down"
+        format_up = "%essid|%quality|%ip"
+        format_down = ""
 }
 
 ethernet enp0s25 {
         # if you use %speed, i3status requires root privileges
-        format_up = "eth: %ip"
-        format_down = "eth: down"
+        format_up = "%ip"
+        format_down = ""
 }
 
 battery 0 {

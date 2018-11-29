@@ -30,7 +30,7 @@ set $dmenu_run "rofi -show run"
 set $dmenu_apps "rofi -dmenu -i -p \"App:\""
 
 ################ RULES ######################################################
-for_window [class="^Keepassx$"] floating enable
+for_window [class="^Keepassx$"] floating enable border pixel 1
 for_window [class="^BasicWin$"] floating enable
 for_window [class="^Tk$"] floating enable
 for_window [class="^Update-manager$"] floating disable
@@ -42,7 +42,7 @@ assign [class="^TelegramDesktop$"] "3:IM"
 assign [class="^Steam$"] "5:Steam"
 
 # borders
-new_float normal
+new_float pixel 1
 new_window normal 0
 hide_edge_borders smart
 
