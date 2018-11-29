@@ -5,5 +5,5 @@
   $ ./Build.hs
   #+END_SRC
 * Generators
-- ~./mkDirColors.hs~ generates ~~/.dircolors~
+- ~./mkDirColors.hs~ generates ~$HOME/.dircolors~
 
