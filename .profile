@@ -66,6 +66,8 @@ export PIPENV_VENV_IN_PROJECT=1
 
 if [ -e /home/astynax/.nix-profile/etc/profile.d/nix.sh ]; then . /home/astynax/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
 
+BAT_THEME=GitHub
+
 # if running bash
 if [[ -n "$BASH_VERSION" ]]; then
     # include .bashrc if it exists
