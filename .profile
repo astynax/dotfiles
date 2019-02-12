@@ -16,7 +16,6 @@ fi
 _paths=(
     "$HOME/.software/racket/bin"
     "$HOME/.software/ranger/scripts"
-    "$HOME/lib"
     "$HOME/.cabal/bin"
     "$HOME/.cargo/bin"
     "$HOME/.local/bin"
@@ -60,6 +59,11 @@ fi
 export NVM_DIR="/home/astynax/.nvm"
 if [[ -e "$NVM_DIR/nvm.sh" ]]; then
     . "$NVM_DIR/nvm.sh"  # This loads nvm
+fi
+
+if [[ -d "$HOME/.software/gradle" ]] ; then
+    export GRADLE_PATH="$HOME/.software/gradle"
+    export PATH=$GRADLE_PATH/bin:$PATH
 fi
 
 export PIPENV_VENV_IN_PROJECT=1
