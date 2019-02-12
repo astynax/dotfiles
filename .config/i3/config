@@ -49,8 +49,7 @@ hide_edge_borders smart
 ################ BINDINGS ###################################################
 
 # start a terminal
-bindsym $mod+Return exec "urxvtcd"
-bindsym $mod+Shift+Return exec urxvt
+bindsym $mod+Return       exec i3-sensible-terminal
 
 # some menus
 bindsym $mod+Shift+m exec --no-startup-id "ls -1 .screenlayout/*.sh      | rofi -dmenu -p 'Screen Layout:' | xargs -r sh"
