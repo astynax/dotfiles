@@ -922,6 +922,7 @@
 (defvar my/use-intero nil "'t' = use 'intero-mode'")
 (put 'my/use-intero 'safe-local-variable #'booleanp)
 (put 'intero-targets 'safe-local-variable #'listp)
+(put 'haskell-hayoo-url 'safe-local-variable #'stringp)
 
 (use-package hindent
   :ensure t
@@ -970,6 +971,11 @@
   :hook
   (python-mode . my/python-mode-hook)
 
+  :bind
+  (:map
+   python-mode-map
+   ("C-c C-c" . compile))
+
   :config
   (defun my/python-enforce-indentation ()
     "Enforces python indentation to 4 spaces"
@@ -1003,7 +1009,6 @@
    elpy-modules
    '(elpy-module-company
      elpy-module-eldoc
-     elpy-module-pyvenv
      elpy-module-yasnippet
      elpy-module-sane-defaults))
 
@@ -1573,7 +1578,7 @@
    ([C-tab] . outshine-cycle-buffer))
 
   :hook
-  (outline-minor-mode . outshine-hook-function)
+  (outline-minor-mode . outshine-mode)
   (prog-mode . outline-minor-mode)
 
   :custom
