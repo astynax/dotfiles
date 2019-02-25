@@ -528,6 +528,16 @@
   :bind
   ("M-L" . caseformat-backward))
 
+(use-package string-inflection
+  :bind
+  (:prefix
+   "C-c c"
+   :prefix-map my/string-inflection-map
+   ("c". string-inflection-all-cycle)
+   ("s". string-inflection-underscore)
+   ("C". string-inflection-camelcase)
+   ("k". string-inflection-kebab-case)))
+
 ;;;; Undo tree
 (use-package undo-tree
   :diminish
@@ -603,13 +613,6 @@
 
 (use-package ace-mc
   :after (multiple-cursors))
-
-;;;; Spell Checking
-(when (executable-find "hunspell")
-  (progn
-    (setq ispell-program-name "hunspell")
-    (eval-after-load "ispell"
-      '(progn (defun ispell-get-coding-system () 'utf-8)))))
 
 ;;;; Vim'ish folding
 (use-package vimish-fold
@@ -714,6 +717,16 @@
 (advice-add #'xref-goto-xref :around #'my/do-then-quit)
 
 ;;; Languages
+;;;; LSP
+(use-package lsp-mode
+  :commands lsp)
+
+(use-package lsp-ui
+  :commands lsp-ui-mode)
+
+(use-package company-lsp
+  :commands company-lsp)
+
 ;;;; ELisp
 (use-package elisp-mode
   :ensure nil
@@ -964,63 +977,65 @@
 
 ;;;; Python
 (use-package python
-  :ensure t
+  :ensure nil
 
-  :mode ("\\.py\\'" . python-mode)
+  :mode
+  ("\\.py\\'" . python-mode)
 
   :hook
-  (python-mode . my/python-mode-hook)
+  (python-mode . lsp)
+  ;;(python-mode . my/python-mode-hook)
 
   :bind
   (:map
    python-mode-map
    ("C-c C-c" . compile))
 
-  :config
-  (defun my/python-enforce-indentation ()
-    "Enforces python indentation to 4 spaces"
-    (interactive)
-    (auto-indent-mode -1)
-    (setq indent-tabs-mode nil
-          python-indent-offset 4
-          python-indent-guess-indent-offset nil))
+  ;;:config
+  ;; (defun my/python-enforce-indentation ()
+  ;;   "Enforces python indentation to 4 spaces"
+  ;;   (interactive)
+  ;;   (auto-indent-mode -1)
+  ;;   (setq indent-tabs-mode nil
+  ;;         python-indent-offset 4
+  ;;         python-indent-guess-indent-offset nil))
 
-  (defun my/python-mode-hook ()
-    "Initialize python stuff"
-    (interactive)
-    (my/python-enforce-indentation)
-    (flycheck-mode)
-    (flycheck-select-checker 'python-pylint)))
+  ;; (defun my/python-mode-hook ()
+  ;;   "Initialize python stuff"
+  ;;   (interactive)
+  ;;   (my/python-enforce-indentation)
+  ;;   (flycheck-mode)
+  ;;   (flycheck-select-checker 'python-pylint))
+  )
 
-(use-package elpy
-  :ensure t
+;; (use-package elpy
+;;   :ensure t
 
-  :after (python)
+;;   :after (python)
 
-  :diminish elpy-mode
+;;   :diminish elpy-mode
 
-  :bind
-  (:map
-   python-mode-map
-   ("M-g j" . elpy-menu))
+;;   :bind
+;;   (:map
+;;    python-mode-map
+;;    ("M-g j" . elpy-menu))
 
-  :config
-  (setq
-   elpy-modules
-   '(elpy-module-company
-     elpy-module-eldoc
-     elpy-module-yasnippet
-     elpy-module-sane-defaults))
+;;   :config
+;;   (setq
+;;    elpy-modules
+;;    '(elpy-module-company
+;;      elpy-module-eldoc
+;;      elpy-module-yasnippet
+;;      elpy-module-sane-defaults))
 
-  (elpy-enable))
+;;   (elpy-enable))
 
 ;;;; Rust
 (use-package rust-mode
   :ensure t
 
-  :mode "\\.rs\\'"
-
-  :commands (rust-mode)
+  :mode
+  ("\\.rs\\'" . rust-mode)
 
   :config
   (add-to-list 'company-dabbrev-code-modes 'rust-mode)
@@ -1394,6 +1409,8 @@
    ("m" . yankpad-map)
    ("y" . yankpad-insert)))
 
+(put 'yankpad-file 'safe-local-variable #'stringp)
+
 ;;;; Terminal here
 (use-package terminal-here
   :bind
@@ -1420,6 +1437,31 @@
     (add-to-list 'company-backends
                  'company-restclient)))
 
+;;; Spell Checking
+(use-package ispell
+  :ensure nil
+
+  :custom
+  (ispell-program-name "hunspell")
+  (ispell-dictionary "russian")
+
+  :config
+  (defun ispell-get-coding-system () 'utf-8))
+
+(use-package flyspell
+  :ensure nil
+
+  :preface
+  (defun my/flyspell-buffer ()
+    "Ensures the flycheck-mode enabled and runs a flyspell"
+    (interactive)
+    (flycheck-mode t)
+    (flyspell-buffer))
+
+  :commands (flyspell-buffer flyspell-mode)
+
+  :bind
+  (("M-<f5>" . my/flyspell-buffer)))
 ;;; Org-mode/Outline
 ;;;; Org
 (use-package org
@@ -1431,7 +1473,7 @@
   :commands (org-mode org-capture)
 
   :bind
-  ("C-c c" . org-capture)
+  ("C-c C" . org-capture)
   ("<f12>" . my/org-open-notes-file)
 
   (:map
