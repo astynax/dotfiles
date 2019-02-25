@@ -24,7 +24,11 @@ xcd() {
 }
 
 gostack() {
-    env PATH=$(stack path --compiler-tools-bin):$PATH debian_chroot=stacked bash
+    env PATH=$(stack path --compiler-tools-bin):$PATH debian_chroot=$debian_chroot${debian_chroot:+,}stacked bash
+}
+
+goprivoxy() {
+    env HTTPS_PROXY=127.0.0.1:8118 debian_chroot=$debian_chroot${debian_chroot:+,}proxied bash
 }
 
 mcd () {
