@@ -1,6 +1,5 @@
 #!/usr/bin/env stack
 -- stack --resolver=lts-11.0 script
--- --package=relude
 -- --package=unix
 -- --package=shake
 

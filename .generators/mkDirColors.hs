@@ -1,6 +1,5 @@
 #!/usr/bin/env stack
--- stack --resolver=lts-11.0 script
--- --package=relude
+-- stack --resolver=lts-11.0 runghc --package relude
 
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
@@ -65,12 +64,14 @@ dircolors = unlines $ concat
     ..~ aBold <> fYellow
 
   , h "Documents"
-  , [".txt", ".md", ".org", ".rst", ".pdf", ".odt"]
+  , [ ".txt", ".md", ".org", ".rst", ".pdf", ".odt", ".cbr", ".cbz"
+    , ".mobi", ".epub" ]
     ..~ aBold <> fCyan
 
   , h "Sources"
   , [ ".py", ".hs", ".lhs", ".elm", ".purs", ".sh", ".bash", ".rkt"
-    , ".el", ".scm", ".rs", ".json", ".toml", ".yaml", ".rc" ]
+    , ".el", ".scm", ".rs", ".json", ".toml", ".yaml", ".yml", ".rc"
+    , ".kt", ".kts" ]
     ..~ fCyan
   ]
   where
