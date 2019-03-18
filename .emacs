@@ -14,13 +14,14 @@
 ;;; Package menagement
 (require 'package)
 (setq package-archives
-      `(,@package-archives
+      `(("gnu" . "https://elpa.gnu.org/packages/")
         ("melpa" . "https://melpa.org/packages/")
         ("org" . "https://orgmode.org/elpa/")
         ("elpy" . "https://jorgenschaefer.github.io/packages/")))
 (package-initialize)
 
-(setq package-enable-at-startup nil)
+(setq package-enable-at-startup nil
+      tls-checktrust "ask")
 
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
@@ -244,6 +245,7 @@
 ;;;; Which key
 (use-package which-key
   :diminish
+  (which-key-mode "")
 
   :custom
   (which-key-popup-type 'side-window)
@@ -517,6 +519,10 @@
 (use-package aggressive-indent
   :defer t)
 
+(use-package highlight-indentation
+  :ensure nil
+  :diminish highlight-indentation-mode)
+
 ;;;; Expand Region
 (use-package expand-region
   :bind
@@ -652,6 +658,17 @@
 (use-package eldoc
   :ensure nil
   :diminish)
+
+;;;; Visual RegExp
+(use-package visual-regexp
+  :bind
+  (:map
+   global-map
+   ([remap query-replace] . vr/query-replace))
+
+  (:map
+   my/mc-map
+   ("m" . vr/mc-mark)))
 
 ;;; Navigation
 ;;;; Avy
@@ -1171,7 +1188,10 @@
 (use-package yaml-mode
   :ensure t
 
-  :mode "\\.yaml\\'")
+  :mode "\\.ya?ml\\'"
+
+  :hook
+  (yaml-mode . highlight-indentation-mode))
 
 ;;;; TOML
 (use-package toml-mode
@@ -1193,6 +1213,14 @@
 
 ;;;; SQL
 (setq-default sql-dialect 'sql-postgres)
+
+;;;; Kotlin
+(use-package kotlin-mode
+  :mode
+  ("\\.kts?\\'" . kotlin-mode)
+
+  :hook
+  (kotlin-mode . highlight-indentation-mode))
 
 ;;; IDE
 ;;;; Autocompletion
@@ -1612,7 +1640,9 @@
 (use-package outshine
   :ensure t
 
-  :diminish outline-minor-mode
+  :diminish
+  (outline-minor-mode . "")
+  (outshine-mode . "ⓞ")
 
   :bind
   (:map
@@ -1632,6 +1662,10 @@
   (unbind-key "C-M-i" outline-minor-mode-map))
 
 ;;; Other modes
+;;;; Nov
+(use-package nov
+  :mode
+  ("\\.epub\\'" . nov-mode))
 ;;;; Fireplace
 (use-package fireplace
   :commands (fireplace))
