@@ -31,46 +31,43 @@ unset p
 unset _paths
 
 # export libs
-if [[ -d "$HOME/lib" ]] ; then
-    export LD_LIBRARY_PATH="$HOME/lib:$LD_LIBRARY_PATH"
-fi
-if [[ -d "$HOME/.local/lib" ]] ; then
-    export LD_LIBRARY_PATH="$HOME/.local/lib:$LD_LIBRARY_PATH"
-fi
-
-# Rust sources
-if [[ -d "$HOME/.rust_src/src" ]] ; then
-    export RUST_SRC_PATH="$HOME/.rust_src/src"
-fi
+#if [[ -d "$HOME/.local/lib" ]] ; then
+#    export LD_LIBRARY_PATH="$HOME/.local/lib:$LD_LIBRARY_PATH"
+#fi
 
 # workaround for @unable connect to the bus..."
 export NO_AT_BRIDGE=1
 
 # fix for ubuntu-control-center (& others?)
-if [ $XDG_CURRENT_DESKTOP="i3" ]; then
+if [[ $XDG_CURRENT_DESKTOP="i3" ]]; then
     XDG_CURRENT_DESKTOP="Unity"
 fi
 
 # keyring daemon for bare i3 sessions
-if [ "$0" = "/usr/sbin/lightdm-session" -a "$DESKTOP_SESSION" = "i3" ]; then
+if [[ "$0" = "/usr/sbin/lightdm-session" -a "$DESKTOP_SESSION" = "i3" ]]; then
     export $(gnome-keyring-daemon -s)
 fi
 
-export NVM_DIR="/home/astynax/.nvm"
+# nvm
+export NVM_DIR="$HOME/.nvm"
 if [[ -e "$NVM_DIR/nvm.sh" ]]; then
     . "$NVM_DIR/nvm.sh"  # This loads nvm
 fi
 
-if [[ -d "$HOME/.software/gradle" ]] ; then
-    export GRADLE_PATH="$HOME/.software/gradle"
-    export PATH=$GRADLE_PATH/bin:$PATH
+# Nix
+if [ -e "$HOME"/.nix-profile/etc/profile.d/nix.sh ]; then
+    . "$HOME/.nix-profile/etc/profile.d/nix.sh";
 fi
 
+# SDKman
+export SDKMAN_DIR="$HOME/.sdkman"
+if [[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]]; then
+    . "$SKDMAN_DIR/bin/sdkman-init.sh";
+fi
+
+# exports
 export PIPENV_VENV_IN_PROJECT=1
-
-if [ -e /home/astynax/.nix-profile/etc/profile.d/nix.sh ]; then . /home/astynax/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
-
-BAT_THEME=GitHub
+export BAT_THEME=GitHub
 
 # if running bash
 if [[ -n "$BASH_VERSION" ]]; then
