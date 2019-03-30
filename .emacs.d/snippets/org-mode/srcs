@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: srcs
+# key: srcs
+# --
+#+BEGIN_SRC $1 :results silent
+$0
+#+END_SRC
