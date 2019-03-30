@@ -24,7 +24,7 @@ _paths=(
 )
 for p in "${_paths[@]}"; do
     if [[ -d "$p" ]]; then
-        PATH="$PATH:$p"
+        PATH="$p:$PATH"
     fi;
 done
 unset p
@@ -35,7 +35,7 @@ export NO_AT_BRIDGE=1
 
 # fix for ubuntu-control-center (& others?)
 if [[ $XDG_CURRENT_DESKTOP = "i3" ]]; then
-    XDG_CURRENT_DESKTOP="Unity"
+    export XDG_CURRENT_DESKTOP="Unity"
 fi
 
 # keyring daemon for bare i3 sessions
@@ -43,24 +43,6 @@ if [[ ("$0" = "/usr/sbin/lightdm-session") && ("$DESKTOP_SESSION" = "i3") ]]; th
     export $(gnome-keyring-daemon -s)
 fi
 
-# nvm
-export NVM_DIR="$HOME/.nvm"
-if [[ -s "$NVM_DIR/nvm.sh" ]]; then
-    . "$NVM_DIR/nvm.sh"  # This loads nvm
-fi
-
-# Nix
-if [[ -s "$HOME/.nix-profile/etc/profile.d/nix.sh" ]]; then
-    . "$HOME/.nix-profile/etc/profile.d/nix.sh";
-fi
-
-# SDKman
-export SDKMAN_DIR="$HOME/.sdkman"
-if [[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]]; then
-    . "$SDKMAN_DIR/bin/sdkman-init.sh";
-fi
-
-# exports
 export PIPENV_VENV_IN_PROJECT=1
 export BAT_THEME=GitHub
 
