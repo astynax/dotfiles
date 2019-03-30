@@ -24,45 +24,40 @@ _paths=(
 )
 for p in "${_paths[@]}"; do
     if [[ -d "$p" ]]; then
-        PATH="$p:$PATH"
+        PATH="$PATH:$p"
     fi;
 done
 unset p
 unset _paths
 
-# export libs
-#if [[ -d "$HOME/.local/lib" ]] ; then
-#    export LD_LIBRARY_PATH="$HOME/.local/lib:$LD_LIBRARY_PATH"
-#fi
-
 # workaround for @unable connect to the bus..."
 export NO_AT_BRIDGE=1
 
 # fix for ubuntu-control-center (& others?)
-if [[ $XDG_CURRENT_DESKTOP="i3" ]]; then
+if [[ $XDG_CURRENT_DESKTOP = "i3" ]]; then
     XDG_CURRENT_DESKTOP="Unity"
 fi
 
 # keyring daemon for bare i3 sessions
-if [[ "$0" = "/usr/sbin/lightdm-session" -a "$DESKTOP_SESSION" = "i3" ]]; then
+if [[ ("$0" = "/usr/sbin/lightdm-session") && ("$DESKTOP_SESSION" = "i3") ]]; then
     export $(gnome-keyring-daemon -s)
 fi
 
 # nvm
 export NVM_DIR="$HOME/.nvm"
-if [[ -e "$NVM_DIR/nvm.sh" ]]; then
+if [[ -s "$NVM_DIR/nvm.sh" ]]; then
     . "$NVM_DIR/nvm.sh"  # This loads nvm
 fi
 
 # Nix
-if [ -e "$HOME"/.nix-profile/etc/profile.d/nix.sh ]; then
+if [[ -s "$HOME/.nix-profile/etc/profile.d/nix.sh" ]]; then
     . "$HOME/.nix-profile/etc/profile.d/nix.sh";
 fi
 
 # SDKman
 export SDKMAN_DIR="$HOME/.sdkman"
 if [[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]]; then
-    . "$SKDMAN_DIR/bin/sdkman-init.sh";
+    . "$SDKMAN_DIR/bin/sdkman-init.sh";
 fi
 
 # exports
