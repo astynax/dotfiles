@@ -21,6 +21,9 @@ _paths=(
     "$HOME/.local/bin"
     "$HOME/Dropbox/tux_cfg/bin"
     "$HOME/.psvm/current/bin"
+    "$HOME/.nvm/current/bin"
+    "$HOME/.poetry/bin"
+    "$HOME/.pyenv/bin"
 )
 for p in "${_paths[@]}"; do
     if [[ -d "$p" ]]; then

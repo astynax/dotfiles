@@ -97,28 +97,32 @@ else
 fi
 unset color_prompt force_color_prompt
 
-# If this is an xterm set the title to user@host:dir
-case "$TERM" in
-xterm*|rxvt*)
-    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-    ;;
-*)
-    ;;
-esac
-
 # enable color support of ls and also add handy aliases
 if [[ -x /usr/bin/dircolors ]]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
 fi
 
 # Nix
-if [[ -s "$HOME/.nix-profile/etc/profile.d/nix.sh" ]]; then
-    . "$HOME/.nix-profile/etc/profile.d/nix.sh";
+if [[ ! -v NIX_PROFILE ]]; then
+    export NIX_PROFILE="$HOME/.nix-profile/etc/profile.d/nix.sh"
+    if [[ -s "$NIX_PROFILE" ]]; then
+        . "$NIX_PROFILE"
+    fi
 fi
 
 # SDKman
-export SDKMAN_DIR="$HOME/.sdkman"
-if [[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]]; then
-    . "$SDKMAN_DIR/bin/sdkman-init.sh";
+if [[ ! -v SDKMAN_DIR ]]; then
+    export SDKMAN_DIR="$HOME/.sdkman"
+    if [[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]]; then
+        . "$SDKMAN_DIR/bin/sdkman-init.sh"
+    fi
+fi
+
+# pyenv
+if [[ ! -v PYENV_ROOT ]]; then
+    export PYENV_ROOT="$HOME/.pyenv"
+    if command -v pyenv 1>/dev/null 2>&1; then
+        eval "$(pyenv init -)"
+    fi
 fi
 
