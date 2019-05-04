@@ -16,8 +16,7 @@
 (setq package-archives
       `(("gnu" . "https://elpa.gnu.org/packages/")
         ("melpa" . "https://melpa.org/packages/")
-        ("org" . "https://orgmode.org/elpa/")
-        ("elpy" . "https://jorgenschaefer.github.io/packages/")))
+        ("org" . "https://orgmode.org/elpa/")))
 (package-initialize)
 
 (setq package-enable-at-startup nil
@@ -184,7 +183,7 @@
   (dired-listing-switches "-al --group-directories-first")
 
   :hook
-  (dired . dired-omit-mode)
+  (dired-mode . dired-omit-mode)
 
   :config
   (put 'dired-find-alternate-file 'disabled nil))
@@ -209,7 +208,10 @@
    ("{" . dired-subtree-only-this-directory)
    ("M-p" . dired-subtree-up)
    ("M-n" . dired-subtree-down)
-   ("<tab>" . dired-subtree-cycle)))
+   ("<tab>" . dired-subtree-cycle))
+
+  :custom
+  (dired-subtree-use-backgrounds nil))
 ;;; UI
 ;;;; Highlights
 (use-package paren
@@ -232,9 +234,11 @@
   :config
   (volatile-highlights-mode 1))
 
+(use-package highlight-indentation
+  :diminish highlight-indentation-mode)
+
 ;;;; Hydra
 (use-package hydra)
-
 ;;;; Uniquify
 (use-package uniquify
   :ensure nil
@@ -299,8 +303,24 @@
 ;;;; Window switching
 (use-package ace-window
   :bind
-  ("M-o" . ace-window))
+  ("M-o" . ace-window)
+  ("C-x 4 o" . ace-swap-window))
+;;;; Window sizing
+(defhydra hydra-window-sizing (:hint nil)
+  "
+^Window sizing^
+^ ^ _i_ ^ ^ _+_:balance
+_j_ ^ ^ _l_
+^ ^ _k_ ^ ^ _=_:equalize
+"
+  ("j" shrink-window-horizontally)
+  ("l" enlarge-window-horizontally)
+  ("i" shrink-window)
+  ("k" enlarge-window)
+  ("+" balance-windows)
+  ("=" balance-windows-area))
 
+(bind-key "w" 'hydra-window-sizing/body mode-specific-map)
 ;;;; Fullframe
 (use-package fullframe
   :config
@@ -518,10 +538,6 @@
 ;;;; Indentation
 (use-package aggressive-indent
   :defer t)
-
-(use-package highlight-indentation
-  :ensure nil
-  :diminish highlight-indentation-mode)
 
 ;;;; Expand Region
 (use-package expand-region
@@ -999,53 +1015,21 @@
   :mode
   ("\\.py\\'" . python-mode)
 
-  :hook
-  (python-mode . lsp)
-  ;;(python-mode . my/python-mode-hook)
-
   :bind
   (:map
    python-mode-map
-   ("C-c C-c" . compile))
+   ("C-c C-c" . compile)))
 
-  ;;:config
-  ;; (defun my/python-enforce-indentation ()
-  ;;   "Enforces python indentation to 4 spaces"
-  ;;   (interactive)
-  ;;   (auto-indent-mode -1)
-  ;;   (setq indent-tabs-mode nil
-  ;;         python-indent-offset 4
-  ;;         python-indent-guess-indent-offset nil))
+(use-package elpy
+  :init
+  (when (getenv "VIRTUAL_ENV")
+    (elpy-enable)))
 
-  ;; (defun my/python-mode-hook ()
-  ;;   "Initialize python stuff"
-  ;;   (interactive)
-  ;;   (my/python-enforce-indentation)
-  ;;   (flycheck-mode)
-  ;;   (flycheck-select-checker 'python-pylint))
-  )
+(use-package isortify
+  :if (executable-find "isort")
 
-;; (use-package elpy
-;;   :ensure t
-
-;;   :after (python)
-
-;;   :diminish elpy-mode
-
-;;   :bind
-;;   (:map
-;;    python-mode-map
-;;    ("M-g j" . elpy-menu))
-
-;;   :config
-;;   (setq
-;;    elpy-modules
-;;    '(elpy-module-company
-;;      elpy-module-eldoc
-;;      elpy-module-yasnippet
-;;      elpy-module-sane-defaults))
-
-;;   (elpy-enable))
+  :hook
+  (python-mode . isortify-mode))
 
 ;;;; Rust
 (use-package rust-mode
@@ -1075,7 +1059,15 @@
 (use-package markdown-mode
   :ensure t
 
-  :mode "\\.md\\'")
+  :commands (markdown-mode gfm-mode)
+
+  :mode
+  (("README\\.md\\'" . gfm-mode)
+   ("\\.md\\'" . markdown-mode)
+   ("\\.markdown\\'" . markdown-mode))
+
+  :custom
+  (markdown-command "pandoc"))
 
 ;;;; Elm
 (use-package elm-mode
@@ -1083,25 +1075,14 @@
 
   :mode "\\.elm\\'"
 
-  :diminish elm-indent-mode
-
-  :bind
-  (:map
-   elm-mode-map
-   ("TAB" . elm-indent-cycle))
-
   :hook
   (elm-mode . my/elm-mode-hook)
+  (elm-mode . flycheck-mode)
 
   :config
   (defun my/elm-mode-hook ()
     (elm--find-dependency-file-path)
-    (flycheck-mode)
     (elm-indent-mode -1))
-
-  (when (executable-find "elm-oracle")
-    (add-hook 'elm-mode-hook
-              #'elm-oracle-setup-completion))
 
   (setq elm-indent-look-past-empty-line nil))
 
@@ -1318,9 +1299,11 @@
    '(save mode-enabled) "Only check on save")
 
   :bind
-  ("<f5>" . flycheck-buffer)
-  ("<f7>" . flycheck-previous-error)
-  ("<f8>" . flycheck-next-error))
+  (:map
+   flycheck-mode-map
+   ("<f5>" . flycheck-buffer)
+   ("<f7>" . flycheck-previous-error)
+   ("<f8>" . flycheck-next-error)))
 
 (use-package flycheck-color-mode-line
   :ensure t
@@ -1329,6 +1312,25 @@
 
   :hook
   (flycheck-mode . flycheck-color-mode-line-mode))
+
+(use-package flymake
+  :ensure nil
+
+  :preface
+  (defvar my/flymake-minor-mode-map (make-keymap))
+  (define-minor-mode my/flymake-minor-mode
+    "Auxiliary minor mode for flymake-minor-mode"
+    nil nil 'my/flymake-minor-mode-map)
+
+  :hook
+  (flymake-mode . my/flymake-minor-mode)
+
+  :bind
+  (:map
+   my/flymake-minor-mode-map
+   ;; ("<f5>" . flycheck-buffer)
+   ("<f7>" . flymake-goto-prev-error)
+   ("<f8>" . flymake-goto-next-error)))
 
 ;;;; Yasnippet
 (bind-keys
@@ -1489,7 +1491,8 @@
   :commands (flyspell-buffer flyspell-mode)
 
   :bind
-  (("M-<f5>" . my/flyspell-buffer)))
+  ("M-<f5>" . my/flyspell-buffer)
+  ("C-c s" . flyspell-correct-word-before-point))
 ;;; Org-mode/Outline
 ;;;; Org
 (use-package org
@@ -1510,20 +1513,29 @@
 
   :hook
   (org-mode . yas-minor-mode)
+  (org-mode . my/org-mode-hook)
+
+  :custom-face
+  (org-level-1 ((t (:inherit variable-pitch :foreground "#cb4b16" :height 1.0))))
+  (org-level-2 ((t (:inherit variable-pitch :foreground "#859900" :height 1.0))))
+  (org-level-3 ((t (:inherit variable-pitch :foreground "#268bd2" :height 1.0))))
+  (org-level-4 ((t (:inherit variable-pitch :foreground "#b58900" :height 1.0))))
+  (org-tag ((t (:weight normal :height 0.8))))
+
+  :custom
+  (org-todo-keywords '((sequence "TODO" "IN-PROGRESS" "DONE")))
+  (org-enforce-todo-dependencies t)
+  (org-hide-leading-stars t)
+  (org-outline-path-complete-in-steps nil)
+  (org-ellipsis "…")
+  (org-edit-src-content-indentation 0)
+  (org-src-window-setup 'current-window)
+  (org-src-preserve-indentation t)
+  (org-default-notes-file "~/Dropbox/org/buffer.org")
+  (org-html-preamble nil)
+  (org-html-postamble nil)
 
   :config
-  (setq
-   org-todo-keywords '((sequence "TODO" "IN-PROGRESS" "DONE"))
-   org-enforce-todo-dependencies t
-   org-hide-leading-stars t
-   ;; org-completion-use-ido t ;; use ido for completion
-   org-outline-path-complete-in-steps nil
-   org-html-postamble nil
-   org-edit-src-content-indentation 0
-   org-ellipsis "…"
-   org-src-window-setup (quote current-window)
-   org-src-preserve-indentation t)
-
   (require 'ob-shell)
   (require 'ob-python)
 
@@ -1541,8 +1553,11 @@
     (interactive)
     (find-file org-default-notes-file))
 
+  (defun my/org-mode-hook ()
+    "Tweaks an org-mode"
+    (toggle-truncate-lines nil))
+
   (setq
-   org-default-notes-file "~/Dropbox/org/buffer.org"
    org-capture-templates
    '(("n" "Buffer note" entry
       (file+headline "" "Notes")
@@ -1584,14 +1599,7 @@
            )))
       "* [[file:/%F::%(with-current-buffer (org-capture-get :original-buffer) (number-to-string (line-number-at-pos)))][%(haskell-guess-module-name-from-file-name (buffer-file-name (org-capture-get :original-buffer)))]]"
       :immediate-finish
-      :kill-buffer)))
-
-  :custom-face
-  (org-level-1 ((t (:inherit variable-pitch :foreground "#cb4b16" :height 1.0))))
-  (org-level-2 ((t (:inherit variable-pitch :foreground "#859900" :height 1.0))))
-  (org-level-3 ((t (:inherit variable-pitch :foreground "#268bd2" :height 1.0))))
-  (org-level-4 ((t (:inherit variable-pitch :foreground "#b58900" :height 1.0))))
-  (org-tag ((t (:weight normal :height 0.8)))))
+      :kill-buffer))))
 
 (put 'org-default-notes-file           'safe-local-variable #'stringp)
 
@@ -1661,15 +1669,46 @@
   ;; unbind M-tab
   (unbind-key "C-M-i" outline-minor-mode-map))
 
-;;; Other modes
+;;; Other
 ;;;; Nov
 (use-package nov
   :mode
   ("\\.epub\\'" . nov-mode))
-;;;; Fireplace
+;;;; Firelace
 (use-package fireplace
   :commands (fireplace))
 
+;;;; WebPaste
+(use-package webpaste
+  :preface
+  (defun my/webpaste-return-url (url)
+    "Asks for browsing of clipped url"
+    (when (yes-or-no-p "Browser the clip?")
+      (browse-url-firefox url)))
+
+  :bind
+  (:prefix
+   "C-c C-p"
+   :prefix-map my/webpaste-map
+   ("b" . webpaste-paste-buffer)
+   ("p" . webpaste-paste-region))
+
+  :hook
+  (webpaste-return-url . my/webpaste-return-url)
+
+  :custom
+  (webpaste-provider-priority '("ix.io" "dpaste.com"))
+  (webpaste-paste-confirmation t)
+
+  :config
+  (add-to-list
+   'webpaste--default-lang-alist
+   '(haskell-mode . "haskell")
+   t))
+;;;; Olivetti
+(use-package olivetti
+  :custom
+  (olivetti-body-width 64))
 ;;; Finalization
 ;; restore GC-limit after timeout
 (run-with-idle-timer
