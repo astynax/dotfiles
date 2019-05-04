@@ -1,0 +1,19 @@
+# -*- mode: snippet -*-
+# name: script
+# key: script
+# --
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""TODO: Script."""
+
+import sys
+
+
+def main():
+    """Run the script."""
+    pass
+
+
+if __name__ == '__main__':
+    sys.exit(main() or 0)
