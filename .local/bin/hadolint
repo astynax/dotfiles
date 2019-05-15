@@ -1,0 +1,9 @@
+#!/bin/sh
+
+FILE="$(pwd)/Dockerfile"
+if [ ! -f "$FILE" ]; then
+    echo "Dockerfile not found!"
+else
+    docker run --rm -i hadolint/hadolint < "$FILE"
+fi
+
