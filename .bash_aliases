@@ -81,3 +81,7 @@ gonvm () {
     fi
 }
 
+gominimalprompt () {
+    export MINIMAL_PROMPT=1
+    bash
+}

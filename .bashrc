@@ -15,11 +15,6 @@ export EDITOR=editor
 export LESS="WR"
 export LV="-c"
 
-# virtualenv wrapper
-if [[ -f /usr/local/bin/virtualenvwrapper.sh ]]; then
-    source /usr/local/bin/virtualenvwrapper.sh
-fi
-
 # user completions
 if [[ -d "$HOME/.bash_completion.d" ]]; then
     for a in $HOME/.bash_completion.d/*; do
@@ -72,30 +67,37 @@ if [[ -x /usr/bin/lesspipe ]]; then
 fi
 
 # set a fancy prompt (non-color, unless we know we "want" color)
-case "$TERM" in
-    xterm-color) color_prompt=yes;;
-esac
+if [[ -z "$MINIMAL_PROMPT" ]]; then
+    case "$TERM" in
+        xterm-color) color_prompt=yes;;
+        rxvt-unicode-256color) color_prompt=yes;;
+    esac
 
-if [[ -x /usr/bin/tput ]] && tput setaf 1 >&/dev/null; then
-    color_prompt=yes
-else
-    color_prompt=
-fi
-
-if [[ -z "$debian_chroot" ]] && [[ -r /etc/debian_chroot ]]; then
-    debian_chroot=$(cat /etc/debian_chroot)
-fi
-
-if [[ "$color_prompt" = yes ]]; then
-    if [[ -f ~/.bash_prompt ]]; then
-        source ~/.bash_prompt
-    else
-        PS1='${debian_chroot:+($debian_chroot)}\[\033[04;34m\]\u@\h\[\033[00m\]:\[\033[02;33m\]\w\[\033[00m\]\$ '
+    if [[ -z "$color_prompt" ]]; then
+        if [[ -x /usr/bin/tput ]] && tput setaf 1 >&/dev/null; then
+            color_prompt=yes
+        else
+            color_prompt=
+        fi
     fi
+
+    if [[ -z "$debian_chroot" ]] && [[ -r /etc/debian_chroot ]]; then
+        debian_chroot=$(cat /etc/debian_chroot)
+    fi
+
+    if [[ "$color_prompt" = yes ]]; then
+        if [[ -f ~/.bash_prompt ]]; then
+            source ~/.bash_prompt
+        else
+            PS1='${debian_chroot:+($debian_chroot)}\[\033[04;34m\]\u@\h\[\033[00m\]:\[\033[02;33m\]\w\[\033[00m\]\$ '
+        fi
+    else
+        PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+    fi
+    unset color_prompt
 else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+    PS1='${debian_chroot:+($debian_chroot) }\w\$ '
 fi
-unset color_prompt force_color_prompt
 
 # enable color support of ls and also add handy aliases
 if [[ -x /usr/bin/dircolors ]]; then
