@@ -444,11 +444,6 @@ _j_ ^ ^ _l_
 ;;;; reverse-im
 (use-package reverse-im
   :diminish
-
-  :custom
-  (reverse-im-input-methods '("russian-computer"))
-  (default-input-method "russian-computer")
-
   :config
   (reverse-im-activate "russian-computer"))
 
@@ -686,6 +681,12 @@ _j_ ^ ^ _l_
    my/mc-map
    ("m" . vr/mc-mark)))
 
+;;;; Typographics
+(use-package typo
+  :config
+  (unbind-key "\"" typo-mode-map)
+  (unbind-key "'" typo-mode-map)
+  (unbind-key "`" typo-mode-map))
 ;;; Navigation
 ;;;; Avy
 (use-package avy
@@ -1066,6 +1067,10 @@ _j_ ^ ^ _l_
    ("\\.md\\'" . markdown-mode)
    ("\\.markdown\\'" . markdown-mode))
 
+  :hook
+  (gfm-mode . typo-mode)
+  (markdown-mode . typo-mode)
+
   :custom
   (markdown-command "pandoc"))
 
@@ -1172,7 +1177,8 @@ _j_ ^ ^ _l_
   :mode "\\.ya?ml\\'"
 
   :hook
-  (yaml-mode . highlight-indentation-mode))
+  (yaml-mode . highlight-indentation-mode)
+  (yaml-mode . typo-mode))
 
 ;;;; TOML
 (use-package toml-mode
@@ -1472,11 +1478,17 @@ _j_ ^ ^ _l_
   :ensure nil
 
   :custom
+  (ispell-really-aspell nil)
+  (ispell-really-hunspell t)
+  (ispell-encoding8-command t)
   (ispell-program-name "hunspell")
-  (ispell-dictionary "russian")
+  (ispell-dictionary "ru_RU,en_US")
 
   :config
-  (defun ispell-get-coding-system () 'utf-8))
+  ;; ispell-set-spellchecker-params has to be called
+  ;; before ispell-hunspell-add-multi-dic will work
+  (ispell-set-spellchecker-params)
+  (ispell-hunspell-add-multi-dic "ru_RU,en_US"))
 
 (use-package flyspell
   :ensure nil
