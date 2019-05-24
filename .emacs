@@ -1525,6 +1525,7 @@ _j_ ^ ^ _l_
 
   :hook
   (org-mode . yas-minor-mode)
+  (org-mode . typo-mode)
   (org-mode . my/org-mode-hook)
 
   :custom-face
@@ -1644,6 +1645,11 @@ _j_ ^ ^ _l_
 
   :config
   (setq org-brain-path "~/Dropbox/org/brain"))
+
+(use-package ox-gfm
+  :ensure t
+
+  :after (org markdown-mode))
 
 (use-package ob-restclient
   :ensure t
