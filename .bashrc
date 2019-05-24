@@ -128,3 +128,11 @@ if [[ ! -v PYENV_ROOT ]]; then
     fi
 fi
 
+# Wasmer
+if [[ ! -v WASMER_DIR ]]; then
+    export WASMER_DIR="/home/astynax/.wasmer"
+    if [[ -s "$WASMER_DIR/wasmer.sh" ]]; then
+        . "$WASMER_DIR/wasmer.sh"
+    fi
+fi
+
