@@ -1,8 +1,0 @@
-#!/bin/sh
-
-# Upgrades all packages which installed by pipsi
-cd $HOME
-for a in $(ls -1 $HOME/.local/venvs/); do
-    pipsi upgrade $a;
-done
-
