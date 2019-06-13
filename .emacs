@@ -221,10 +221,17 @@
 
 (use-package hl-line
   :ensure nil
+
+  :custom
+  (visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
+
   :config
-  (global-hl-line-mode 1))
+  (global-hl-line-mode 1)
+  (global-visual-line-mode 1))
 
 (use-package rainbow-delimiters
+  :diminish
+
   :hook
   (prog-mode . rainbow-delimiters-mode))
 
@@ -305,6 +312,7 @@
   :bind
   ("M-o" . ace-window)
   ("C-x 4 o" . ace-swap-window))
+
 ;;;; Window sizing
 (defhydra hydra-window-sizing (:hint nil)
   "
@@ -321,6 +329,7 @@ _j_ ^ ^ _l_
   ("=" balance-windows-area))
 
 (bind-key "w" 'hydra-window-sizing/body mode-specific-map)
+
 ;;;; Fullframe
 (use-package fullframe
   :config
@@ -356,13 +365,11 @@ _j_ ^ ^ _l_
    mode-specific-map
    ("b" . ibuffer)))
 
-;; h/l some actions like a killing, yanking, pasting e.t.c.
-
 ;;;; Ivy
 (use-package ivy
   :demand
 
-  :diminish ivy-mode
+  :diminish (ivy-mode "")
 
   :custom
   (ivy-use-virtual-buffers t)
@@ -682,11 +689,29 @@ _j_ ^ ^ _l_
    ("m" . vr/mc-mark)))
 
 ;;;; Typographics
-(use-package typo
-  :config
-  (unbind-key "\"" typo-mode-map)
-  (unbind-key "'" typo-mode-map)
-  (unbind-key "`" typo-mode-map))
+(use-package my/typographics
+  :ensure nil
+
+  :preface
+  (defun my/typographics-fontify ()
+    "Add a font lock highlighting for some particular characters."
+    (font-lock-add-keywords
+     nil
+     '(("—" . '(0 font-lock-warning-face t)))))
+
+  (provide 'my/typographics)
+
+  :hook
+  (prog-mode . my/typographics-fontify)
+  (text-mode . my/typographics-fontify)
+
+  :bind
+  (:prefix
+   "C-c 8"
+   :prefix-map my/typographics-map
+   ("-" . "—")
+   ("." . "…")))
+
 ;;; Navigation
 ;;;; Avy
 (use-package avy
@@ -1067,12 +1092,54 @@ _j_ ^ ^ _l_
    ("\\.md\\'" . markdown-mode)
    ("\\.markdown\\'" . markdown-mode))
 
-  :hook
-  (gfm-mode . typo-mode)
-  (markdown-mode . typo-mode)
-
   :custom
   (markdown-command "pandoc"))
+
+(use-package my/markdown
+  :ensure nil
+
+  :after markdown-mode
+
+  :preface
+  (defun my/match-gh-file-url (s)
+    "Extract a path and optional line number from GitHub URL"
+    (when (string-match
+           (rx bol
+               "https://github.com/"
+               (repeat 4 (seq (one-or-more (not (any ?/)))
+                              (char ?/)))
+               (group (one-or-more (not (any ?#))))
+               (optional (seq "#L"
+                              (group (one-or-more digit))))
+               eol)
+           s)
+      (list (match-string 1 s) (match-string 2 s))))
+
+  (defun my/markdown/capture-gh-link ()
+    "Insert a MD-link for the killed GitHub URL."
+    (interactive)
+    (let* ((url (current-kill 0))
+           (match (my/match-gh-file-url url))
+           (path (car match))
+           (line (car (cdr match))))
+      (if path
+          (insert
+           (format "[`%s%s`](%s)"
+                   path
+                   (if line (format ":%s" line) "")
+                   url))
+        (message "%s" "Non-github link!"))))
+
+  (provide 'my/markdown)
+
+  :bind
+  (:map
+   markdown-mode-map
+   ("C-c l" . my/markdown/capture-gh-link))
+
+  (:map
+   gfm-mode-map
+   ("C-c l" . my/markdown/capture-gh-link)))
 
 ;;;; Elm
 (use-package elm-mode
@@ -1505,6 +1572,23 @@ _j_ ^ ^ _l_
   :bind
   ("M-<f5>" . my/flyspell-buffer)
   ("C-c s" . flyspell-correct-word-before-point))
+
+(use-package langtool
+  :preface
+  (defhydra hydra-langtool (:hint nil)
+    "LanguageTool hydra"
+    ("<f5>" langtool-check "check")
+    ("<f6>" langtool-correct-buffer "correct")
+    ("d" langtool-check-done "done checking")
+    ("s" langtool-server-stop "stop server")
+    ("q" nil "quit hydra"))
+
+  :bind
+  ("M-<f6>" . hydra-langtool/body)
+
+  :custom
+  (langtool-default-language "ru-RU")
+  (langtool-java-classpath "/home/astynax/.software/LanguageTool-4.5/*"))
 ;;; Org-mode/Outline
 ;;;; Org
 (use-package org
@@ -1525,7 +1609,6 @@ _j_ ^ ^ _l_
 
   :hook
   (org-mode . yas-minor-mode)
-  (org-mode . typo-mode)
   (org-mode . my/org-mode-hook)
 
   :custom-face
@@ -1547,6 +1630,7 @@ _j_ ^ ^ _l_
   (org-default-notes-file "~/Dropbox/org/buffer.org")
   (org-html-preamble nil)
   (org-html-postamble nil)
+  (org-export-with-toc nil)
 
   :config
   (require 'ob-shell)
@@ -1617,28 +1701,20 @@ _j_ ^ ^ _l_
 (put 'org-default-notes-file           'safe-local-variable #'stringp)
 
 (use-package htmlize
-  :ensure t
-
   :after (org))
 
 (use-package ox-pandoc
   :if (executable-find "pandoc")
 
-  :ensure t
-
   :after (org))
 
 (use-package org-cliplink
-  :ensure t
-
   :bind
   (:map
    org-mode-map
    ("C-c l" . org-cliplink)))
 
 (use-package org-brain
-  :ensure t
-
   :after (org)
 
   :commands (org-brain-visualize)
@@ -1647,13 +1723,9 @@ _j_ ^ ^ _l_
   (setq org-brain-path "~/Dropbox/org/brain"))
 
 (use-package ox-gfm
-  :ensure t
-
-  :after (org markdown-mode))
+  :after (org))
 
 (use-package ob-restclient
-  :ensure t
-
   :after '(org restclient)
 
   :commands (org-babel-execute:restclient)
@@ -1664,8 +1736,6 @@ _j_ ^ ^ _l_
 
 ;;;; Outshine
 (use-package outshine
-  :ensure t
-
   :diminish
   (outline-minor-mode . "")
   (outshine-mode . "ⓞ")
