@@ -1631,6 +1631,8 @@ _j_ ^ ^ _l_
   (org-html-preamble nil)
   (org-html-postamble nil)
   (org-export-with-toc nil)
+  (org-use-sub-superscripts nil)
+  (org-export-with-sub-superscripts nil)
 
   :config
   (require 'ob-shell)
@@ -1723,6 +1725,9 @@ _j_ ^ ^ _l_
   (setq org-brain-path "~/Dropbox/org/brain"))
 
 (use-package ox-gfm
+  :after (org))
+
+(use-package ox-slimhtml
   :after (org))
 
 (use-package ob-restclient
