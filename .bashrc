@@ -55,7 +55,7 @@ HISTFILESIZE=2000
 PROMPT_COMMAND="history -a;history -n"
 
 # don`t add to history matching cmds
-HISTIGNORE="&:ls:ll:bg:fg:exit:history:ranger:r:off:clear:encfs*:visit_efs*"
+HISTIGNORE="&:bg:fg:exit:history:ranger:r:clear:encfs*:visit_efs*"
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -99,7 +99,7 @@ else
     PS1='${debian_chroot:+($debian_chroot) }\w\$ '
 fi
 
-# enable color support of ls and also add handy aliases
+# configure dir colors
 if [[ -x /usr/bin/dircolors ]]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
 fi
@@ -130,9 +130,18 @@ fi
 
 # Wasmer
 if [[ ! -v WASMER_DIR ]]; then
-    export WASMER_DIR="/home/astynax/.wasmer"
+    export WASMER_DIR="$HOME/.wasmer"
     if [[ -s "$WASMER_DIR/wasmer.sh" ]]; then
-        . "$WASMER_DIR/wasmer.sh"
+        source "$WASMER_DIR/wasmer.sh"
+    fi
+fi
+
+# .ok (https://github.com/secretGeek/ok-bash)
+if [[ ! -v _OK__PATH_TO_ME ]]; then
+    export _OK__PATH_TO_ME="$HOME/.ok-bash"
+    if [[ -s "$_OK__PATH_TO_ME/ok.sh" ]]; then
+        source "$_OK__PATH_TO_ME/ok.sh"
+        export HISTIGNORE="$HISTIGNORE:ok*"
     fi
 fi
 
