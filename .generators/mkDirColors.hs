@@ -45,7 +45,7 @@ dircolors = unlines $ concat
   [ h "Special"
   , "EXEC" ~~ aBold <> fGreen
   , "DIR" ~~ aBold <> fBlue
-  , ["LINK\ttarget"]
+--  , ["LINK\ttarget"]
 
   , h "Archives"
   , [".zip", ".tgz", ".deb", ".z", ".tar", ".gz", ".rar", ".jar", ".7z"]
@@ -65,7 +65,7 @@ dircolors = unlines $ concat
 
   , h "Documents"
   , [ ".txt", ".md", ".org", ".rst", ".pdf", ".odt", ".cbr", ".cbz"
-    , ".mobi", ".epub" ]
+    , ".mobi", ".epub", ".srt", ".ass" ]
     ..~ aBold <> fCyan
 
   , h "Sources"
