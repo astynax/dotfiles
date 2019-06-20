@@ -507,25 +507,35 @@ _j_ ^ ^ _l_
   :diminish
 
   :preface
-  (defun my/whitespace-mode ()
+  (defun my/whitespace-prog-mode ()
     "whitespace mode for prog buffers"
     (setq-local require-final-newline t)
     (setq-local next-line-add-newlines nil)
+    (setq-local whitespace-style '(face lines-tail trailing tab-mark))
+    (setq-local whitespace-line-column 80)
     (whitespace-mode t)
     (toggle-truncate-lines t)
     ;; trim triling spaces on save
     (add-hook 'before-save-hook 'delete-trailing-whitespace t t))
 
+  (defun my/whitespace-text-mode ()
+    "whitespace mode for text buffers"
+    (setq-local require-final-newline t)
+    (setq-local next-line-add-newlines nil)
+    (setq-local whitespace-style '(face trailing tab-mark))
+    (whitespace-mode t)
+    ;; trim triling spaces on save
+    (add-hook 'before-save-hook 'delete-trailing-whitespace t t))
+
   :hook
-  (prog-mode . my/whitespace-mode)
+  (prog-mode . my/whitespace-prog-mode)
+  (text-mode . my/whitespace-text-mode)
 
   :custom-face
   (whitespace-line ((t (:background "moccasin" :underline (:color foreground-color :style wave)))))
   (whitespace-tab ((t (:foreground "brown" :inverse-video nil :underline t))))
 
   :custom
-  (whitespace-style '(face lines-tail trailing tab-mark))
-  (whitespace-line-column 80)
   (default-tab-width 4))
 
 (use-package shrink-whitespace
@@ -1275,6 +1285,15 @@ _j_ ^ ^ _l_
 
   :hook
   (kotlin-mode . highlight-indentation-mode))
+
+;;;; Shell
+(use-package sh-script
+  :ensure nil
+
+  :mode
+  (("\\.ok\\'" . shell-script-mode)
+   ("\\.sh\\'" . shell-script-mode)
+   ("\\.bash\\'" . shell-script-mode)))
 
 ;;; IDE
 ;;;; Autocompletion
