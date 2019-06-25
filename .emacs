@@ -1592,22 +1592,24 @@ _j_ ^ ^ _l_
   ("M-<f5>" . my/flyspell-buffer)
   ("C-c s" . flyspell-correct-word-before-point))
 
-(use-package langtool
+(use-package my/langtool
+  :ensure nil
+
   :preface
-  (defhydra hydra-langtool (:hint nil)
-    "LanguageTool hydra"
-    ("<f5>" langtool-check "check")
-    ("<f6>" langtool-correct-buffer "correct")
-    ("d" langtool-check-done "done checking")
-    ("s" langtool-server-stop "stop server")
-    ("q" nil "quit hydra"))
+  (defun my/langtool-check ()
+    "Checks current file with LnagTool"
+    (interactive)
+    (let ((fn (expand-file-name (buffer-file-name (current-buffer)))))
+      (switch-to-buffer-other-window
+       (generate-new-buffer "*spellcheck*"))
+      (insert-string (shell-command-to-string (format "pylangtool %s" fn)))
+      (compilation-mode)))
+
+  (provide 'my/langtool)
 
   :bind
-  ("M-<f6>" . hydra-langtool/body)
+  ("M-<f6>" . my/langtool-check))
 
-  :custom
-  (langtool-default-language "ru-RU")
-  (langtool-java-classpath "/home/astynax/.software/LanguageTool-4.5/*"))
 ;;; Org-mode/Outline
 ;;;; Org
 (use-package org
