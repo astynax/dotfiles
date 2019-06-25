@@ -1,0 +1,5 @@
+[DEFAULT]
+jar = /home/astynax/.software/LanguageTool-4.5/languagetool-commandline.jar
+lang = ru-RU
+extra_options = 
+
