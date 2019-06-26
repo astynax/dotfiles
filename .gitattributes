@@ -1,2 +1,3 @@
 .vim/colors/solarized.vim linguist-vendored
 .config/mpv/scripts/autocrop.lua linguist-vendored
+.bash_completion.d/* linguist-vendored
