@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: Python source block
+# key: py
+# binding: direct-keybinding
+# --
+\`\`\`python
+$0
+\`\`\`

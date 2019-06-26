@@ -1102,6 +1102,10 @@ _j_ ^ ^ _l_
    ("\\.md\\'" . markdown-mode)
    ("\\.markdown\\'" . markdown-mode))
 
+  :hook
+  (markdown-mode . yas-minor-mode)
+  (gfm-mode . yas-minor-mode)
+
   :custom
   (markdown-command "pandoc"))
 
