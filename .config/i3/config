@@ -66,7 +66,6 @@ bindsym $mod+d exec $dmenu_run
 bindsym $mod+Shift+d exec --no-startup-id i3-dmenu-desktop --dmenu=$dmenu_apps
 
 # MPD menu
-#bindsym $mod+m exec --no-startup-id "~/.i3/mediactl"
 bindsym $mod+m exec --no-startup-id "echo 'toggle\nnext\nprev\nplay\nstop' | rofi -dmenu -p 'MPD:' | xargs mpc"
 
 # PulseAudio Volume
