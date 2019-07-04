@@ -128,6 +128,14 @@ if [[ ! -v PYENV_ROOT ]]; then
     fi
 fi
 
+# rbenv
+if [[ ! -v RBENV_ROOT ]]; then
+    export RBENV_ROOT="$HOME/.rbenv"
+    if command -v rbenv 1>/dev/null 2>&1; then
+        eval "$(rbenv init -)"
+    fi
+fi
+
 # Wasmer
 if [[ ! -v WASMER_DIR ]]; then
     export WASMER_DIR="$HOME/.wasmer"
@@ -137,11 +145,13 @@ if [[ ! -v WASMER_DIR ]]; then
 fi
 
 # .ok (https://github.com/secretGeek/ok-bash)
-if [[ ! -v _OK__PATH_TO_ME ]]; then
-    export _OK__PATH_TO_ME="$HOME/.ok-bash"
+if ! declare -f ok > /dev/null; then
+    if [[ ! -v _OK__PATH_TO_ME ]]; then
+        export _OK__PATH_TO_ME="$HOME/.ok-bash"
+        export HISTIGNORE="$HISTIGNORE:ok*"
+    fi
     if [[ -s "$_OK__PATH_TO_ME/ok.sh" ]]; then
         source "$_OK__PATH_TO_ME/ok.sh"
-        export HISTIGNORE="$HISTIGNORE:ok*"
     fi
 fi
 
