@@ -318,15 +318,16 @@
   "
 ^Window sizing^
 ^ ^ _i_ ^ ^ _+_:balance
-_j_ ^ ^ _l_
-^ ^ _k_ ^ ^ _=_:equalize
+_j_ ^ ^ _l_ _=_:equalize
+^ ^ _k_ ^ ^ _q_:quit mode
 "
   ("j" shrink-window-horizontally)
   ("l" enlarge-window-horizontally)
   ("i" shrink-window)
   ("k" enlarge-window)
   ("+" balance-windows)
-  ("=" balance-windows-area))
+  ("=" balance-windows-area)
+  ("q" nil))
 
 (bind-key "w" 'hydra-window-sizing/body mode-specific-map)
 
@@ -551,6 +552,13 @@ _j_ ^ ^ _l_
 (use-package aggressive-indent
   :defer t)
 
+(use-package indent-tools
+  :bind
+  ("C-c >" . indent-tools-hydra/body)
+
+  :custom
+  (indent-tools-indentation-offset 2))
+
 ;;;; Expand Region
 (use-package expand-region
   :bind
@@ -666,9 +674,8 @@ _j_ ^ ^ _l_
   (vimish-fold-mouse-face ((t (:box (:line-width 1 :color "yellow")))))
   (vimish-fold-overlay ((t (:box (:line-width 1 :color "dim gray")))))
 
-  :config
-  (setq vimish-fold-blank-fold-header "<...>"
-        vimish-fold-indication-mode 'left-fringe))
+  :custom
+  (vimish-fold-indication-mode 'left-fringe))
 
 ;;;; Smart BOL
 (defun my/smarter-move-beginning-of-line (arg)
@@ -1259,7 +1266,12 @@ _j_ ^ ^ _l_
 
   :hook
   (yaml-mode . highlight-indentation-mode)
-  (yaml-mode . typo-mode))
+  (yaml-mode . typo-mode)
+
+  :bind
+  (:map
+   yaml-mode-map
+   (">" . nil)))
 
 ;;;; TOML
 (use-package toml-mode
@@ -1825,8 +1837,19 @@ _j_ ^ ^ _l_
    t))
 ;;;; Olivetti
 (use-package olivetti
+
+  :bind
+  (:map
+   text-mode-map
+   :prefix "C-c o"
+   :prefix-map my/olivetti-mode-map
+   ("o" . olivetti-mode)
+   ("-" . olivetti-shrink)
+   ("=" . olivetti-expand))
+
   :custom
   (olivetti-body-width 64))
+
 ;;; Finalization
 ;; restore GC-limit after timeout
 (run-with-idle-timer
