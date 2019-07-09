@@ -470,9 +470,11 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; Client/server
 (use-package server
-  :config
-  (unless (server-running-p)
-    (server-start)))
+  :ensure nil
+  ;; :config
+  ;; (unless (server-running-p)
+  ;;   (server-start))
+  )
 
 ;;; Editing
 ;;;; Subwords
@@ -1162,6 +1164,20 @@ _j_ ^ ^ _l_ _=_:equalize
    gfm-mode-map
    ("C-c l" . my/markdown/capture-gh-link)))
 
+(use-package my/markdown-binding-fixes
+  :ensure nil
+
+  :after (markdown-mode gfm-mode)
+
+  :preface
+  (provide 'my/markdown-binding-fixes)
+
+  :bind
+  (:map
+   markdown-mode-map
+   ("C-." . undo-tree-undo)
+   ("C-," . undo-tree-redo)))
+
 ;;;; Elm
 (use-package elm-mode
   :ensure t
@@ -1310,6 +1326,20 @@ _j_ ^ ^ _l_ _=_:equalize
   (("\\.ok\\'" . shell-script-mode)
    ("\\.sh\\'" . shell-script-mode)
    ("\\.bash\\'" . shell-script-mode)))
+
+;;;; Io
+(use-package io-mode
+  :mode
+  ("\\.io\\'" . io-mode)
+
+  :hook
+  (io-mode . highlight-indentation-mode)
+
+  :config
+  ;; fix comment regex
+  (set-variable
+   'io-comments-re
+   "\\(^#.*$#\\|//.*$\\|/\\*\\(.\\|[]\\)*?\\*/\\)"))
 
 ;;; IDE
 ;;;; Autocompletion
@@ -1595,17 +1625,11 @@ _j_ ^ ^ _l_ _=_:equalize
 (use-package flyspell
   :ensure nil
 
-  :preface
-  (defun my/flyspell-buffer ()
-    "Ensures the flycheck-mode enabled and runs a flyspell"
-    (interactive)
-    (flycheck-mode t)
-    (flyspell-buffer))
-
   :commands (flyspell-buffer flyspell-mode)
 
   :bind
-  ("M-<f5>" . my/flyspell-buffer)
+  ("M-<f5>" . flyspell-buffer)
+  ("M-<f8>" . flyspell-goto-next-error)
   ("C-c s" . flyspell-correct-word-before-point))
 
 (use-package my/langtool
@@ -1804,7 +1828,8 @@ _j_ ^ ^ _l_ _=_:equalize
 (use-package nov
   :mode
   ("\\.epub\\'" . nov-mode))
-;;;; Firelace
+
+;;;; Fireplace
 (use-package fireplace
   :commands (fireplace))
 
