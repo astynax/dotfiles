@@ -7,46 +7,67 @@ FLAG=${1:-}
 
 if [[ -z "$FLAG" ]]; then
     if [[ ! -z "${XTERMIFY_BUFFER:-}" ]]; then
-	set +e
-	${XTERMIFY_COMMAND:-}
-	set -e
-	STATUS=$?
-	if [[ $STATUS -ne 0 ]]; then
+        set +e
+        ${XTERMIFY_COMMAND:-}
+        set -e
+        STATUS=$?
+        if [[ $STATUS -ne 0 ]]; then
             echo "$STATUS" > "$XTERMIFY_RESULT"
-	fi
+        fi
     else
-	$XTERM -T xtermify -e \
-           bash -c "xtermify --help && \
-	   	read -p \"Press any key...\" -n1 -s"
+        $XTERM -T "xtermify" \
+               -e bash -c "xtermify --help && \
+                           read -p \"Press any key...\" -n1 -s"
     fi
 elif [[ "$FLAG" = "--help" || "$FLAG" = "-h" ]]; then
     cat <<EOF
 usage:
-  xtermify [-a] COMMAND
+  xtermify [-a] [-t TITLE] COMMAND
 
 Runs COMMAND inside a new x-terminal-emulator window. XTERMIFY_BUFFER
 will store a name of temp file. COMMAND can write to that file and
 that text will be the output of xtermify.
 
 -a - add a path to temp file to COMMAND.
+-t - set window title to TITLE (default is "xtermify")
 
 EOF
 else
-    XTERMIFY_BUFFER=$(mktemp --tmpdir urxvtize_XXXXXX)
-    XTERMIFY_RESULT=$(mktemp --tmpdir urxvtize_XXXXXX)
-    if [[ "$FLAG" = "-a" ]]; then
-	shift
-        XTERMIFY_COMMAND="$* $XTERMIFY_BUFFER"
-    else
-	XTERMIFY_COMMAND="$*"
+    APPEND=""
+    XTERMIFY_TITLE=""
+    while [[ -n "$1" ]]; do
+        case "$1" in
+            "-a")
+                APPEND=1
+                shift
+                ;;
+            "-t")
+                XTERMIFY_TITLE=$2
+                shift
+                shift
+                ;;
+            *)
+                break
+                ;;
+        esac
+    done
+    XTERMIFY_BUFFER=$(mktemp --tmpdir xtermify_XXXXXX)
+    XTERMIFY_RESULT=$(mktemp --tmpdir xtermify_XXXXXX)
+    XTERMIFY_COMMAND="$*"
+    if [[ -n "$APPEND" ]]; then
+        shift
+        XTERMIFY_COMMAND="$XTERMIFY_COMMAND $XTERMIFY_BUFFER"
     fi
-    export XTERMIFY_COMMAND XTERMIFY_BUFFER XTERMIFY_RESULT
-    $XTERM -e xtermify
+    export XTERMIFY_COMMAND \
+           XTERMIFY_BUFFER \
+           XTERMIFY_RESULT
+    $XTERM -T "${XTERMIFY_TITLE:-xtermify}" -e xtermify
     if [[ -s "$XTERMIFY_RESULT" ]]; then
-	cat "$XTERMIFY_BUFFER" 1>&2
-	exit 1
+        cat "$XTERMIFY_BUFFER" 1>&2
+        exit 1
     else
-	cat "$XTERMIFY_BUFFER"
+        cat "$XTERMIFY_BUFFER"
     fi
-    rm "$XTERMIFY_BUFFER" "$XTERMIFY_RESULT"
+    rm "$XTERMIFY_BUFFER" \
+       "$XTERMIFY_RESULT"
 fi
