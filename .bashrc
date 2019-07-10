@@ -155,3 +155,9 @@ if ! declare -f ok > /dev/null; then
     fi
 fi
 
+# commacd (https://github.com/shyiko/commacd)
+if ! declare -f , > /dev/null && [[ -s $HOME/.commacd.sh ]]; then
+    export HISTIGNORE="$HISTIGNORE:,*"
+    source $HOME/.commacd.sh
+fi
+
