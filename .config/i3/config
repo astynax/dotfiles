@@ -83,6 +83,9 @@ bindsym $mod+Mod1+l exec --no-startup-id "i3lock -c 000000"
 # Quickswitch menu
 bindsym $mod+q exec --no-startup-id "rofi -show window"
 
+# DuckDuckGo search TUI (https://github.com/jarun/ddgr)
+bindsym $mod+g exec --no-startup-id "xtermify -t DuckDuckGo ddgr"
+
 # change focus
 bindsym $mod+i     focus up
 bindsym $mod+k     focus down
