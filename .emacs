@@ -242,7 +242,9 @@
   (volatile-highlights-mode 1))
 
 (use-package highlight-indentation
-  :diminish highlight-indentation-mode)
+  :diminish highlight-indentation-mode
+
+  :commands (highlight-indentation-mode))
 
 ;;;; Hydra
 (use-package hydra)
@@ -1276,13 +1278,10 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; YAML
 (use-package yaml-mode
-  :ensure t
-
   :mode "\\.ya?ml\\'"
 
   :hook
   (yaml-mode . highlight-indentation-mode)
-  (yaml-mode . typo-mode)
 
   :bind
   (:map
