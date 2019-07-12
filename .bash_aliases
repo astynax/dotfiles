@@ -16,8 +16,6 @@ alias enq="emacs -Q -nw"
 alias path='echo -e ${PATH//:/\\n}'
 
 alias grep='grep --color=auto'
-alias fgrep='fgrep --color=auto'
-alias egrep='egrep --color=auto'
 
 cal() {
     ncal -bM ${1:--3}
@@ -37,16 +35,6 @@ goprivoxy() {
 
 mcd () {
     mkdir -p -- "$*" ; builtin cd -- "$*" ;
-}
-
-mans () {
-    man $1 | grep -iC2 --color=always $2 | less ;
-}
-
-# build-deps cleanup
-# http://www.webupd8.org/2010/10/undo-apt-get-build-dep-remove-build.html
-aptitude-remove-dep() {
-    sudo aptitude markauto $(apt-cache showsrc "$1" | grep Build-Depends | perl -p -e 's/(?:[\[(].+?[\])]|Build-Depends:|,|\|)//g');
 }
 
 visit_efs () {
