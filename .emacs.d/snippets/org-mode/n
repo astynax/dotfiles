@@ -1,0 +1,5 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: NAME property
+# key: <n
+# --
+#+NAME: $0

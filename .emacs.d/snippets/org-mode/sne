@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: sne: named noweb chunk
+# key: sne
+# --
+#+NAME: $1
+#+BEGIN_SRC $2 :export no :noweb yes
+$0
+#+END_SRC
