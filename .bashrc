@@ -144,6 +144,15 @@ if [[ ! -v WASMER_DIR ]]; then
     fi
 fi
 
+if [[ ! -v HOMEBREW_PREFIX && -d "/home/astynax/.linuxbrew" ]]; then
+    export HOMEBREW_PREFIX="/home/astynax/.linuxbrew"
+    export HOMEBREW_CELLAR="$HOMEBREW_PREFIX/Cellar"
+    export HOMEBREW_REPOSITORY="$HOMEBREW_PREFIX/Homebrew"
+    export PATH="$HOMEBREW_PREFIX/bin:$HOMEBREW_PREFIX/sbin:$PATH"
+    export MANPATH="$HOMEBREW_PREFIX/share/man:$MANPATH"
+    export INFOPATH="$HOMEBREW_PREFIX/share/info:$INFOPATH"
+fi
+
 # .ok (https://github.com/secretGeek/ok-bash)
 if ! declare -f ok > /dev/null; then
     if [[ ! -v _OK__PATH_TO_ME ]]; then
