@@ -149,7 +149,6 @@
   (before-save . my/force-backup-of-buffer)
 
   :custom
-  (require-final-newline t)
   ;; backup settings
   (backup-directory-alist `((".*" . ,my/backup-directory-per-save)))
   (backup-by-copying t)
@@ -160,8 +159,6 @@
   (vc-make-backup-files t)
   ;; autosave
   (auto-save-default nil)
-  ;; no TABs in source
-  (indent-tabs-mode nil)
 
   :config
   (put 'create-lockfiles 'safe-local-variable #'booleanp))
@@ -405,6 +402,9 @@ _j_ ^ ^ _l_ _=_:equalize
 
   :diminish
 
+  :bind
+  ([remap insert-char] . counsel-unicode-char)
+
   :config
   (counsel-mode 1))
 
@@ -514,34 +514,34 @@ _j_ ^ ^ _l_ _=_:equalize
   :preface
   (defun my/whitespace-prog-mode ()
     "whitespace mode for prog buffers"
-    (setq-local require-final-newline t)
-    (setq-local next-line-add-newlines nil)
-    (setq-local whitespace-style '(face lines-tail trailing tab-mark))
+    (setq-local whitespace-style '(face lines-tail tab-mark))
     (setq-local whitespace-line-column 80)
-    (whitespace-mode t)
     (toggle-truncate-lines t)
-    ;; trim triling spaces on save
-    (add-hook 'before-save-hook 'delete-trailing-whitespace t t))
-
-  (defun my/whitespace-text-mode ()
-    "whitespace mode for text buffers"
-    (setq-local require-final-newline t)
-    (setq-local next-line-add-newlines nil)
-    (setq-local whitespace-style '(face trailing tab-mark))
-    (whitespace-mode t)
-    ;; trim triling spaces on save
-    (add-hook 'before-save-hook 'delete-trailing-whitespace t t))
+    (whitespace-mode t))
 
   :hook
   (prog-mode . my/whitespace-prog-mode)
-  (text-mode . my/whitespace-text-mode)
 
   :custom-face
   (whitespace-line ((t (:background "moccasin" :underline (:color foreground-color :style wave)))))
   (whitespace-tab ((t (:foreground "brown" :inverse-video nil :underline t))))
 
   :custom
-  (default-tab-width 4))
+  (indent-tabs-mode nil)
+  (tab-width 4)
+  (mode-require-final-newline nil)
+  (next-line-add-newlines t))
+
+(use-package ethan-wspace
+  :demand t
+
+  :commands
+  (global-ethan-wspace-mode)
+
+  :bind ("C-c S" . ethan-wspace-clean-all)
+
+  :config
+  (global-ethan-wspace-mode 1))
 
 (use-package shrink-whitespace
   :bind
