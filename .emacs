@@ -254,8 +254,13 @@
 
 ;;;; Which key
 (use-package which-key
+  :demand
+
   :diminish
   (which-key-mode "")
+
+  :bind
+  ("C-h C-k" . which-key-show-top-level)
 
   :custom
   (which-key-popup-type 'side-window)
@@ -264,6 +269,14 @@
 
   :config
   (which-key-mode))
+
+;;;; Discover my major
+(use-package discover-my-major
+  :commands
+  (discover-my-major discover-my-mode)
+
+  :bind
+  ("C-h C-m" . discover-my-major))
 
 ;;;; Global text scale
 ;; source: https://www.emacswiki.org/emacs/GlobalTextScaleMode
@@ -313,22 +326,29 @@
   ("C-x 4 o" . ace-swap-window))
 
 ;;;; Window sizing
-(defhydra hydra-window-sizing (:hint nil)
-  "
+(use-package my/window-sizing
+  :ensure nil
+
+  :preface
+  (defhydra hydra-window-sizing (:hint nil)
+    "
 ^Window sizing^
 ^ ^ _i_ ^ ^ _+_:balance
 _j_ ^ ^ _l_ _=_:equalize
 ^ ^ _k_ ^ ^ _q_:quit mode
 "
-  ("j" shrink-window-horizontally)
-  ("l" enlarge-window-horizontally)
-  ("i" shrink-window)
-  ("k" enlarge-window)
-  ("+" balance-windows)
-  ("=" balance-windows-area)
-  ("q" nil))
+    ("j" shrink-window-horizontally)
+    ("l" enlarge-window-horizontally)
+    ("i" shrink-window)
+    ("k" enlarge-window)
+    ("+" balance-windows)
+    ("=" balance-windows-area)
+    ("q" nil))
 
-(bind-key "w" 'hydra-window-sizing/body mode-specific-map)
+  (provide 'my/window-sizing)
+
+  :bind
+  ("C-x 4 w" . 'hydra-window-sizing/body))
 
 ;;;; Fullframe
 (use-package fullframe
@@ -568,6 +588,46 @@ _j_ ^ ^ _l_ _=_:equalize
   :bind
   ("M-]" . er/expand-region)
   ("M-[" . er/contract-region))
+
+;;;; Duplicate BoL or region
+(use-package my/duplicate-things
+  :ensure nil
+
+  :preface
+  ;; Duplicate start of line or region with C-M-<end>.
+  ;; From http://www.emacswiki.org/emacs/DuplicateStartOfLineOrRegio
+  (defun my/duplicate-things/duplicate-start-of-line-or-region ()
+    (interactive)
+    (if mark-active
+        (my/duplicate-things/duplicate-region)
+      (my/duplicate-things/duplicate-start-of-line)))
+
+  (defun my/duplicate-things/duplicate-start-of-line ()
+    (if (bolp)
+        (progn
+          (end-of-line)
+          (duplicate-start-of-line)
+          (beginning-of-line))
+      (let ((text (buffer-substring (point)
+                                    (beginning-of-thing 'line))))
+        (forward-line)
+        (push-mark)
+        (insert text)
+        (open-line 1))))
+
+  (defun my/duplicate-things/duplicate-region ()
+    (let* ((end (region-end))
+           (text (buffer-substring (region-beginning) end)))
+      (goto-char end)
+      (insert text)
+      (push-mark end)
+      (setq deactivate-mark nil)
+      (exchange-point-and-mark)))
+
+  (provide 'my/duplicate-things)
+
+  :bind
+  ("C-M-<end>" . my/duplicate-things/duplicate-start-of-line-or-region))
 
 ;;;; Case formatting
 (use-package caseformat
@@ -1342,6 +1402,17 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;; IDE
 ;;;; Autocompletion
+(use-package hippie
+  :ensure nil
+
+  :bind
+  ([remap dabbrev-expand] . hippie-expand)
+
+  :config
+  (ert--remove-from-list
+   'hippie-expand-try-functions-list
+   'try-expand-line))
+
 (use-package company
   :ensure t
   :demand
@@ -1361,6 +1432,7 @@ _j_ ^ ^ _l_ _=_:equalize
    ("C-p" . company-select-previous))
 
   :custom
+  (company-minimum-prefix-length 2)
   (company-tooltip-limit 20)
   (company-begin-commands '(self-insert-command))
   (company-selection-wrap-around t)
@@ -1369,21 +1441,11 @@ _j_ ^ ^ _l_ _=_:equalize
   (company-require-match nil)
   (company-dabbrev-downcase nil)
   (company-dabbrev-ignore-case nil)
+  (company-transformers '(company-sort-by-occurrence))
 
   :config
   (put 'company-backends 'safe-local-variable #'listp)
   (global-company-mode t))
-
-(use-package hippie
-  :ensure nil
-
-  :bind
-  ([remap dabbrev-expand] . hippie-expand)
-
-  :config
-  (ert--remove-from-list
-   'hippie-expand-try-functions-list
-   'try-expand-line))
 
 (use-package company-try-hard
   :ensure t
@@ -1391,11 +1453,9 @@ _j_ ^ ^ _l_ _=_:equalize
   :after (company)
 
   :bind
-  ("C-c M-/" . company-try-hard)
-
   (:map
    company-active-map
-   ("C-c M-/" . company-try-hard)))
+   ("M-<tab>" . company-try-hard)))
 
 (use-package company-flx
   :ensure t
@@ -1412,13 +1472,16 @@ _j_ ^ ^ _l_ _=_:equalize
 
   :diminish company-quickhelp-mode
 
+  :custom
+  (company-quickhelp-delay 1)
+
   :bind
   (:map
    company-active-map
    ("C-h" . company-quickhelp-manual-begin))
 
   :config
-  (company-quickhelp-mode t))
+  (company-quickhelp-mode 1))
 
 ;;;; Flycheck
 (use-package flycheck
@@ -1438,9 +1501,7 @@ _j_ ^ ^ _l_ _=_:equalize
   :bind
   (:map
    flycheck-mode-map
-   ("<f5>" . flycheck-buffer)
-   ("<f7>" . flycheck-previous-error)
-   ("<f8>" . flycheck-next-error)))
+   ("<f5>" . flycheck-buffer)))
 
 (use-package flycheck-color-mode-line
   :ensure t
@@ -1450,6 +1511,7 @@ _j_ ^ ^ _l_ _=_:equalize
   :hook
   (flycheck-mode . flycheck-color-mode-line-mode))
 
+;;;; Flymake
 (use-package flymake
   :ensure nil
 
@@ -1465,9 +1527,10 @@ _j_ ^ ^ _l_ _=_:equalize
   :bind
   (:map
    my/flymake-minor-mode-map
-   ;; ("<f5>" . flycheck-buffer)
-   ("<f7>" . flymake-goto-prev-error)
-   ("<f8>" . flymake-goto-next-error)))
+   ("M-g p" . flymake-goto-prev-error)
+   ("M-g n" . flymake-goto-next-error)
+   ("M-g M-p" . flymake-goto-prev-error)
+   ("M-g M-n" . flymake-goto-next-error)))
 
 ;;;; Yasnippet
 (bind-keys
