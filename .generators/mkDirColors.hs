@@ -1,5 +1,5 @@
 #!/usr/bin/env stack
--- stack --resolver=lts-11.0 runghc --package relude
+-- stack --resolver=lts-13.24 runghc --package relude
 
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
@@ -60,7 +60,7 @@ dircolors = unlines $ concat
     ..~ aBold <> fRed
 
   , h "Video"
-  , [".mp4", ".flv", ".avi", ".mkv", ".apng", ".ogv"]
+  , [".mp4", ".flv", ".avi", ".mkv", ".apng", ".ogv", ".webm"]
     ..~ aBold <> fYellow
 
   , h "Documents"
