@@ -549,8 +549,7 @@ _j_ ^ ^ _l_ _=_:equalize
   :custom
   (indent-tabs-mode nil)
   (tab-width 4)
-  (mode-require-final-newline nil)
-  (next-line-add-newlines t))
+  (mode-require-final-newline nil))
 
 (use-package ethan-wspace
   :demand t
@@ -643,6 +642,13 @@ _j_ ^ ^ _l_ _=_:equalize
    ("s". string-inflection-underscore)
    ("C". string-inflection-camelcase)
    ("k". string-inflection-kebab-case)))
+
+;;;; Quotes
+(use-package cycle-quotes
+  :bind
+  (:map
+   mode-specific-map
+   ("q" . cycle-quotes)))
 
 ;;;; Undo tree
 (use-package undo-tree
@@ -1824,6 +1830,15 @@ _j_ ^ ^ _l_ _=_:equalize
       :kill-buffer))))
 
 (put 'org-default-notes-file           'safe-local-variable #'stringp)
+
+(use-package org-bullets
+  :after (org)
+
+  :hook
+  (org-mode . org-bullets-mode)
+
+  :custom
+  (org-bullets-bullet-list '("●" "⭗" "⭘" "○")))
 
 (use-package htmlize
   :after (org))
