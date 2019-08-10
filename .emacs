@@ -518,8 +518,6 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; Indirect region editing
 (use-package edit-indirect
-  :ensure t
-
   :bind
   (:map
    mode-specific-map
@@ -862,6 +860,43 @@ _j_ ^ ^ _l_ _=_:equalize
 
 (advice-add #'xref-goto-xref :around #'my/do-then-quit)
 
+;;; Version Control
+;;;; Git/Magit
+(use-package magit
+  :custom
+  (magit-log-arguments '("--graph" "--color" "--decorate"))
+
+  :bind
+  ("C-x g" . magit-status))
+
+(use-package git-timemachine
+  :commands (git-timemachine))
+
+(use-package git-link
+  :bind
+  ("C-c M-l" . git-link))
+
+;;;; GitHub
+(use-package my/github
+  :ensure nil
+
+  :preface
+  (defun my/github/match-file-url (s)
+    "Extract a path and optional line number from GitHub URL"
+    (when (string-match
+           (rx bol
+               "https://github.com/"
+               (repeat 4 (seq (one-or-more (not (any ?/)))
+                              (char ?/)))
+               (group (one-or-more (not (any ?#))))
+               (optional (seq "#L"
+                              (group (one-or-more digit))))
+               eol)
+           s)
+      (list (match-string 1 s) (match-string 2 s))))
+
+  (provide 'my/github))
+
 ;;; Languages
 ;;;; LSP
 (use-package lsp-mode
@@ -1037,8 +1072,6 @@ _j_ ^ ^ _l_ _=_:equalize
                (insert l2) (newline)))))))))
 
 (use-package hi2
-  :ensure t
-
   :after (haskell-mode)
 
   :diminish hi2-mode
@@ -1058,7 +1091,7 @@ _j_ ^ ^ _l_ _=_:equalize
   (put 'hi2-layout-offset 'safe-local-variable #'numberp))
 
 (use-package intero
-  :ensure t
+  :if (executable-find "intero")
 
   :after (haskell-mode)
 
@@ -1084,7 +1117,7 @@ _j_ ^ ^ _l_ _=_:equalize
 (put 'haskell-hayoo-url 'safe-local-variable #'stringp)
 
 (use-package hindent
-  :ensure t
+  :if (executable-find "hindent")
 
   :after (haskell-mode)
 
@@ -1104,17 +1137,19 @@ _j_ ^ ^ _l_ _=_:equalize
 (put 'hindent-reformat-buffer-on-save 'safe-local-variable #'booleanp)
 
 (use-package company-cabal
-  :ensure t
-
   :after (haskell-mode)
 
   :config
   (add-to-list 'company-backends 'company-cabal))
 
 (use-package shakespeare-mode
-  :ensure t
-
   :after (haskell-mode))
+
+(use-package inf-haskell
+  :ensure nil
+
+  :custom
+  (haskell-process-type 'stack-ghci))
 
 (put 'flycheck-ghc-language-extensions   'safe-local-variable #'listp)
 (put 'flycheck-hlint-language-extensions 'safe-local-variable #'listp)
@@ -1146,8 +1181,6 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; Rust
 (use-package rust-mode
-  :ensure t
-
   :mode
   ("\\.rs\\'" . rust-mode)
 
@@ -1156,8 +1189,6 @@ _j_ ^ ^ _l_ _=_:equalize
   (add-to-list 'company-keywords-alist (cons 'rust-mode rust-mode-keywords)))
 
 (use-package flycheck-rust
-  :ensure t
-
   :after (rust-mode)
 
   :hook
@@ -1170,8 +1201,6 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; Markdown
 (use-package markdown-mode
-  :ensure t
-
   :commands (markdown-mode gfm-mode)
 
   :mode
@@ -1189,28 +1218,14 @@ _j_ ^ ^ _l_ _=_:equalize
 (use-package my/markdown
   :ensure nil
 
-  :after markdown-mode
+  :after (markdown-mode my/github)
 
   :preface
-  (defun my/match-gh-file-url (s)
-    "Extract a path and optional line number from GitHub URL"
-    (when (string-match
-           (rx bol
-               "https://github.com/"
-               (repeat 4 (seq (one-or-more (not (any ?/)))
-                              (char ?/)))
-               (group (one-or-more (not (any ?#))))
-               (optional (seq "#L"
-                              (group (one-or-more digit))))
-               eol)
-           s)
-      (list (match-string 1 s) (match-string 2 s))))
-
   (defun my/markdown/capture-gh-link ()
     "Insert a MD-link for the killed GitHub URL."
     (interactive)
     (let* ((url (current-kill 0))
-           (match (my/match-gh-file-url url))
+           (match (my/github/match-file-url url))
            (path (car match))
            (line (car (cdr match))))
       (if path
@@ -1248,8 +1263,6 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; Elm
 (use-package elm-mode
-  :ensure t
-
   :mode "\\.elm\\'"
 
   :hook
@@ -1267,8 +1280,6 @@ _j_ ^ ^ _l_ _=_:equalize
 (put 'elm-compile-arguments 'safe-local-variable #'listp)
 
 (use-package flycheck-elm
-  :ensure t
-
   :after (elm-mode)
 
   :hook
@@ -1277,8 +1288,6 @@ _j_ ^ ^ _l_ _=_:equalize
 ;;;; Go
 (use-package go-mode
   :if (executable-find "go")
-
-  :ensure t
 
   :mode "\\.go\\'"
 
@@ -1297,13 +1306,9 @@ _j_ ^ ^ _l_ _=_:equalize
 (use-package purescript-mode
   :if (executable-find "purs")
 
-  :ensure t
-
   :mode "\\.purs\\'")
 
 (use-package psc-ide
-  :ensure t
-
   :after (purescript-mode)
 
   :diminish psc-ide-mode
@@ -1320,8 +1325,6 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; Web
 (use-package web-mode
-  :ensure t
-
   :commands (web-mode)
 
   :init
@@ -1356,20 +1359,14 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; TOML
 (use-package toml-mode
-  :ensure t
-
   :mode "\\.toml\\'")
 
 ;;;; CSV
 (use-package csv-mode
-  :ensure t
-
   :mode "\\.[Cc][Ss][Vv]\\'")
 
 ;;;; Nix
 (use-package nix-mode
-  :ensure t
-
   :mode "\\.nix\\'")
 
 ;;;; SQL
@@ -1420,7 +1417,6 @@ _j_ ^ ^ _l_ _=_:equalize
    'try-expand-line))
 
 (use-package company
-  :ensure t
   :demand
 
   :diminish
@@ -1454,8 +1450,6 @@ _j_ ^ ^ _l_ _=_:equalize
   (global-company-mode t))
 
 (use-package company-try-hard
-  :ensure t
-
   :after (company)
 
   :bind
@@ -1464,16 +1458,12 @@ _j_ ^ ^ _l_ _=_:equalize
    ("M-<tab>" . company-try-hard)))
 
 (use-package company-flx
-  :ensure t
-
   :after (company)
 
   :hook
   (company-mode . company-flx-mode))
 
 (use-package company-quickhelp
-  :ensure t
-
   :after (company)
 
   :diminish company-quickhelp-mode
@@ -1491,8 +1481,6 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; Flycheck
 (use-package flycheck
-  :ensure t
-
   :diminish "Ⓕ"
 
   :preface
@@ -1510,8 +1498,6 @@ _j_ ^ ^ _l_ _=_:equalize
    ("<f5>" . flycheck-buffer)))
 
 (use-package flycheck-color-mode-line
-  :ensure t
-
   :after (flycheck)
 
   :hook
@@ -1544,8 +1530,6 @@ _j_ ^ ^ _l_ _=_:equalize
  :prefix-map my/yas-map)
 
 (use-package yasnippet
-  :ensure t
-
   :diminish (yas-minor-mode . "Ⓨ")
 
   :bind
@@ -1570,8 +1554,6 @@ _j_ ^ ^ _l_ _=_:equalize
     (add-to-list 'yas/snippet-dirs "~/.emacs.d/snippets")))
 
 (use-package yasnippet-snippets
-  :ensure t
-
   :after (yasnippet))
 
 ;;;; Grep'likes
@@ -1619,21 +1601,6 @@ _j_ ^ ^ _l_ _=_:equalize
    projectile-command-map
    ("s r" . projectile-ripgrep)))
 
-;;;; Git/Magit
-(use-package magit
-  :ensure t
-
-  :custom
-  (magit-log-arguments '("--graph" "--color" "--decorate"))
-
-  :bind
-  ("C-x g" . magit-status))
-
-(use-package git-timemachine
-  :ensure t
-
-  :commands (git-timemachine))
-
 ;;;; YankPad
 (use-package yankpad
   :custom
@@ -1657,12 +1624,9 @@ _j_ ^ ^ _l_ _=_:equalize
    ("p" . terminal-here-project-launch)))
 
 ;;;; RESTclient
-(use-package restclient
-  :ensure t)
+(use-package restclient)
 
 (use-package company-restclient
-  :ensure t
-
   :after (restclient)
 
   :hook
@@ -1672,6 +1636,10 @@ _j_ ^ ^ _l_ _=_:equalize
   (defun my/restclient-mode-hook ()
     (add-to-list 'company-backends
                  'company-restclient)))
+
+;;;; Docker
+(use-package docker
+  :commands (docker))
 
 ;;; Spell Checking
 (use-package ispell
@@ -1766,11 +1734,13 @@ _j_ ^ ^ _l_ _=_:equalize
   :config
   (require 'ob-shell)
   (require 'ob-python)
+  (require 'ob-haskell)
 
   (defvar my/org-babel-langs
     '((shell . t)
       (emacs-lisp . t)
-      (python . t)))
+      (python . t)
+      (haskell . t)))
 
   (defun my/org-babel-load-langs ()
     (org-babel-do-load-languages
@@ -1854,14 +1824,6 @@ _j_ ^ ^ _l_ _=_:equalize
    org-mode-map
    ("C-c l" . org-cliplink)))
 
-(use-package org-brain
-  :after (org)
-
-  :commands (org-brain-visualize)
-
-  :config
-  (setq org-brain-path "~/Dropbox/org/brain"))
-
 (use-package ox-gfm
   :after (org))
 
@@ -1876,6 +1838,34 @@ _j_ ^ ^ _l_ _=_:equalize
   :config
   (add-to-list 'my/org-babel-langs '(restclient . t))
   (my/org-babel-load-langs))
+
+(use-package my/org
+  :ensure nil
+
+  :after (org my/github)
+
+  :preface
+  (defun my/org/capture-gh-link ()
+    "Insert a MD-link for the killed GitHub URL."
+    (interactive)
+    (let* ((url (current-kill 0))
+           (match (my/github/match-file-url url))
+           (path (car match))
+           (line (car (cdr match))))
+      (if path
+          (insert
+           (format "[[%s][%s%s]]"
+                   url
+                   path
+                   (if line (format ":%s" line) "")))
+        (message "%s" "Non-github link!"))))
+
+  (provide 'my/org)
+
+  :bind
+  (:map
+   org-mode-map
+   ("C-c l" . my/org/capture-gh-link)))
 
 ;;;; Outshine
 (use-package outshine
