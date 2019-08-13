@@ -30,7 +30,7 @@ set $dmenu_run "rofi -show run"
 set $dmenu_apps "rofi -dmenu -i -p \"App:\""
 
 ################ RULES ######################################################
-for_window [class="^Keepassx$"] floating enable border pixel 1
+for_window [class="^keepassxc$"] floating enable border pixel 1
 for_window [class="^BasicWin$"] floating enable
 for_window [class="^Tk$"] floating enable
 for_window [class="^Update-manager$"] floating disable
@@ -74,8 +74,8 @@ bindsym $mod+Shift+v exec --no-startup-id "$cfg_dir/sound_volume"
 # Toggle trackpoint & trackpad
 bindsym $mod+F5 exec --no-startup-id "$cfg_dir/toggle_trackpoint"
 
-# keepassx
-bindsym $mod+x exec --no-startup-id "keepassx"
+# KeePassXC
+bindsym $mod+x exec --no-startup-id "keepassxc"
 
 # i3lock
 bindsym $mod+Mod1+l exec --no-startup-id "i3lock -c 000000"
