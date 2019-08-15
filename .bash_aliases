@@ -34,7 +34,19 @@ goprivoxy() {
 }
 
 mcd () {
-    mkdir -p -- "$*" ; builtin cd -- "$*" ;
+    mkdir -p -- "$*" && builtin cd -- "$*"
+}
+
+timestamp () {
+    date +%Y%M%d_%H%m%S;
+}
+
+gotempdir () {
+    local DIR=/tmp/$(timestamp)
+    if [[ ! -a "$DIR" ]]; then
+        read -n 1 -p "Folder \"$DIR\" will be created..."
+        mkdir -p -- "$DIR" && builtin cd -- "$DIR"
+    fi
 }
 
 visit_efs () {
