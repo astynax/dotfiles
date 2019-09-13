@@ -11,7 +11,7 @@
 
 (global-set-key (kbd "M-<f12>") 'my/configure)
 
-;;; Package menagement
+;;; Package management
 (require 'package)
 (setq package-archives
       `(("gnu" . "https://elpa.gnu.org/packages/")
@@ -626,6 +626,48 @@ _j_ ^ ^ _l_ _=_:equalize
   :bind
   ("C-M-<end>" . my/duplicate-things/duplicate-start-of-line-or-region))
 
+;;;; Undo tree
+(use-package undo-tree
+  :diminish
+
+  :custom
+  (undo-tree-auto-save-history t)
+  (undo-tree-history-directory-alist
+   `((".*" . ,(format "%sundo-tree-history" user-emacs-directory))))
+
+  :config
+  (global-undo-tree-mode))
+
+;;;; SmartParens & wrapping
+(use-package smartparens
+  :diminish (smartparens-mode . "🄢")
+
+  :preface
+  (defun my/no-electric-with-startparens ()
+    "Disables electric parens with smartparens enabled"
+    (electric-pair-local-mode -1))
+
+  :hook
+  (smartparens-mode . my/no-electric-with-startparens)
+  (emacs-lisp-mode . smartparens-strict-mode)
+  (lisp-mode . smartparens-strict-mode)
+  (lisp-interaction-mode . smartparens-strict-mode)
+  (scheme-mode . smartparens-strict-mode)
+  (eval-expression-minibuffer-setup . smartparens-strict-mode)
+
+  :custom
+  (sp-base-key-bindings 'sp)
+
+  :bind
+  (:map
+   sp-keymap
+   ("M-J" . sp-split-sexp)
+   ("C-M-J" . sp-join-sexp))
+
+  :config
+  (require 'smartparens-config)
+  (sp-local-pair 'minibuffer-inactive-mode "'" nil :actions nil))
+
 ;;;; Case formatting
 (use-package caseformat
   :bind
@@ -647,60 +689,6 @@ _j_ ^ ^ _l_ _=_:equalize
   (:map
    mode-specific-map
    ("q" . cycle-quotes)))
-
-;;;; Undo tree
-(use-package undo-tree
-  :diminish
-
-  :custom
-  (undo-tree-auto-save-history t)
-  (undo-tree-history-directory-alist
-   `((".*" . ,(format "%sundo-tree-history" user-emacs-directory))))
-
-  :config
-  (global-undo-tree-mode))
-
-;;;; SmartParens
-(use-package smartparens
-  :diminish (smartparens-mode . "🄢")
-
-  :preface
-  (defun my/no-electric-with-startparens ()
-    "Disables electric parens with smartparens enabled"
-    (electric-pair-local-mode -1))
-
-  :hook
-  (smartparens-mode . my/no-electric-with-startparens)
-  (emacs-lisp-mode . smartparens-strict-mode)
-  (ielm-mode . smartparens-strict-mode)
-  (lisp-mode . smartparens-strict-mode)
-  (lisp-interaction-mode . smartparens-strict-mode)
-  (scheme-mode . smartparens-strict-mode)
-  (clojure-mode . smartparens-strict-mode)
-  (cider-repl-mode . smartparens-strict-mode)
-  (cider-mode . smartparens-strict-mode)
-  (eval-expression-minibuffer-setup . smartparens-strict-mode)
-
-  :bind
-  (:map
-   sp-keymap
-   ;; split/join/unwrap
-   ("C-c j" . sp-join-sexp)
-   ("C-c J" . sp-split-sexp)
-   ("C-c M-j" . sp-splice-sexp)
-   ;; barf/slurp
-   ("C-)" . sp-forward-slurp-sexp)
-   ("C-}" . sp-forward-barf-sexp)
-   ("C-(" . sp-backward-slurp-sexp)
-   ("C-{" . sp-backward-barf-sexp)
-   ;; closing brackets of any kinds
-   (")" . sp-up-sexp)
-   ("}" . sp-up-sexp)
-   ("]" . sp-up-sexp))
-
-  :config
-  (require 'smartparens-config)
-  (sp-local-pair 'minibuffer-inactive-mode "'" nil :actions nil))
 
 ;;;; Multiple Cursors
 (use-package multiple-cursors
@@ -917,13 +905,16 @@ _j_ ^ ^ _l_ _=_:equalize
   (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode))
 
 ;;;; Racket (Geiser)
-(use-package geiser)
+(use-package geiser
+  :hook
+  (racket-mode . smartparens-strict-mode))
 
 ;;;; Clojure
 (use-package clojure-mode
   :hook
   (clojure-mode . aggressive-indent-mode)
   (clojure-mode . rainbow-delimiters-mode)
+  (clojure-mode . smartparens-strict-mode)
 
   :config
   ;; some unicode
@@ -960,7 +951,9 @@ _j_ ^ ^ _l_ _=_:equalize
 
   :hook
   (cider-repl-mode . rainbow-delimiters-mode)
+  (cider-repl-mode . smartparens-strict-mode)
   (cider-mode . rainbow-delimiters-mode)
+  (cider-mode . smartparens-strict-mode)
 
   :custom
   (cider-repl-result-prefix ";; => "))
@@ -1003,6 +996,7 @@ _j_ ^ ^ _l_ _=_:equalize
   (haskell-mode . hi2-mode)
   (haskell-mode . eldoc-mode)
   (haskell-mode . flycheck-mode)
+  (haskell-mode . smartparens-mode)
   (haskell-mode . my/boot-haskell)
   (haskell-yesod-parse-routes-mode
    . my/haskell-yesod-parse-routes-mode-hook)
@@ -1163,6 +1157,9 @@ _j_ ^ ^ _l_ _=_:equalize
   :mode
   ("\\.py\\'" . python-mode)
 
+  :hook
+  (python-mode . smartparens-mode)
+
   :bind
   (:map
    python-mode-map
@@ -1210,10 +1207,15 @@ _j_ ^ ^ _l_ _=_:equalize
 
   :hook
   (markdown-mode . yas-minor-mode)
+  (markdown-mode . smartparens-mode)
   (gfm-mode . yas-minor-mode)
+  (gfm-mode . smartparens-mode)
 
   :custom
-  (markdown-command "pandoc"))
+  (markdown-command "pandoc")
+
+  :config
+  (unbind-key "DEL" gfm-mode-map))
 
 (use-package my/markdown
   :ensure nil
@@ -1351,6 +1353,7 @@ _j_ ^ ^ _l_ _=_:equalize
 
   :hook
   (yaml-mode . highlight-indentation-mode)
+  (yaml-mode . smartparens-mode)
 
   :bind
   (:map
@@ -1359,7 +1362,10 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; TOML
 (use-package toml-mode
-  :mode "\\.toml\\'")
+  :mode "\\.toml\\'"
+
+  :hook
+  (toml-mode . smartparens-mode))
 
 ;;;; CSV
 (use-package csv-mode
@@ -1706,6 +1712,7 @@ _j_ ^ ^ _l_ _=_:equalize
 
   :hook
   (org-mode . yas-minor-mode)
+  (org-mode . smartparens-mode)
   (org-mode . my/org-mode-hook)
 
   :custom-face
@@ -1716,20 +1723,21 @@ _j_ ^ ^ _l_ _=_:equalize
   (org-tag ((t (:weight normal :height 0.8))))
 
   :custom
-  (org-todo-keywords '((sequence "TODO" "IN-PROGRESS" "DONE")))
-  (org-enforce-todo-dependencies t)
-  (org-hide-leading-stars t)
-  (org-outline-path-complete-in-steps nil)
-  (org-ellipsis "…")
-  (org-edit-src-content-indentation 0)
-  (org-src-window-setup 'current-window)
-  (org-src-preserve-indentation t)
   (org-default-notes-file "~/Dropbox/org/buffer.org")
-  (org-html-preamble nil)
-  (org-html-postamble nil)
-  (org-export-with-toc nil)
-  (org-use-sub-superscripts nil)
+  (org-edit-src-content-indentation 0)
+  (org-ellipsis "…")
+  (org-enforce-todo-dependencies t)
+  (org-export-use-babel nil)
   (org-export-with-sub-superscripts nil)
+  (org-export-with-toc nil)
+  (org-hide-leading-stars t)
+  (org-html-postamble nil)
+  (org-html-preamble nil)
+  (org-outline-path-complete-in-steps nil)
+  (org-src-preserve-indentation t)
+  (org-src-window-setup 'current-window)
+  (org-todo-keywords '((sequence "TODO" "IN-PROGRESS" "DONE")))
+  (org-use-sub-superscripts nil)
 
   :config
   (require 'ob-shell)
