@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: Single .PHONY command
+# key: cmd
+# expand-env: ((yas-indent-line 'column))
+# --
+.PHONY: ${1:test}
+$1:
+	@$0
