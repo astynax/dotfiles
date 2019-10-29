@@ -534,8 +534,9 @@ _j_ ^ ^ _l_ _=_:equalize
     "whitespace mode for prog buffers"
     (setq-local whitespace-style '(face lines-tail tab-mark))
     (setq-local whitespace-line-column 80)
-    (toggle-truncate-lines t)
-    (whitespace-mode t))
+    (whitespace-mode t)
+    (setq-local truncate-lines t)
+    (message "truncate-lines == %s" truncate-lines))
 
   :hook
   (prog-mode . my/whitespace-prog-mode)
@@ -966,7 +967,8 @@ _j_ ^ ^ _l_ _=_:equalize
   (add-to-list 'magic-mode-alist '(".* stack" . haskell-mode))
 
   :mode
-  ("\\.l?hs\\'" . haskell-mode)
+  ("\\.hs\\'" . haskell-mode)
+  ("\\.lhs\\'" . literate-haskell-mode)
   ("\\.cabal\\'" . haskell-cabal-mode)
   ("\\.hamlet\\'" . shakespeare-hamlet-mode)
   ("\\.julius\\'" . shakespeare-julius-mode)
@@ -987,7 +989,6 @@ _j_ ^ ^ _l_ _=_:equalize
 
   (:map
    haskell-mode-map
-   ("C-c s" . my/snakify-region)
    ("<f9>" . my/haskell-jump-to-loc))
 
   :hook
@@ -1004,7 +1005,7 @@ _j_ ^ ^ _l_ _=_:equalize
   :config
   (defun my/haskell-yesod-parse-routes-mode-hook ()
     "Disables the line wrapping and auto-fill-mode"
-    (toggle-truncate-lines t))
+    (setq-local truncate-lines t))
 
   (defun my/haskell-jump-to-loc ()
     "Opens the location of error from primary buffer"
@@ -1026,12 +1027,6 @@ _j_ ^ ^ _l_ _=_:equalize
     (add-hook 'hack-local-variables-hook
               #'my/hack-locals-for-haskell
               nil t))
-
-  ;; snakify
-  (defun my/snakify-region (&optional b e)
-    (interactive "r")
-    (call-process-region
-     b e "snakify" t (current-buffer) t))
 
   ;; hemmet
   (defun my/hemmet-expand-region (&optional b e)
@@ -1070,19 +1065,19 @@ _j_ ^ ^ _l_ _=_:equalize
 
   :diminish hi2-mode
 
+  :custom
+  (hi2-layout-offset 2)
+  (hi2-left-offset 2)
+  (hi2-where-post-offset 2)
+
   :bind
   (:map
    hi2-mode-map
-   ("<tab>" . hi2-indent-line))
+   ("<tab>" . hi2-indent-line)))
 
-  :config
-  (setq hi2-layout-offset 2
-        hi2-left-offset 2
-        hi2-where-post-offset 2)
-
-  (put 'hi2-where-post-offset 'safe-local-variable #'numberp)
-  (put 'hi2-left-offset 'safe-local-variable #'numberp)
-  (put 'hi2-layout-offset 'safe-local-variable #'numberp))
+(put 'hi2-where-post-offset 'safe-local-variable #'numberp)
+(put 'hi2-left-offset 'safe-local-variable #'numberp)
+(put 'hi2-layout-offset 'safe-local-variable #'numberp)
 
 (use-package intero
   :if (executable-find "intero")
@@ -1252,7 +1247,7 @@ _j_ ^ ^ _l_ _=_:equalize
 (use-package my/markdown-binding-fixes
   :ensure nil
 
-  :after (markdown-mode gfm-mode)
+  :after markdown-mode
 
   :preface
   (provide 'my/markdown-binding-fixes)
@@ -1260,6 +1255,11 @@ _j_ ^ ^ _l_ _=_:equalize
   :bind
   (:map
    markdown-mode-map
+   ("C-." . undo-tree-undo)
+   ("C-," . undo-tree-redo))
+
+  (:map
+   gfm-mode-map
    ("C-." . undo-tree-undo)
    ("C-," . undo-tree-redo)))
 
@@ -1301,7 +1301,6 @@ _j_ ^ ^ _l_ _=_:equalize
   :config
   (defun my/go-mode-hook ()
     (add-hook 'before-save-hook #'gofmt-before-save)
-    (setq-local whitespace-style '(face lines-tail trailing))
     (flycheck-mode)))
 
 ;;;; PureScript
@@ -1761,7 +1760,7 @@ _j_ ^ ^ _l_ _=_:equalize
 
   (defun my/org-mode-hook ()
     "Tweaks an org-mode"
-    (toggle-truncate-lines nil))
+    (setq-local truncate-lines nil))
 
   (setq
    org-capture-templates
@@ -1808,6 +1807,7 @@ _j_ ^ ^ _l_ _=_:equalize
       :kill-buffer))))
 
 (put 'org-default-notes-file           'safe-local-variable #'stringp)
+(put 'org-export-use-babel             'safe-local-variable #'null)
 
 (use-package org-bullets
   :after (org)
