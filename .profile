@@ -25,6 +25,8 @@ _paths=(
     "$HOME/.poetry/bin"
     "$HOME/.pyenv/bin"
     "$HOME/.rbenv/bin"
+    "/opt/ghc/bin"
+    "/opt/cabal/bin"
 )
 for p in "${_paths[@]}"; do
     if [[ -d "$p" ]]; then
