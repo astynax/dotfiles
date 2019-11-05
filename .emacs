@@ -13,6 +13,7 @@
 
 ;;; Package management
 (require 'package)
+
 (setq package-archives
       `(("gnu" . "https://elpa.gnu.org/packages/")
         ("melpa" . "https://melpa.org/packages/")
@@ -21,6 +22,15 @@
 
 (setq package-enable-at-startup nil
       tls-checktrust "ask")
+
+(unless (package-installed-p 'gnu-elpa-keyring-update)
+  (setq-default package-check-signature 'allow-unsigned)
+  (setq-default package-unsigned-archives '("gnu"))
+  (package-refresh-contents)
+  (package-install 'gnu-elpa-keyring-update)
+  (kill-emacs))
+
+(require 'gnu-elpa-keyring-update)
 
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
@@ -189,11 +199,6 @@
   :ensure nil)
 
 (use-package dired-single)
-
-(use-package dired-details+
-  :custom
-  (dired-details-initially-hide nil)
-  (dired-details-propagate-flag nil))
 
 (use-package dired-subtree
   :bind
