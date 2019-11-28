@@ -30,7 +30,7 @@ set $dmenu_run "rofi -show run"
 set $dmenu_apps "rofi -dmenu -i -p \"App:\""
 
 ################ RULES ######################################################
-for_window [class="^keepassxc$"] floating enable border pixel 1
+for_window [class="^KeePassXC$"] floating enable border pixel 1
 for_window [class="^BasicWin$"] floating enable
 for_window [class="^Tk$"] floating enable
 for_window [class="^Update-manager$"] floating disable
