@@ -539,9 +539,8 @@ _j_ ^ ^ _l_ _=_:equalize
     "whitespace mode for prog buffers"
     (setq-local whitespace-style '(face lines-tail tab-mark))
     (setq-local whitespace-line-column 80)
-    (whitespace-mode t)
     (setq-local truncate-lines t)
-    (message "truncate-lines == %s" truncate-lines))
+    (whitespace-mode t))
 
   :hook
   (prog-mode . my/whitespace-prog-mode)
@@ -588,6 +587,7 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; Expand Region
 (use-package expand-region
+  :after (org)  ;; ugly hack :(
   :bind
   ("M-]" . er/expand-region)
   ("M-[" . er/contract-region))
@@ -675,10 +675,6 @@ _j_ ^ ^ _l_ _=_:equalize
   (sp-local-pair 'minibuffer-inactive-mode "'" nil :actions nil))
 
 ;;;; Case formatting
-(use-package caseformat
-  :bind
-  ("M-L" . caseformat-backward))
-
 (use-package string-inflection
   :bind
   (:prefix
@@ -801,7 +797,7 @@ _j_ ^ ^ _l_ _=_:equalize
   ("M-g SPC" . my/avy-map)
 
   :bind
-  ("M-SPC" . avy-goto-char)
+  ("M-SPC" . avy-goto-char-timer)
 
   (:map
    isearch-mode-map

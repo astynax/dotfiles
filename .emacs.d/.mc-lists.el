@@ -24,6 +24,7 @@
         kill-visual-line
         kmacro-end-or-call-macro
         markdown-demote
+        markdown-electric-backquote
         markdown-promote
         my/smarter-move-beginning-of-line
         org-beginning-of-line
@@ -45,6 +46,7 @@
         sp-kill-hybrid-sexp
         sp-kill-word
         sp-splice-sexp
+        string-inflection-all-cycle
         string-inflection-underscore
         swiper-mc
         typo-cycle-ellipsis
