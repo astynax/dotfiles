@@ -30,15 +30,15 @@ _poetry_c4ee3b97b177f8d5_complete()
             ;;
 
             (add)
-            opts="${opts} --allow-prereleases --dev --dry-run --extras --git --optional --path --platform --python"
+            opts="${opts} --allow-prereleases --dev --dry-run --extras --optional --platform --python"
             ;;
 
             (build)
             opts="${opts} --format"
             ;;
 
-            (cache:clear)
-            opts="${opts} --all"
+            (cache)
+            opts="${opts} "
             ;;
 
             (check)
@@ -46,23 +46,23 @@ _poetry_c4ee3b97b177f8d5_complete()
             ;;
 
             (config)
-            opts="${opts} --list --unset"
+            opts="${opts} --list --local --unset"
             ;;
 
-            (debug:info)
+            (debug)
             opts="${opts} "
             ;;
 
-            (debug:resolve)
-            opts="${opts} --extras --install --python --tree"
+            (env)
+            opts="${opts} "
             ;;
 
-            (develop)
-            opts="${opts} "
+            (export)
+            opts="${opts} --dev --extras --format --output --with-credentials --without-hashes"
             ;;
 
             (help)
-            opts="${opts} --format --raw"
+            opts="${opts} "
             ;;
 
             (init)
@@ -70,11 +70,7 @@ _poetry_c4ee3b97b177f8d5_complete()
             ;;
 
             (install)
-            opts="${opts} --develop --dry-run --extras --no-dev"
-            ;;
-
-            (list)
-            opts="${opts} --format --raw"
+            opts="${opts} --dry-run --extras --no-dev --no-root"
             ;;
 
             (lock)
@@ -86,7 +82,7 @@ _poetry_c4ee3b97b177f8d5_complete()
             ;;
 
             (publish)
-            opts="${opts} --build --password --repository --username"
+            opts="${opts} --build --cert --client-cert --password --repository --username"
             ;;
 
             (remove)
@@ -97,16 +93,12 @@ _poetry_c4ee3b97b177f8d5_complete()
             opts="${opts} "
             ;;
 
-            (script)
+            (search)
             opts="${opts} "
             ;;
 
-            (search)
-            opts="${opts} --only-name"
-            ;;
-
-            (self:update)
-            opts="${opts} --preview"
+            (self)
+            opts="${opts} "
             ;;
 
             (shell)
@@ -135,7 +127,7 @@ _poetry_c4ee3b97b177f8d5_complete()
 
     # completing for a command
     if [[ $cur == $com ]]; then
-        coms="about add build cache:clear check config debug:info debug:resolve develop help init install list lock new publish remove run script search self:update shell show update version"
+        coms="about add build cache check config debug env export help init install lock new publish remove run search self shell show update version"
 
         COMPREPLY=($(compgen -W "${coms}" -- ${cur}))
         __ltrim_colon_completions "$cur"
