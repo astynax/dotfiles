@@ -168,10 +168,9 @@
   (version-control t)
   (vc-make-backup-files t)
   ;; autosave
-  (auto-save-default nil)
+  (auto-save-default nil))
 
-  :config
-  (put 'create-lockfiles 'safe-local-variable #'booleanp))
+(put 'create-lockfiles 'safe-local-variable #'booleanp)
 
 (use-package autorevert
   :ensure nil
@@ -1017,17 +1016,10 @@ _j_ ^ ^ _l_ _=_:equalize
       (goto-line (string-to-number line))
       (move-to-column (max 0 (- (string-to-number col) 1)))))
 
-  (defun my/hack-locals-for-haskell ()
-    (when my/use-intero
-      (intero-mode)))
-
   (defun my/boot-haskell ()
     "Initialize haskell stuff"
     (interactive)
-    (setq tags-case-fold-search nil)
-    (add-hook 'hack-local-variables-hook
-              #'my/hack-locals-for-haskell
-              nil t))
+    (setq tags-case-fold-search nil))
 
   ;; hemmet
   (defun my/hemmet-expand-region (&optional b e)
@@ -1061,6 +1053,9 @@ _j_ ^ ^ _l_ _=_:equalize
                (insert l1) (newline)
                (insert l2) (newline)))))))))
 
+(put 'haskell-stylish-on-save 'safe-local-variable #'booleanp)
+(put 'haskell-hayoo-url 'safe-local-variable #'stringp)
+
 (use-package hi2
   :after (haskell-mode)
 
@@ -1079,32 +1074,6 @@ _j_ ^ ^ _l_ _=_:equalize
 (put 'hi2-where-post-offset 'safe-local-variable #'numberp)
 (put 'hi2-left-offset 'safe-local-variable #'numberp)
 (put 'hi2-layout-offset 'safe-local-variable #'numberp)
-
-(use-package intero
-  :if (executable-find "intero")
-
-  :after (haskell-mode)
-
-  :diminish (intero-mode . "ⓘ")
-
-  :bind
-  (:map
-   my/haskell-map
-   ("i r" . intero-restart)
-   ("i t" . intero-targets))
-
-  :config
-  (unbind-key "M-." intero-mode-map)
-  (unbind-key "C-c <tab>" intero-mode-map)
-
-  (with-eval-after-load 'intero
-    (with-eval-after-load 'flycheck
-      (flycheck-add-next-checker 'intero '(warning . haskell-hlint)))))
-
-(defvar my/use-intero nil "'t' = use 'intero-mode'")
-(put 'my/use-intero 'safe-local-variable #'booleanp)
-(put 'intero-targets 'safe-local-variable #'listp)
-(put 'haskell-hayoo-url 'safe-local-variable #'stringp)
 
 (use-package hindent
   :if (executable-find "hindent")
@@ -1136,15 +1105,7 @@ _j_ ^ ^ _l_ _=_:equalize
   :after (haskell-mode))
 
 (use-package inf-haskell
-  :ensure nil
-
-  :custom
-  (haskell-process-type 'stack-ghci))
-
-(put 'flycheck-ghc-language-extensions   'safe-local-variable #'listp)
-(put 'flycheck-hlint-language-extensions 'safe-local-variable #'listp)
-(put 'haskell-stylish-on-save            'safe-local-variable #'booleanp)
-(put 'haskell-hayoo-url                  'safe-local-variable #'stringp)
+  :ensure nil)
 
 ;;;; Python
 (use-package python
@@ -1489,11 +1450,6 @@ _j_ ^ ^ _l_ _=_:equalize
 (use-package flycheck
   :diminish "Ⓕ"
 
-  :preface
-  (put 'flycheck-checker 'safe-local-variable #'symbolp)
-  (add-to-list 'safe-local-variable-values
-               '(flycheck-check-syntax-automatically 'nil))
-
   :custom
   (flycheck-check-syntax-automatically
    '(save mode-enabled) "Only check on save")
@@ -1502,6 +1458,8 @@ _j_ ^ ^ _l_ _=_:equalize
   (:map
    flycheck-mode-map
    ("<f5>" . flycheck-buffer)))
+
+(put 'safe-local-variable-values 'flycheck-checker 'flycheck-ghc)
 
 (use-package flycheck-color-mode-line
   :after (flycheck)
@@ -1583,9 +1541,6 @@ _j_ ^ ^ _l_ _=_:equalize
    (lambda () (format "[%s]" (projectile-project-name))))
 
   :config
-  (put 'projectile-tags-file-name 'safe-local-variable #'stringp)
-  (put 'projectile-globally-ignored-files 'safe-local-variable #'listp)
-  (put 'projectile-globally-ignored-directories 'safe-local-variable #'listp)
   (projectile-mode))
 
 (use-package counsel-projectile
@@ -1606,6 +1561,10 @@ _j_ ^ ^ _l_ _=_:equalize
   (:map
    projectile-command-map
    ("s r" . projectile-ripgrep)))
+
+(put 'projectile-tags-file-name 'safe-local-variable #'stringp)
+(put 'projectile-globally-ignored-files 'safe-local-variable #'listp)
+(put 'projectile-globally-ignored-directories 'safe-local-variable #'listp)
 
 ;;;; YankPad
 (use-package yankpad
@@ -1807,8 +1766,8 @@ _j_ ^ ^ _l_ _=_:equalize
       :immediate-finish
       :kill-buffer))))
 
-(put 'org-default-notes-file           'safe-local-variable #'stringp)
-(put 'org-export-use-babel             'safe-local-variable #'null)
+(put 'org-default-notes-file 'safe-local-variable #'stringp)
+(put 'org-export-use-babel 'safe-local-variable #'null)
 
 (use-package org-bullets
   :after (org)

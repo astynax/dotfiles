@@ -40,6 +40,7 @@
         shrink-whitespace
         smex
         sp-backward-delete-char
+        sp-backward-unwrap-sexp
         sp-delete-char
         sp-forward-barf-sexp
         sp-forward-slurp-sexp
@@ -49,6 +50,7 @@
         string-inflection-all-cycle
         string-inflection-underscore
         swiper-mc
+        transpose-words
         typo-cycle-ellipsis
         wdired-downcase-word
         wdired-finish-edit
