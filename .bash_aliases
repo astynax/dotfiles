@@ -38,7 +38,7 @@ mcd () {
 }
 
 timestamp () {
-    date +%Y%M%d_%H%m%S;
+    date +%Y%m%d_%H%M%S;
 }
 
 gotempdir () {
