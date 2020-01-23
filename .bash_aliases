@@ -13,9 +13,13 @@ alias ec="emacsclient -nq"
 alias eq="emacs -Q"
 alias enq="emacs -Q -nw"
 
-alias path='echo -e ${PATH//:/\\n}'
+path() {
+    echo -e "${PATH//:/\\n}"
+}
 
-alias grep='grep --color=auto'
+alias grep="grep --color=auto"
+
+alias cat="bat"
 
 cal() {
     ncal -bM ${1:--3}
