@@ -49,7 +49,6 @@ if [[ ("$0" = "/usr/sbin/lightdm-session") && ("$DESKTOP_SESSION" = "i3") ]]; th
     export $(gnome-keyring-daemon -s)
 fi
 
-export PIPENV_VENV_IN_PROJECT=1
 export BAT_THEME=GitHub
 
 # if running bash
