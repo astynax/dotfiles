@@ -109,20 +109,35 @@
   :bind
   ("C-z" . nil))
 
+;;; Faces
 (use-package faces
   :ensure nil
   :defer t
+
+  :hook
+  (text-mode . variable-pitch-mode)
+
   :config
-  (defun my/set-font (font)
-    (set-face-attribute 'default nil :font font)
-    (setq after-make-frame-functions
-          (lambda (&optional ARGS)
-            (set-face-attribute 'default nil :font font))))
-  (my/set-font
+  (set-face-attribute
+   'variable-pitch nil
+   :font
    (font-spec
-    :family "Anonymous Pro"
-    :width 'normal
-    :size 20)))
+    :family "DejaVu Serif"
+    :size 18))
+
+  (set-face-attribute
+   'fixed-pitch nil
+   :font
+   (font-spec
+    :family "JetBrains Mono"
+    :size 18))
+
+  (set-face-attribute
+   'default nil
+   :font
+   (font-spec
+    :family "JetBrains Mono"
+    :size 18)))
 
 ;;; Date/Time
 (use-package time
@@ -875,14 +890,30 @@ _j_ ^ ^ _l_ _=_:equalize
     (when (string-match
            (rx bol
                "https://github.com/"
-               (repeat 4 (seq (one-or-more (not (any ?/)))
+               (repeat 3 (seq (one-or-more (not (any ?/)))
                               (char ?/)))
+               (seq (group (one-or-more (not (any ?/))))
+                    (char ?/))
                (group (one-or-more (not (any ?#))))
-               (optional (seq "#L"
-                              (group (one-or-more digit))))
+               (optional (seq "#"
+                              (group (seq "L"
+                                          (one-or-more digit)
+                                          (optional (seq "-L")
+                                                    (one-or-more digit))))))
                eol)
            s)
-      (list (match-string 1 s) (match-string 2 s))))
+      (list (cons 'ref (match-string 1 s))
+            (cons 'path (match-string 2 s))
+            (cons 'line (match-string 3 s)))))
+
+  (defun my/github/commit-hash-p (s)
+    "Check what string is a commit reference"
+    (when (string-match
+           (rx bol
+               (repeat 40 (or digit letter))
+               eol)
+           s)
+      t))
 
   (provide 'my/github))
 
@@ -1158,7 +1189,7 @@ _j_ ^ ^ _l_ _=_:equalize
   :commands (markdown-mode gfm-mode)
 
   :mode
-  (("README\\.md\\'" . gfm-mode)
+  (("README.*\\.md\\'" . gfm-mode)
    ("\\.md\\'" . markdown-mode)
    ("\\.markdown\\'" . markdown-mode))
 
@@ -1170,6 +1201,7 @@ _j_ ^ ^ _l_ _=_:equalize
 
   :custom
   (markdown-command "pandoc")
+  (markdown-header-scaling t)
 
   :config
   (unbind-key "DEL" gfm-mode-map))
@@ -1180,19 +1212,22 @@ _j_ ^ ^ _l_ _=_:equalize
   :after (markdown-mode my/github)
 
   :preface
-  (defun my/markdown/capture-gh-link ()
+  (defun my/markdown/capture-gh-link (&optional arg)
     "Insert a MD-link for the killed GitHub URL."
-    (interactive)
+    (interactive "p")
     (let* ((url (current-kill 0))
            (match (my/github/match-file-url url))
-           (path (car match))
-           (line (car (cdr match))))
+           (path (alist-get 'path match))
+           (line (alist-get 'line match))
+           (ref (alist-get 'ref match)))
       (if path
-          (insert
-           (format "[`%s%s`](%s)"
-                   path
-                   (if line (format ":%s" line) "")
-                   url))
+          (if (or (my/github/commit-hash-p ref) (= 4 arg))
+              (insert
+               (format "[`%s%s`](%s)"
+                       path
+                       (if line (format ":%s" line) "")
+                       url))
+            (message "%s" "Non-local ref!"))
         (message "%s" "Non-github link!"))))
 
   (provide 'my/markdown)
@@ -1606,6 +1641,9 @@ _j_ ^ ^ _l_ _=_:equalize
 (use-package docker
   :commands (docker))
 
+(use-package dockerfile-mode
+  :mode ("\\^Dockerfile\\'" . dockerfile-mode))
+
 ;;; Spell Checking
 (use-package ispell
   :ensure nil
@@ -1670,15 +1708,18 @@ _j_ ^ ^ _l_ _=_:equalize
    ("C-c M-RET" . org-insert-heading-after-current))
 
   :hook
+  (org-mode . variable-pitch-mode)
   (org-mode . yas-minor-mode)
   (org-mode . smartparens-mode)
   (org-mode . my/org-mode-hook)
 
   :custom-face
-  (org-level-1 ((t (:inherit variable-pitch :foreground "#cb4b16" :height 1.0))))
-  (org-level-2 ((t (:inherit variable-pitch :foreground "#859900" :height 1.0))))
-  (org-level-3 ((t (:inherit variable-pitch :foreground "#268bd2" :height 1.0))))
-  (org-level-4 ((t (:inherit variable-pitch :foreground "#b58900" :height 1.0))))
+  (org-code ((t (:inherit fixed-pitch))))
+  (org-block ((t (:inherit fixed-pitch))))
+  (org-block-begin-line ((t (:inherit fixed-pitch))))
+  (org-block-end-line ((t (:inherit fixed-pitch))))
+  (org-table ((t (:inherit fixed-pitch))))
+  (org-code ((t (:inherit fixed-pitch))))
   (org-tag ((t (:weight normal :height 0.8))))
 
   :custom
@@ -1697,6 +1738,7 @@ _j_ ^ ^ _l_ _=_:equalize
   (org-src-window-setup 'current-window)
   (org-todo-keywords '((sequence "TODO" "IN-PROGRESS" "DONE")))
   (org-use-sub-superscripts nil)
+  (org-adapt-indentation nil)
 
   :config
   (require 'ob-shell)
@@ -1790,7 +1832,7 @@ _j_ ^ ^ _l_ _=_:equalize
   :bind
   (:map
    org-mode-map
-   ("C-c l" . org-cliplink)))
+   ("C-c S-l" . org-cliplink)))
 
 (use-package ox-gfm
   :after (org))
@@ -1813,19 +1855,22 @@ _j_ ^ ^ _l_ _=_:equalize
   :after (org my/github)
 
   :preface
-  (defun my/org/capture-gh-link ()
+  (defun my/org/capture-gh-link (&optional arg)
     "Insert a MD-link for the killed GitHub URL."
-    (interactive)
+    (interactive "p")
     (let* ((url (current-kill 0))
            (match (my/github/match-file-url url))
-           (path (car match))
-           (line (car (cdr match))))
+           (path (alist-get 'path match))
+           (line (alist-get 'line match))
+           (ref (alist-get 'ref match)))
       (if path
-          (insert
-           (format "[[%s][%s%s]]"
-                   url
-                   path
-                   (if line (format ":%s" line) "")))
+          (if (or (my/github/commit-hash-p ref) (= 4 arg))
+              (insert
+               (format "[[%s][%s%s]]"
+                       url
+                       path
+                       (if line (format ":%s" line) "")))
+            (message "%s" "Non-local ref!"))
         (message "%s" "Non-github link!"))))
 
   (provide 'my/org)
