@@ -112,10 +112,8 @@
 ;;; Faces
 (use-package faces
   :ensure nil
-  :defer t
-
-  :hook
-  (text-mode . variable-pitch-mode)
+  :diminish
+  (buffer-face-mode "")
 
   :config
   (set-face-attribute
@@ -123,21 +121,21 @@
    :font
    (font-spec
     :family "DejaVu Serif"
-    :size 18))
+    :size 19))
 
   (set-face-attribute
    'fixed-pitch nil
    :font
    (font-spec
     :family "JetBrains Mono"
-    :size 18))
+    :size 19))
 
   (set-face-attribute
    'default nil
    :font
    (font-spec
     :family "JetBrains Mono"
-    :size 18)))
+    :size 19)))
 
 ;;; Date/Time
 (use-package time
@@ -1147,6 +1145,7 @@ _j_ ^ ^ _l_ _=_:equalize
 
   :hook
   (python-mode . smartparens-mode)
+  (python-mode . elpy-mode)
 
   :bind
   (:map
@@ -1154,9 +1153,21 @@ _j_ ^ ^ _l_ _=_:equalize
    ("C-c C-c" . compile)))
 
 (use-package elpy
+  :defer
+
+  :hook
+  (elpy-mode . flycheck-mode)
+
+  :custom
+  (elpy-rpc-virtualenv-path 'current)
+  (elpy-modules
+   '(elpy-module-company
+     elpy-module-eldoc
+     elpy-module-highlight-indentation
+     elpy-module-django))
+
   :init
-  (when (getenv "VIRTUAL_ENV")
-    (elpy-enable)))
+  (elpy-enable))
 
 (use-package isortify
   :if (executable-find "isort")
@@ -1194,10 +1205,9 @@ _j_ ^ ^ _l_ _=_:equalize
    ("\\.markdown\\'" . markdown-mode))
 
   :hook
+  (markdown-mode . variable-pitch-mode)
   (markdown-mode . yas-minor-mode)
   (markdown-mode . smartparens-mode)
-  (gfm-mode . yas-minor-mode)
-  (gfm-mode . smartparens-mode)
 
   :custom
   (markdown-command "pandoc")
