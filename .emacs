@@ -1025,6 +1025,7 @@ _j_ ^ ^ _l_ _=_:equalize
   (haskell-mode . subword-mode)
   (haskell-mode . hi2-mode)
   (haskell-mode . eldoc-mode)
+  (haskell-mode . flycheck-haskell-setup)
   (haskell-mode . flycheck-mode)
   (haskell-mode . smartparens-mode)
   (haskell-mode . my/boot-haskell)
@@ -1084,6 +1085,11 @@ _j_ ^ ^ _l_ _=_:equalize
 
 (put 'haskell-stylish-on-save 'safe-local-variable #'booleanp)
 (put 'haskell-hayoo-url 'safe-local-variable #'stringp)
+
+(use-package flycheck-haskell
+  :after (haskell-mode flycheck)
+
+  :commands (flycheck-haskell-setup))
 
 (use-package hi2
   :after (haskell-mode)
