@@ -112,27 +112,11 @@ if [[ ! -v NIX_PROFILE ]]; then
     fi
 fi
 
-# SDKman
-if [[ ! -v SDKMAN_DIR ]]; then
-    export SDKMAN_DIR="$HOME/.sdkman"
-    if [[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]]; then
-        . "$SDKMAN_DIR/bin/sdkman-init.sh"
-    fi
-fi
-
 # pyenv
 if [[ ! -v PYENV_ROOT ]]; then
     export PYENV_ROOT="$HOME/.pyenv"
     if command -v pyenv 1>/dev/null 2>&1; then
         eval "$(pyenv init -)"
-    fi
-fi
-
-# rbenv
-if [[ ! -v RBENV_ROOT ]]; then
-    export RBENV_ROOT="$HOME/.rbenv"
-    if command -v rbenv 1>/dev/null 2>&1; then
-        eval "$(rbenv init -)"
     fi
 fi
 
@@ -144,13 +128,11 @@ if [[ ! -v WASMER_DIR ]]; then
     fi
 fi
 
-if [[ ! -v HOMEBREW_PREFIX && -d "/home/astynax/.linuxbrew" ]]; then
-    export HOMEBREW_PREFIX="/home/astynax/.linuxbrew"
-    export HOMEBREW_CELLAR="$HOMEBREW_PREFIX/Cellar"
-    export HOMEBREW_REPOSITORY="$HOMEBREW_PREFIX/Homebrew"
-    export PATH="$HOMEBREW_PREFIX/bin:$HOMEBREW_PREFIX/sbin:$PATH"
-    export MANPATH="$HOMEBREW_PREFIX/share/man:$MANPATH"
-    export INFOPATH="$HOMEBREW_PREFIX/share/info:$INFOPATH"
+# asdf
+if [[ ! -v ASDF_DIR ]]; then
+    if [[ -s "$HOME/.asdf/asdf.sh" ]]; then
+        source "$HOME/.asdf/asdf.sh"
+    fi
 fi
 
 # .ok (https://github.com/secretGeek/ok-bash)
@@ -162,11 +144,5 @@ if ! declare -f ok > /dev/null; then
     if [[ -s "$_OK__PATH_TO_ME/ok.sh" ]]; then
         source "$_OK__PATH_TO_ME/ok.sh"
     fi
-fi
-
-# commacd (https://github.com/shyiko/commacd)
-if ! declare -f , > /dev/null && [[ -s $HOME/.commacd.sh ]]; then
-    export HISTIGNORE="$HISTIGNORE:,*"
-    source $HOME/.commacd.sh
 fi
 

@@ -20,11 +20,8 @@ _paths=(
     "$HOME/.cargo/bin"
     "$HOME/.local/bin"
     "$HOME/Dropbox/tux_cfg/bin"
-    "$HOME/.psvm/current/bin"
-    "$HOME/.nvm/current/bin"
     "$HOME/.poetry/bin"
     "$HOME/.pyenv/bin"
-    "$HOME/.rbenv/bin"
     "/opt/ghc/bin"
     "/opt/cabal/bin"
 )
