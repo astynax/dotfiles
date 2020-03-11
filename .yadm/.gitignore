@@ -6,6 +6,7 @@
 !/.yadm/.gitignore
 
 !/.bash_completion.d
+/.bash_completion.d/asdf
 
 ############# ~/.config/ ##############
 !/.config
@@ -77,4 +78,3 @@
 ##### .generators #####
 !/.generators/
 /.generators/_build
-
