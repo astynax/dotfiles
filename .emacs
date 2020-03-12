@@ -297,36 +297,50 @@
 
 ;;;; Global text scale
 ;; source: https://www.emacswiki.org/emacs/GlobalTextScaleMode
-(define-globalized-minor-mode
-  global-text-scale-mode
-  text-scale-mode
-  (lambda () (text-scale-mode 1)))
+(use-package my/global-text-scale
+  :ensure nil
 
-(defun global-text-scale-adjust (inc)
-  (interactive)
-  (text-scale-set 1)
-  (kill-local-variable 'text-scale-mode-amount)
-  (setq-default text-scale-mode-amount (+ text-scale-mode-amount inc))
-  (global-text-scale-mode 1))
+  :after (hydra)
 
-(defun global-text-scale/zoom-in ()
-  (interactive)
-  (global-text-scale-adjust 1))
+  :preface
+  (define-globalized-minor-mode
+    global-text-scale-mode
+    text-scale-mode
+    (lambda () (text-scale-mode 1)))
 
-(defun global-text-scale/zoom-out ()
-  (interactive)
-  (global-text-scale-adjust -1))
+  (defun my/global-text-scale/adjust (inc)
+    (interactive)
+    (text-scale-set 1)
+    (kill-local-variable 'text-scale-mode-amount)
+    (setq-default text-scale-mode-amount (+ text-scale-mode-amount inc))
+    (global-text-scale-mode 1))
 
-(defun global-text-scale/reset ()
-  (interactive)
-  (global-text-scale-adjust (- text-scale-mode-amount))
-  (global-text-scale-mode -1))
+  (defun my/global-text-scale/zoom-in ()
+    (interactive)
+    (my/global-text-scale/adjust 1))
 
-(defhydra hydra-global-text-scale (mode-specific-map "z")
-  "Zoom"
-  ("=" global-text-scale/zoom-in "Zoom in")
-  ("-" global-text-scale/zoom-out "Zoom out")
-  ("0" global-text-scale/reset "Reset zoom"))
+  (defun my/global-text-scale/zoom-out ()
+    (interactive)
+    (my/global-text-scale/adjust -1))
+
+  (defun my/global-text-scale/reset ()
+    (interactive)
+    (my/global-text-scale/adjust (- text-scale-mode-amount))
+    (global-text-scale-mode -1))
+
+  (defhydra hydra-global-text-scale ()
+    "Zoom"
+    ("=" my/global-text-scale/zoom-in "Zoom in")
+    ("-" my/global-text-scale/zoom-out "Zoom out")
+    ("0" my/global-text-scale/reset "Reset zoom")
+    ("q" nil nil))
+
+  (provide 'my/global-text-scale)
+
+  :bind
+  (:map
+   mode-specific-map
+   ("z" . hydra-global-text-scale/body)))
 
 ;;;; Theme
 (use-package solarized-theme
@@ -1958,15 +1972,20 @@ _j_ ^ ^ _l_ _=_:equalize
    t))
 ;;;; Olivetti
 (use-package olivetti
+  :after (hydra)
+
+  :preface
+  (defhydra hydra-olivetti ()
+    "Olivetti mode"
+    ("o" olivetti-mode "Toggle" :exit t)
+    ("-" olivetti-shrink "Shrink")
+    ("=" olivetti-expand "Expand")
+    ("q" nil nil))
 
   :bind
   (:map
-   text-mode-map
-   :prefix "C-c o"
-   :prefix-map my/olivetti-mode-map
-   ("o" . olivetti-mode)
-   ("-" . olivetti-shrink)
-   ("=" . olivetti-expand))
+   mode-specific-map
+   ("o" . 'hydra-olivetti/body))
 
   :custom
   (olivetti-body-width 64))
