@@ -187,7 +187,9 @@
 
 (use-package autorevert
   :ensure nil
-  :diminish auto-revert-mode)
+  :diminish auto-revert-mode
+  :config
+  (global-auto-revert-mode t))
 
 (use-package backup-walker
   :commands (backup-walker-start))
@@ -332,15 +334,15 @@
     "Zoom"
     ("=" my/global-text-scale/zoom-in "Zoom in")
     ("-" my/global-text-scale/zoom-out "Zoom out")
-    ("0" my/global-text-scale/reset "Reset zoom")
-    ("q" nil nil))
+    ("0" my/global-text-scale/reset "Reset zoom" :exit t)
+    ("q" nil "Cancel"))
 
   (provide 'my/global-text-scale)
 
   :bind
   (:map
    mode-specific-map
-   ("z" . hydra-global-text-scale/body)))
+   ("z" . 'hydra-global-text-scale/body)))
 
 ;;;; Theme
 (use-package solarized-theme
@@ -520,14 +522,6 @@ _j_ ^ ^ _l_ _=_:equalize
 
   :config
   (unkillable-scratch))
-
-;;;; Client/server
-(use-package server
-  :ensure nil
-  ;; :config
-  ;; (unless (server-running-p)
-  ;;   (server-start))
-  )
 
 ;;; Editing
 ;;;; Subwords
@@ -1007,7 +1001,7 @@ _j_ ^ ^ _l_ _=_:equalize
   :diminish haskell-mode
 
   :init
-  (add-to-list 'magic-mode-alist '(".* stack" . haskell-mode))
+  (add-to-list 'magic-mode-alist '(".*env stack" . haskell-mode))
 
   :mode
   ("\\.hs\\'" . haskell-mode)
@@ -1646,12 +1640,17 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; Terminal here
 (use-package terminal-here
+  :after (projectile)
+
   :bind
   (:prefix
    "C-c t"
    :prefix-map my/terminal-here-map
    ("t" . terminal-here-launch)
-   ("p" . terminal-here-project-launch)))
+   ("p" . terminal-here-project-launch))
+
+  :custom
+  (terminal-here-project-root-function 'projectile-project-root))
 
 ;;;; RESTclient
 (use-package restclient)
@@ -1976,11 +1975,11 @@ _j_ ^ ^ _l_ _=_:equalize
 
   :preface
   (defhydra hydra-olivetti ()
-    "Olivetti mode"
+    "Olivetti"
     ("o" olivetti-mode "Toggle" :exit t)
     ("-" olivetti-shrink "Shrink")
     ("=" olivetti-expand "Expand")
-    ("q" nil nil))
+    ("q" nil "Cancel"))
 
   :bind
   (:map
