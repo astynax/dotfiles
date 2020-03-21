@@ -507,6 +507,7 @@ _j_ ^ ^ _l_ _=_:equalize
 ;;;; reverse-im
 (use-package reverse-im
   :diminish
+  :commands (reverse-im-activate)
   :config
   (reverse-im-activate "russian-computer"))
 
@@ -1437,10 +1438,11 @@ _j_ ^ ^ _l_ _=_:equalize
   :bind
   ([remap dabbrev-expand] . hippie-expand)
 
-  :config
-  (ert--remove-from-list
-   'hippie-expand-try-functions-list
-   'try-expand-line))
+  :custom
+  (hippie-expand-try-functions-list
+   '(try-expand-dabbrev
+     try-expand-dabbrev-all-buffers
+     try-expand-dabbrev-from-kill)))
 
 (use-package company
   :demand
