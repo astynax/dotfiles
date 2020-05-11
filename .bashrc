@@ -55,7 +55,7 @@ HISTFILESIZE=2000
 PROMPT_COMMAND="history -a;history -n"
 
 # don`t add to history matching cmds
-HISTIGNORE="&:bg:fg:exit:history:ranger:r:clear:encfs*:visit_efs*"
+HISTIGNORE="&:bg:fg:exit:history:ranger:r:clear:encfs*:visit_efs*:tra *"
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -102,14 +102,6 @@ fi
 # configure dir colors
 if [[ -x /usr/bin/dircolors ]]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-fi
-
-# Nix
-if [[ ! -v NIX_PROFILE ]]; then
-    export NIX_PROFILE="$HOME/.nix-profile/etc/profile.d/nix.sh"
-    if [[ -s "$NIX_PROFILE" ]]; then
-        . "$NIX_PROFILE"
-    fi
 fi
 
 # pyenv

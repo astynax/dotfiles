@@ -46,6 +46,8 @@ if [[ ("$0" = "/usr/sbin/lightdm-session") && ("$DESKTOP_SESSION" = "i3") ]]; th
     export $(gnome-keyring-daemon -s)
 fi
 
+if [ -e /home/astynax/.nix-profile/etc/profile.d/nix.sh ]; then . /home/astynax/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
+
 export BAT_THEME=GitHub
 
 # if running bash
