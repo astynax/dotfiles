@@ -102,7 +102,8 @@
 
   :config
   (global-prettify-symbols-mode)
-  (prefer-coding-system 'utf-8))
+  (prefer-coding-system 'utf-8)
+  (put 'overwrite-mode 'disabled t))
 
 (use-package frame
   :ensure nil
@@ -152,24 +153,25 @@
   :ensure nil
 
   :preface
-  (setq
+  (setq-default
    my/backup-directory-per-session
    (format "%sbackups/per-session" user-emacs-directory)
 
    my/backup-directory-per-save
    (format "%sbackups/per-save" user-emacs-directory))
 
-  (defun my/force-backup-of-buffer ()
+  (defun my/backup-buffer ()
     (when (not buffer-backed-up)
       (let ((backup-directory-alist
              `((".*" . ,my/backup-directory-per-session)))
             (kept-new-versions 3))
         (backup-buffer)))
+    ;; back up unconditionaly
     (let ((buffer-backed-up nil))
       (backup-buffer)))
 
   :hook
-  (before-save . my/force-backup-of-buffer)
+  (before-save . my/backup-buffer)
 
   :custom
   ;; backup settings
@@ -200,50 +202,76 @@
 
   :custom
   (dired-omit-files "^\\..*$")
-  (dired-recursive-deletes 'top)
-  (dired-listing-switches "-al --group-directories-first")
+  (dired-isearch-filenames 'dwim)
+  (dired-recursive-copies 'always)
+  (dired-recursive-deletes 'always)
+  (dired-listing-switches "-AFhlv --group-directories-first")
+  (dired-dwim-target t)
+  (delete-by-moving-to-trash t)
 
   :hook
-  (dired-mode . dired-omit-mode)
+  (dired-mode . dired-hide-details-mode)
 
   :config
   (put 'dired-find-alternate-file 'disabled nil))
 
 (use-package dired-x
-  :ensure nil)
+  :ensure nil
 
-(use-package dired-single)
+  :custom
+  (dired-clean-up-buffers-too t)
+  (dired-clean-confirm-killing-deleted-buffers t)
+  (dired-x-hands-off-my-keys t)
+  (dired-bind-man nil)
+  (dired-bind-info nil)
+
+  :bind
+  ("C-x C-j" . dired-jump)
+  ("C-x 4 C-j" . dired-jump-other-window))
+
+(use-package wdired
+  :commands wdired-change-to-wdired-mode
+  :custom
+  (wdired-allow-to-change-permissions t)
+  (wdired-create-parent-directories t))
 
 (use-package dired-subtree
+  :custom
+  (dired-subtree-use-backgrounds nil)
+
   :bind
   (:map
    dired-mode-map
-   ("]" . dired-subtree-insert)
-   ("[" . dired-subtree-remove)
-   ("}" . dired-subtree-only-this-file)
-   ("{" . dired-subtree-only-this-directory)
-   ("M-p" . dired-subtree-up)
-   ("M-n" . dired-subtree-down)
-   ("<tab>" . dired-subtree-cycle))
+   ("<tab>" . dired-subtree-toggle)
+   ("<C-tab>" . dired-subtree-cycle)
+   ("<S-iso-lefttab>" . dired-subtree-remove)))
 
-  :custom
-  (dired-subtree-use-backgrounds nil))
+;; TODO
+;; (use-package diredfl
+;;   :hook
+;;   (dired-mode . diredfl-mode))
 ;;; UI
 ;;;; Highlights
 (use-package paren
   :ensure nil
+
   :config
   (show-paren-mode t))
 
 (use-package hl-line
   :ensure nil
 
+  :hook
+  (after-init . global-hl-line-mode))
+
+(use-package visual-line
+  :ensure nil
+
   :custom
   (visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
 
-  :config
-  (global-hl-line-mode 1)
-  (global-visual-line-mode 1))
+  :hook
+  (text-mode . visual-line-mode))
 
 (use-package rainbow-delimiters
   :diminish
@@ -269,8 +297,9 @@
   :ensure nil
 
   :custom
-  (uniquify-buffer-name-style 'forward))
-
+  (uniquify-strip-common-suffix t)
+  (uniquify-after-kill-buffer-p t)
+  (uniquify-buffer-name-style 'post-forward-angle-brackets))
 ;;;; Which key
 (use-package which-key
   :demand
@@ -397,7 +426,6 @@ _j_ ^ ^ _l_ _=_:equalize
   (popwin-mode))
 
 ;;;; Beacon
-;; (visualizes cursor position)
 (use-package beacon
   :diminish
 
@@ -422,7 +450,7 @@ _j_ ^ ^ _l_ _=_:equalize
 (use-package ivy
   :demand
 
-  :diminish (ivy-mode "")
+  :diminish ivy-mode
 
   :custom
   (ivy-use-virtual-buffers t)
@@ -435,6 +463,9 @@ _j_ ^ ^ _l_ _=_:equalize
      (counsel-rg       . ivy--regex-plus)
      (t                . ivy--regex-fuzzy)))
 
+  :hook
+  (after-init . ivy-mode)
+
   :bind
   (:map
    ivy-minibuffer-map
@@ -445,10 +476,7 @@ _j_ ^ ^ _l_ _=_:equalize
    (:prefix
     "i"
     :prefix-map my/ivy-map
-    ("r" . ivy-resume)))
-
-  :config
-  (ivy-mode 1))
+    ("r" . ivy-resume))))
 
 (use-package counsel
   :demand
@@ -470,26 +498,27 @@ _j_ ^ ^ _l_ _=_:equalize
    ("M-s s" . swiper-from-isearch)))
 
 (use-package ivy-rich
+  :after (ivy)
+
   :custom
   (ivy-rich-path-style 'abbrev)
 
-  :config
-  (ivy-rich-mode 1))
+  :hook
+  (ivy-mode . ivy-rich-mode))
 
 (use-package smex)
 (use-package flx)
 (use-package ivy-hydra)
 
 (use-package ivy-xref
+  :after (ivy)
+
   :custom
   (xref-show-xrefs-function 'ivy-xref-show-xrefs))
 
 ;;;; TODO/FIXME/etc keyword highlight
 (use-package hl-todo
   :demand
-
-  :bind
-  ("M-s t" . hl-todo-occur)
 
   :custom-face
   (hl-todo ((t (:bold t :background "#073642"))))
@@ -500,14 +529,19 @@ _j_ ^ ^ _l_ _=_:equalize
      ("FIXME" . "#dc322f")
      ("NOTE" . "#2aa198")))
 
-  :config
-  (global-hl-todo-mode))
+  :hook
+  (after-init . global-hl-todo-mode)
+
+  :bind
+  ("M-s t" . hl-todo-occur))
 
 ;;; Behaviour
 ;;;; reverse-im
 (use-package reverse-im
+  :demand
+
   :diminish
-  :commands (reverse-im-activate)
+
   :config
   (reverse-im-activate "russian-computer"))
 
@@ -518,13 +552,58 @@ _j_ ^ ^ _l_ _=_:equalize
     (interactive)
     (switch-to-buffer "*scratch*"))
 
-  :bind
-  ("M-<f11>" . my/switch-to-scratch)
+  :hook
+  (after-init . unkillable-scratch)
 
-  :config
-  (unkillable-scratch))
+  :bind
+  ("M-<f11>" . my/switch-to-scratch))
+
+;;;; WWW Browser
+(use-package www
+  :ensure nil
+
+  :preface
+  (provide 'www)
+
+  :custom
+  (browse-url-browser-function 'browse-url-firefox))
 
 ;;; Editing
+;;;; isearch
+(use-package isearch
+  :ensure nil
+
+  :custom
+  (search-highlight t)
+  (search-whitespace-regexp ".*?")
+  (isearch-lax-whitespace t)
+  (isearch-regexp-lax-whitespace nil)
+  (isearch-lazy-highlight t)
+
+  :config
+  ;; Source: https://protesilaos.com/dotemacs
+  (defun isearch/mark-and-exit ()
+    "Mark the current search string and exit the search."
+    (interactive)
+    (push-mark isearch-other-end t 'activate)
+    (setq deactivate-mark nil)
+    (isearch-done))
+
+  ;; Source: https://protesilaos.com/dotemacs
+  (defun isearch/query-replace-symbol-at-point ()
+    "Run `query-replace-regexp' for the symbol at point."
+    (interactive)
+    (isearch-forward-symbol-at-point)
+    (isearch-query-replace-regexp))
+
+  :bind
+  (("M-s %" . isearch/query-replace-symbol-at-point)
+   :map minibuffer-local-isearch-map
+   ("M-/" . isearch-complete-edit)
+   :map isearch-mode-map
+   ("M-/" . isearch-complete)
+   ("C-SPC" . isearch/mark-and-exit)))
+
 ;;;; Subwords
 (use-package subword
   :ensure nil
@@ -539,8 +618,8 @@ _j_ ^ ^ _l_ _=_:equalize
 (use-package whole-line-or-region
   :diminish whole-line-or-region-local-mode
 
-  :config
-  (whole-line-or-region-mode))
+  :hook
+  (after-init . whole-line-or-region-mode))
 
 ;;;; Indirect region editing
 (use-package edit-indirect
@@ -578,13 +657,10 @@ _j_ ^ ^ _l_ _=_:equalize
 (use-package ethan-wspace
   :demand t
 
-  :commands
-  (global-ethan-wspace-mode)
+  :hook
+  (after-init . global-ethan-wspace-mode)
 
-  :bind ("C-c S" . ethan-wspace-clean-all)
-
-  :config
-  (global-ethan-wspace-mode 1))
+  :bind ("C-c S" . ethan-wspace-clean-all))
 
 (use-package shrink-whitespace
   :bind
@@ -597,7 +673,8 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; Indentation
 (use-package aggressive-indent
-  :defer t)
+  :defer t
+  :diminish (aggressive-indent-mode "↹"))
 
 (use-package indent-tools
   :bind
@@ -662,8 +739,8 @@ _j_ ^ ^ _l_ _=_:equalize
   (undo-tree-history-directory-alist
    `((".*" . ,(format "%sundo-tree-history" user-emacs-directory))))
 
-  :config
-  (global-undo-tree-mode))
+  :hook
+  (after-init . global-undo-tree-mode))
 
 ;;;; SmartParens & wrapping
 (use-package smartparens
@@ -729,11 +806,15 @@ _j_ ^ ^ _l_ _=_:equalize
    ("r" . set-rectangular-region-anchor)
    ("c" . mc/edit-lines)
    ("e" . mc/edit-ends-of-lines)
-   ("a" . mc/edit-beginnings-of-lines)
-   ("SPC" . ace-mc-add-multiple-cursors)))
+   ("a" . mc/edit-beginnings-of-lines)))
 
 (use-package ace-mc
-  :after (multiple-cursors))
+  :after (multiple-cursors)
+
+  :bind
+  (:map
+   my/mc-map
+   ("SPC" . ace-mc-add-multiple-cursors)))
 
 ;;;; Vim'ish folding
 (use-package vimish-fold
@@ -757,16 +838,20 @@ _j_ ^ ^ _l_ _=_:equalize
   (vimish-fold-indication-mode 'left-fringe))
 
 ;;;; Smart BOL
-(defun my/smarter-move-beginning-of-line (arg)
-  "Move point back to indentation of beginning of line."
-  (interactive "^p")
-  (let ((orig-point (point)))
-    (back-to-indentation)
-    (when (= orig-point (point))
-      (move-beginning-of-line 1))))
+(use-package my/smart-bol
+  :ensure nil
 
-(global-set-key [remap move-beginning-of-line]
-                'my/smarter-move-beginning-of-line)
+  :preface
+  (defun my/smarter-move-beginning-of-line (arg)
+    "Move point back to indentation of beginning of line."
+    (interactive "^p")
+    (let ((orig-point (point)))
+      (back-to-indentation)
+      (when (= orig-point (point))
+        (move-beginning-of-line 1))))
+
+  :bind
+  ([remap move-beginning-of-line] . my/smarter-move-beginning-of-line))
 
 ;;;; ElDoc
 (use-package eldoc
@@ -943,10 +1028,18 @@ _j_ ^ ^ _l_ _=_:equalize
   (add-hook 'emacs-lisp-mode-hook #'eldoc-mode)
   (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode))
 
-;;;; Racket (Geiser)
+;;;; Racket (Geiser), Pollen
 (use-package geiser
   :hook
   (racket-mode . smartparens-strict-mode))
+
+(use-package pollen-mode
+  :commands (pollen-mode)
+  :init
+  (add-to-list 'auto-mode-alist '("\\.pm$" . pollen-mode))
+  (add-to-list 'auto-mode-alist '("\\.pmd$" . pollen-mode))
+  (add-to-list 'auto-mode-alist '("\\.pp$" pollen-mode t))
+  (add-to-list 'auto-mode-alist '("\\.p$"  pollen-mode t)))
 
 ;;;; Clojure
 (use-package clojure-mode
@@ -1032,20 +1125,11 @@ _j_ ^ ^ _l_ _=_:equalize
   :hook
   (haskell-mode . haskell-decl-scan-mode)
   (haskell-mode . subword-mode)
-  (haskell-mode . hi2-mode)
   (haskell-mode . eldoc-mode)
-  (haskell-mode . flycheck-haskell-setup)
-  (haskell-mode . flycheck-mode)
   (haskell-mode . smartparens-mode)
   (haskell-mode . my/boot-haskell)
-  (haskell-yesod-parse-routes-mode
-   . my/haskell-yesod-parse-routes-mode-hook)
 
   :config
-  (defun my/haskell-yesod-parse-routes-mode-hook ()
-    "Disables the line wrapping and auto-fill-mode"
-    (setq-local truncate-lines t))
-
   (defun my/haskell-jump-to-loc ()
     "Opens the location of error from primary buffer"
     (interactive)
@@ -1096,14 +1180,24 @@ _j_ ^ ^ _l_ _=_:equalize
 (put 'haskell-hayoo-url 'safe-local-variable #'stringp)
 
 (use-package flycheck-haskell
-  :after (haskell-mode flycheck)
+  :after (haskell-mode)
 
-  :commands (flycheck-haskell-setup))
+  :commands (flycheck-haskell-setup)
+
+  :hook
+  (haskell-mode . flycheck-haskell-setup)
+  (haskell-mode . flycheck-mode))
+
+(put 'flycheck-ghc-language-extensions 'safe-local-variable #'listp)
+(put 'flycheck-hlint-language-extensions 'safe-local-variable #'listp)
 
 (use-package hi2
   :after (haskell-mode)
 
   :diminish hi2-mode
+
+  :hook
+  (haskell-mode . hi2-mode)
 
   :custom
   (hi2-layout-offset 2)
@@ -1160,7 +1254,6 @@ _j_ ^ ^ _l_ _=_:equalize
 
   :hook
   (python-mode . smartparens-mode)
-  (python-mode . elpy-mode)
 
   :bind
   (:map
@@ -1168,9 +1261,10 @@ _j_ ^ ^ _l_ _=_:equalize
    ("C-c C-c" . compile)))
 
 (use-package elpy
-  :defer
+  :after (python)
 
   :hook
+  (python-mode . elpy-mode)
   (elpy-mode . flycheck-mode)
 
   :custom
@@ -1182,13 +1276,9 @@ _j_ ^ ^ _l_ _=_:equalize
      elpy-module-django))
 
   :init
-  (elpy-enable))
-
-(use-package isortify
-  :if (executable-find "isort")
-
-  :hook
-  (python-mode . isortify-mode))
+  (elpy-enable)
+  (unbind-key "<C-left>" elpy-mode-map)
+  (unbind-key "<C-right>" elpy-mode-map))
 
 ;;;; Rust
 (use-package rust-mode
@@ -1261,7 +1351,6 @@ _j_ ^ ^ _l_ _=_:equalize
   (:map
    markdown-mode-map
    ("C-c l" . my/markdown/capture-gh-link))
-
   (:map
    gfm-mode-map
    ("C-c l" . my/markdown/capture-gh-link)))
@@ -1430,52 +1519,99 @@ _j_ ^ ^ _l_ _=_:equalize
    'io-comments-re
    "\\(^#.*$#\\|//.*$\\|/\\*\\(.\\|[]\\)*?\\*/\\)"))
 
+;;;; Processing
+(use-package processing-mode
+  :mode ("\\.pde$" . processing-mode)
+
+  :custom
+  (processing-location "~/.software/processing/processing-java")
+  (processing-application-dir "~/.software/processing/")
+  (processing-sketchbook-dir "~/Projects/processing"))
+
 ;;; IDE
-;;;; Autocompletion
-(use-package hippie
+;;;; Autocompletion and abbreviation
+(use-package abbrev
   :ensure nil
 
-  :bind
-  ([remap dabbrev-expand] . hippie-expand)
+  :diminish (abbrev-mode ""))
+
+(use-package dabbrev
+  :ensure nil
+
+  :commands (dabbrev-expand dabbrev-completion)
+
+  :custom
+  (dabbrev-abbrev-char-regexp "\\sw\\|\\s_")
+  (dabbrev-abbrev-skip-leading-regexp "\\$\\|\\*\\|/\\|=")
+  (dabbrev-backward-only nil)
+  (dabbrev-case-distinction nil)
+  (dabbrev-case-fold-search t)
+  (dabbrev-case-replace nil)
+  (dabbrev-check-other-buffers t)
+  (dabbrev-eliminate-newlines nil)
+  (dabbrev-upcase-means-case-search t))
+
+(use-package hippie
+  :ensure nil
+  :after (dabbrev)
 
   :custom
   (hippie-expand-try-functions-list
-   '(try-expand-dabbrev
+   '(try-expand-dabbrev-visible
+     try-expand-dabbrev
      try-expand-dabbrev-all-buffers
-     try-expand-dabbrev-from-kill)))
+     try-expand-dabbrev-from-kill
+     try-expand-list-all-buffers
+     try-expand-list
+     try-expand-line-all-buffers
+     try-expand-line
+     try-complete-file-name-partially
+     try-complete-file-name
+     try-expand-all-abbrevs))
+
+  :bind
+  ([remap dabbrev-expand] . hippie-expand))
 
 (use-package company
   :demand
 
   :diminish
 
-  :bind
-  ("C-c /" . company-files)
-
-  (:map
-   company-mode-map
-   ("M-<tab>" . company-complete))
-
-  (:map
-   company-active-map
-   ("C-n" . company-select-next)
-   ("C-p" . company-select-previous))
+  :hook
+  (after-init . global-company-mode)
 
   :custom
-  (company-minimum-prefix-length 2)
-  (company-tooltip-limit 20)
+  (company-minimum-prefix-length 1)
+  (company-tooltip-limit 30)
+  (company-idle-delay nil)
   (company-begin-commands '(self-insert-command))
   (company-selection-wrap-around t)
   (company-show-numbers t)
   (company-tooltip-align-annotations t)
   (company-require-match nil)
-  (company-dabbrev-downcase nil)
-  (company-dabbrev-ignore-case nil)
   (company-transformers '(company-sort-by-occurrence))
 
-  :config
-  (put 'company-backends 'safe-local-variable #'listp)
-  (global-company-mode t))
+  :bind
+  ("C-c /" . company-files)
+  (:map
+   company-mode-map
+   ("M-<tab>" . company-complete))
+  (:map
+   company-active-map
+   ("C-n" . company-select-next)
+   ("C-p" . company-select-previous)))
+
+(put 'company-backends 'safe-local-variable #'listp)
+
+(use-package company-posframe
+  :disabled ; TODO
+
+  :after (company)
+
+  :diminish
+
+  :hook
+  (company-mode . company-posframe-mode))
 
 (use-package company-try-hard
   :after (company)
@@ -1496,16 +1632,10 @@ _j_ ^ ^ _l_ _=_:equalize
 
   :diminish company-quickhelp-mode
 
-  :custom
-  (company-quickhelp-delay 1)
-
   :bind
   (:map
    company-active-map
-   ("C-h" . company-quickhelp-manual-begin))
-
-  :config
-  (company-quickhelp-mode 1))
+   ("C-h" . company-quickhelp-manual-begin)))
 
 ;;;; Flycheck
 (use-package flycheck
@@ -1582,6 +1712,11 @@ _j_ ^ ^ _l_ _=_:equalize
   :after (yasnippet))
 
 ;;;; Grep'likes
+(use-package wgrep
+  :custom
+  (wgrep-auto-save-buffer t)
+  (wgrep-change-readonly-file t))
+
 ;; sudo apt-get install silversearcher-ag
 (use-package ag
   :if (executable-find "ag")
@@ -1589,20 +1724,54 @@ _j_ ^ ^ _l_ _=_:equalize
   (ag-highlight-search t))
 
 ;; install from github
-(use-package ripgrep
-  :if (executable-find "rg"))
+(use-package rg
+  :if (executable-find "rg")
+  :after (wgrep)
 
-(use-package wgrep)
+  :custom
+  (rg-group-result t)
+  (rg-hide-command t)
+  (rg-show-columns nil)
+  (rg-show-header t)
+  (rg-custom-type-aliases nil)
+  (rg-default-alias-fallback "all")
+
+  :config
+  ;; source: https://protesilaos.com/dotemacs
+  (rg-define-search rg/grep-vc-or-dir
+    :query ask
+    :format regexp
+    :files "everything"
+    :dir (let ((vc (vc-root-dir)))
+           (if vc
+               vc                         ; search root project dir
+             default-directory))          ; or from the current dir
+    :confirm prefix
+    :flags ("--hidden -g !*.lock"))
+
+  ;; source: https://protesilaos.com/dotemacs
+  (defun rg/save-search-as-name ()
+    "Save `rg' buffer, naming it after the current search query."
+    (interactive)
+    (let ((pattern (car rg-pattern-history)))
+      (rg-save-search-as-name (concat "«" pattern "»"))))
+
+  :bind
+  ("M-s g" . rg/grep-vc-or-dir)
+  (:map
+   rg-mode-map
+   ("s" . rg/save-search-as-name)
+   ("C-n" . next-line)
+   ("C-p" . previous-line)
+   ("M-n" . rg-next-file)
+   ("M-p" . rg-prev-file)))
 
 ;;;; Projectile
 (use-package projectile
   :custom
   (projectile-keymap-prefix (kbd "C-c p"))
   (projectile-mode-line-function
-   (lambda () (format "[%s]" (projectile-project-name))))
-
-  :config
-  (projectile-mode))
+   (lambda () (format "[%s]" (projectile-project-name)))))
 
 (use-package counsel-projectile
   :after (projectile counsel ivy)
@@ -1610,8 +1779,8 @@ _j_ ^ ^ _l_ _=_:equalize
   :custom
   (projectile-completion-system 'ivy)
 
-  :config
-  (counsel-projectile-mode))
+  :hook
+  (after-init . counsel-projectile-mode))
 
 (use-package projectile-ripgrep
   :if (package-installed-p 'ripgrep)
@@ -1718,7 +1887,8 @@ _j_ ^ ^ _l_ _=_:equalize
   (provide 'my/langtool)
 
   :bind
-  ("M-<f6>" . my/langtool-check))
+  ;; ("M-<f6>" . my/langtool-check)
+  )
 
 ;;; Org-mode/Outline
 ;;;; Org
@@ -1745,6 +1915,7 @@ _j_ ^ ^ _l_ _=_:equalize
   (org-mode . my/org-mode-hook)
 
   :custom-face
+  (org-link ((t (:inherit link :bold nil))))
   (org-code ((t (:inherit fixed-pitch))))
   (org-block ((t (:inherit fixed-pitch))))
   (org-block-begin-line ((t (:inherit fixed-pitch))))
@@ -1915,7 +2086,7 @@ _j_ ^ ^ _l_ _=_:equalize
 (use-package outshine
   :diminish
   (outline-minor-mode . "")
-  (outshine-mode . "ⓞ")
+  (outshine-mode . "⋱")
 
   :bind
   (:map
@@ -1971,6 +2142,7 @@ _j_ ^ ^ _l_ _=_:equalize
    'webpaste--default-lang-alist
    '(haskell-mode . "haskell")
    t))
+
 ;;;; Olivetti
 (use-package olivetti
   :after (hydra)

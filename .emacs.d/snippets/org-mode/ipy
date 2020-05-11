@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: ipy
+# key: ipy
+# --
+~__init__.py~

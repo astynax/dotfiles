@@ -4,7 +4,9 @@
 (setq mc/cmds-to-run-for-all
       '(
         beginning-of-visual-line
+        c-electric-delete-forward
         comment-dwim-2
+        counsel-unicode-char
         counsel-yank-pop
         dabbrev-completion
         describe-key
@@ -25,6 +27,7 @@
         kmacro-end-or-call-macro
         markdown-demote
         markdown-electric-backquote
+        markdown-outdent-or-delete
         markdown-promote
         my/smarter-move-beginning-of-line
         org-beginning-of-line
