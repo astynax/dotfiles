@@ -2,7 +2,7 @@
 
 # some more ls aliases
 alias ls='/bin/ls -Fv --color=always'
-alias ll='/bin/ls -FvlGh --color=always --time-style=long-iso'
+alias ll='/bin/ls -FvlGh --color=always --time-style=long-iso --group-directories-first'
 alias la='/bin/ls -FvA --color=always'
 alias l='/bin/ls -af1v'
 
@@ -23,10 +23,6 @@ alias cat="bat"
 
 cal() {
     ncal -bM ${1:--3}
-}
-
-xcd() {
-    cd `/usr/bin/xd $*`
 }
 
 gostack() {
@@ -66,22 +62,6 @@ visit_efs () {
             mkdir $dest
         fi
         encfs "$1" $dest && ranger $dest && fusermount -u $dest
-    fi
-}
-
-ghcidf () {
-    if [[ -z "$1" ]]; then
-        echo "Usage: ghcidf <file.[l]hs> [<ghcid-flags>]"
-    else
-       ghcid $2 $3 $4 $5 -c "stack exec -- ghci" --test "main" $1
-    fi
-}
-
-gonvm () {
-    export NVM_DIR="$HOME/.nvm"
-    if [[ -s "$NVM_DIR/nvm.sh" ]]; then
-        echo Enabling NVM...
-        . "$NVM_DIR/nvm.sh"
     fi
 }
 
