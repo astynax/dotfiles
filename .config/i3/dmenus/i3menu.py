@@ -11,6 +11,8 @@ run_menu({
         "normal": ["i3-msg", "border normal"],
         "title": ["i3-msg", "border normal 0"],
     },
+    "center": ["i3-msg", "move position center"],
+    "sticky (toggle)": ["i3-msg", "sticky toggle"],
     "run": {
         "cmd": ["rofi", "-show", "run"],
         "app": ["i3-dmenu-desktop" "--dmenu=\"rofi -dmenu -i -p App:\""]

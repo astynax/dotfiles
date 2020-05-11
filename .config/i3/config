@@ -1,4 +1,4 @@
-# base of all the scripts and configs 
+# base of all the scripts and configs
 set $cfg_dir ~/.config/i3
 
 set $mod Mod4
@@ -16,7 +16,7 @@ workspace_layout tabbed
 workspace_auto_back_and_forth yes
 
 focus_follows_mouse no
-mouse_warping none
+mouse_warping output
 
 ############### COLORS ######################################################
 
@@ -30,11 +30,10 @@ set $dmenu_run "rofi -show run"
 set $dmenu_apps "rofi -dmenu -i -p \"App:\""
 
 ################ RULES ######################################################
-for_window [class="^KeePassXC$"] floating enable border pixel 1
+for_window [class="^KeePassXC$"] floating enable, border pixel 1, move position center
 for_window [class="^BasicWin$"] floating enable
 for_window [class="^Tk$"] floating enable
-for_window [class="^Update-manager$"] floating disable
-for_window [class="^xbiff$"] floating enable
+for_window [class="^XBiff$"] floating enable, border pixel 1, move position center
 for_window [class="^Lazarus-ide$"] floating enable
 for_window [class="^Steam$"] border pixel 1
 
@@ -91,6 +90,7 @@ bindsym $mod+i     focus up
 bindsym $mod+k     focus down
 bindsym $mod+j     focus left
 bindsym $mod+l     focus right
+bindsym $mod+p     focus parent
 
 # move focused window
 bindsym $mod+Shift+i     move up
@@ -105,16 +105,6 @@ bindsym $mod+z scratchpad show
 # menus
 bindsym $mod+a exec --no-startup-id "$cfg_dir/dmenus/i3menu.py"
 
-# tag & jump to tag
-bindsym $mod+Shift+F1 mark '1'
-bindsym $mod+Shift+F2 mark '2'
-bindsym $mod+Shift+F3 mark '3'
-bindsym $mod+Shift+F4 mark '4'
-bindsym $mod+F1       [con_mark='1'] focus
-bindsym $mod+F2       [con_mark='2'] focus
-bindsym $mod+F3       [con_mark='3'] focus
-bindsym $mod+F4       [con_mark='4'] focus
-
 # split in horizontal/vertical  orientation
 bindsym $mod+h split h
 bindsym $mod+v split v
@@ -126,6 +116,7 @@ bindsym $mod+f fullscreen
 bindsym $mod+s layout stacking
 bindsym $mod+w layout tabbed
 bindsym $mod+e layout toggle split
+bindsym $mod+Shift+w split h, layout tabbed
 
 # toggle tiling / floating
 bindsym $mod+Shift+space floating toggle
@@ -180,7 +171,7 @@ bindsym $mod+Shift+Control+e exec "i3-nagbar -t warning -m 'You pressed the exit
 # resize window (you can also use the mouse for that)
 mode "resize" {
     # resize
-    bindsym $mod+j resize shrink width  10 px or 2 ppt 
+    bindsym $mod+j resize shrink width  10 px or 2 ppt
     bindsym $mod+l resize grow   width  10 px or 2 ppt
     bindsym $mod+i resize shrink height 10 px or 2 ppt
     bindsym $mod+k resize grow   height 10 px or 2 ppt
