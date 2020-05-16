@@ -2163,6 +2163,19 @@ _j_ ^ ^ _l_ _=_:equalize
   :custom
   (olivetti-body-width 64))
 
+;;;; Quick note
+(use-package my-quick-note
+  :ensure nil
+
+  :preface
+  (defun my-quick-note/new ()
+    "Open a temporary Org-file with timestamped name."
+    (interactive)
+    (find-file (format-time-string "/tmp/%Y%m%d_%H%M%S.org" (current-time)))
+    (delete-other-windows)
+    (olivetti-mode))
+
+  (provide 'my-quick-note))
 ;;; Finalization
 ;; restore GC-limit after timeout
 (run-with-idle-timer
