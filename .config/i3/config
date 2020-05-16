@@ -102,6 +102,9 @@ bindsym $mod+Shift+l     move right
 bindsym $mod+Shift+z move scratchpad
 bindsym $mod+z scratchpad show
 
+# open a new notetaking window
+bindsym $mod+n exec --no-startup-id "emacs --exec='(my-quick-note/new)'"
+
 # menus
 bindsym $mod+a exec --no-startup-id "$cfg_dir/dmenus/i3menu.py"
 
