@@ -37,6 +37,8 @@ for_window [class="^XBiff$"] floating enable, border pixel 1, move position cent
 for_window [class="^Lazarus-ide$"] floating enable
 for_window [class="^Steam$"] border pixel 1
 
+for_window [class="^zoom$"] floating disable
+
 assign [class="^TelegramDesktop$"] "3:IM"
 assign [class="^Steam$"] "5:Steam"
 
