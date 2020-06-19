@@ -14,6 +14,8 @@ fi
 
 # set PATH so it includes user's bin dirs
 _paths=(
+    "/opt/ghc/bin"
+    "/opt/cabal/bin"
     "$HOME/.software/ranger/scripts"
     "$HOME/.cabal/bin"
     "$HOME/.cargo/bin"
@@ -21,10 +23,7 @@ _paths=(
     "$HOME/.pyenv/bin"
     "$HOME/.wasmer/bin"
     "$HOME/.asdf/shims"
-    "/opt/ghc/bin"
-    "/opt/cabal/bin"
     "$HOME/.local/bin"
-    "$HOME/Dropbox/tux_cfg/bin"
 )
 for p in "${_paths[@]}"; do
     if [[ -d "$p" ]]; then
