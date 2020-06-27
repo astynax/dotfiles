@@ -1,6 +1,0 @@
-# example user config (see "hg help config" for more info)
-[ui]
-username = astynax <astynax84@gmail.com>
-
-[extensions]
-# (see "hg help extensions" for more info)
