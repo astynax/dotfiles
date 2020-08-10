@@ -14,10 +14,9 @@ fi
 
 # set PATH so it includes user's bin dirs
 _paths=(
-    "/opt/ghc/bin"
-    "/opt/cabal/bin"
     "$HOME/.software/ranger/scripts"
     "$HOME/.cabal/bin"
+    "$HOME/.ghcup/bin"
     "$HOME/.cargo/bin"
     "$HOME/.poetry/bin"
     "$HOME/.pyenv/bin"
