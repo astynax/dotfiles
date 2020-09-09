@@ -1030,11 +1030,19 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; Racket (Geiser), Pollen
 (use-package geiser
+  :ensure nil
+
+  :mode
+  ("\\.rkt\\'" . racket-mode)
+
   :hook
   (racket-mode . smartparens-strict-mode))
 
 (use-package pollen-mode
+  :ensure nil
+
   :commands (pollen-mode)
+
   :init
   (add-to-list 'auto-mode-alist '("\\.pm$" . pollen-mode))
   (add-to-list 'auto-mode-alist '("\\.pmd$" . pollen-mode))
@@ -1043,6 +1051,12 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; Clojure
 (use-package clojure-mode
+  :mode
+  ("\\.clj\\'" . clojure-mode)
+  ("\\.cljc\\'" . clojure-mode)
+  ("\\.cljx\\'" . clojure-mode)
+  ("\\.cljs\\'" . clojurescript-mode)
+
   :hook
   (clojure-mode . aggressive-indent-mode)
   (clojure-mode . rainbow-delimiters-mode)
@@ -1213,25 +1227,25 @@ _j_ ^ ^ _l_ _=_:equalize
 (put 'hi2-left-offset 'safe-local-variable #'numberp)
 (put 'hi2-layout-offset 'safe-local-variable #'numberp)
 
-(use-package hindent
-  :if (executable-find "hindent")
+;; (use-package hindent
+;;   :if (executable-find "hindent")
 
-  :after (haskell-mode)
+;;   :after (haskell-mode)
 
-  :init
-  (add-hook 'haskell-mode-hook #'hindent-mode)
+;;   :init
+;;   (add-hook 'haskell-mode-hook #'hindent-mode)
 
-  :bind
-  (:map
-   my/haskell-map
-   ("f b" . hindent-reformat-buffer)
-   ("f r" . hindent-reformat-region)
-   ("f d" . hindent-reformat-decl))
+;;   :bind
+;;   (:map
+;;    my/haskell-map
+;;    ("f b" . hindent-reformat-buffer)
+;;    ("f r" . hindent-reformat-region)
+;;    ("f d" . hindent-reformat-decl))
 
-  :config
-  (setq-default hindent-reformat-buffer-on-save nil))
+;;   :config
+;;   (setq-default hindent-reformat-buffer-on-save nil))
 
-(put 'hindent-reformat-buffer-on-save 'safe-local-variable #'booleanp)
+;;(put 'hindent-reformat-buffer-on-save 'safe-local-variable #'booleanp)
 
 (use-package company-cabal
   :after (haskell-mode)
@@ -1275,7 +1289,7 @@ _j_ ^ ^ _l_ _=_:equalize
      elpy-module-highlight-indentation
      elpy-module-django))
 
-  :init
+  :config
   (elpy-enable)
   (unbind-key "<C-left>" elpy-mode-map)
   (unbind-key "<C-right>" elpy-mode-map))
@@ -1286,8 +1300,7 @@ _j_ ^ ^ _l_ _=_:equalize
   ("\\.rs\\'" . rust-mode)
 
   :config
-  (add-to-list 'company-dabbrev-code-modes 'rust-mode)
-  (add-to-list 'company-keywords-alist (cons 'rust-mode rust-mode-keywords)))
+  (add-to-list 'company-dabbrev-code-modes 'rust-mode))
 
 (use-package flycheck-rust
   :after (rust-mode)
@@ -1305,9 +1318,9 @@ _j_ ^ ^ _l_ _=_:equalize
   :commands (markdown-mode gfm-mode)
 
   :mode
-  (("README.*\\.md\\'" . gfm-mode)
-   ("\\.md\\'" . markdown-mode)
-   ("\\.markdown\\'" . markdown-mode))
+  ("README.*\\.md\\'" . gfm-mode)
+  ("\\.md\\'" . markdown-mode)
+  ("\\.markdown\\'" . markdown-mode)
 
   :hook
   (markdown-mode . variable-pitch-mode)
@@ -1400,7 +1413,7 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; Go
 (use-package go-mode
-  :if (executable-find "go")
+  :ensure nil
 
   :mode "\\.go\\'"
 
@@ -1416,11 +1429,13 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; PureScript
 (use-package purescript-mode
-  :if (executable-find "purs")
+  :ensure nil
 
   :mode "\\.purs\\'")
 
 (use-package psc-ide
+  :ensure nil
+
   :after (purescript-mode)
 
   :diminish psc-ide-mode
@@ -1439,9 +1454,9 @@ _j_ ^ ^ _l_ _=_:equalize
 (use-package web-mode
   :commands (web-mode)
 
-  :init
-  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.css\\'" . web-mode))
+  :mode
+  ("\\.html?\\'" . web-mode)
+  ("\\.css\\'" . web-mode)
 
   :config
   (setq web-mode-code-indent-offset 2
@@ -1451,11 +1466,12 @@ _j_ ^ ^ _l_ _=_:equalize
         web-mode-style-padding 2))
 
 ;;;; PlantUML
-;; (use-package puml-mode
-;;   :config
-;;   (add-to-list 'auto-mode-alist
-;;                '("\\.puml\\'" . puml-mode)
-;;                '("\\.plantuml\\'" . puml-mode)))
+(use-package puml-mode
+  :ensure nil
+
+  :mode
+  ("\\.puml\\'" . puml-mode)
+  ("\\.plantuml\\'" . puml-mode))
 
 ;;;; YAML
 (use-package yaml-mode
@@ -1479,10 +1495,14 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; CSV
 (use-package csv-mode
+  :ensure nil
+
   :mode "\\.[Cc][Ss][Vv]\\'")
 
 ;;;; Nix
 (use-package nix-mode
+  :ensure nil
+
   :mode "\\.nix\\'")
 
 ;;;; SQL
@@ -1490,8 +1510,9 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; Kotlin
 (use-package kotlin-mode
-  :mode
-  ("\\.kts?\\'" . kotlin-mode)
+  :ensure nil
+
+  :mode "\\.kts?\\'"
 
   :hook
   (kotlin-mode . highlight-indentation-mode))
@@ -1501,12 +1522,14 @@ _j_ ^ ^ _l_ _=_:equalize
   :ensure nil
 
   :mode
-  (("\\.ok\\'" . shell-script-mode)
-   ("\\.sh\\'" . shell-script-mode)
-   ("\\.bash\\'" . shell-script-mode)))
+  ("\\.ok\\'" . shell-script-mode)
+  ("\\.sh\\'" . shell-script-mode)
+  ("\\.bash\\'" . shell-script-mode))
 
 ;;;; Io
 (use-package io-mode
+  :ensure nil
+
   :mode
   ("\\.io\\'" . io-mode)
 
@@ -1521,12 +1544,31 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; Processing
 (use-package processing-mode
-  :mode ("\\.pde$" . processing-mode)
+  :ensure nil
+
+  :mode "\\.pde\\'"
 
   :custom
   (processing-location "~/.software/processing/processing-java")
   (processing-application-dir "~/.software/processing/")
   (processing-sketchbook-dir "~/Projects/processing"))
+
+;;;; Gemini
+(use-package visual-fill-column
+  :ensure nil)
+
+(use-package gemini-mode
+  :ensure nil
+
+  :after (visual-fill-column)
+
+  :mode ("\\.gmi$" . gemini-mode))
+
+;;;; Dockerfile
+(use-package dockerfile-mode
+  :ensure nil
+
+  :mode "\\^Dockerfile\\'")
 
 ;;; IDE
 ;;;; Autocompletion and abbreviation
@@ -1840,10 +1882,6 @@ _j_ ^ ^ _l_ _=_:equalize
 ;;;; Docker
 (use-package docker
   :commands (docker))
-
-(use-package dockerfile-mode
-  :mode ("\\^Dockerfile\\'" . dockerfile-mode))
-
 ;;; Spell Checking
 (use-package ispell
   :ensure nil
@@ -1871,29 +1909,11 @@ _j_ ^ ^ _l_ _=_:equalize
   ("M-<f8>" . flyspell-goto-next-error)
   ("C-c s" . flyspell-correct-word-before-point))
 
-(use-package my/langtool
-  :ensure nil
-
-  :preface
-  (defun my/langtool-check ()
-    "Checks current file with LnagTool"
-    (interactive)
-    (let ((fn (expand-file-name (buffer-file-name (current-buffer)))))
-      (switch-to-buffer-other-window
-       (generate-new-buffer "*spellcheck*"))
-      (insert-string (shell-command-to-string (format "pylangtool %s" fn)))
-      (compilation-mode)))
-
-  (provide 'my/langtool)
-
-  :bind
-  ;; ("M-<f6>" . my/langtool-check)
-  )
-
 ;;; Org-mode/Outline
 ;;;; Org
 (use-package org
   :ensure org
+
   :pin org
 
   :mode ("\\.org\\'" . org-mode)
@@ -2114,34 +2134,6 @@ _j_ ^ ^ _l_ _=_:equalize
 ;;;; Fireplace
 (use-package fireplace
   :commands (fireplace))
-
-;;;; WebPaste
-(use-package webpaste
-  :preface
-  (defun my/webpaste-return-url (url)
-    "Asks for browsing of clipped url"
-    (when (yes-or-no-p "Browser the clip?")
-      (browse-url-firefox url)))
-
-  :bind
-  (:prefix
-   "C-c C-p"
-   :prefix-map my/webpaste-map
-   ("b" . webpaste-paste-buffer)
-   ("p" . webpaste-paste-region))
-
-  :hook
-  (webpaste-return-url . my/webpaste-return-url)
-
-  :custom
-  (webpaste-provider-priority '("ix.io" "dpaste.com"))
-  (webpaste-paste-confirmation t)
-
-  :config
-  (add-to-list
-   'webpaste--default-lang-alist
-   '(haskell-mode . "haskell")
-   t))
 
 ;;;; Olivetti
 (use-package olivetti
