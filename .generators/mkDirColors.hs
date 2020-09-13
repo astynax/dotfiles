@@ -65,7 +65,7 @@ dircolors = unlines $ concat
 
   , h "Documents"
   , [ ".txt", ".md", ".org", ".rst", ".pdf", ".odt", ".cbr", ".cbz"
-    , ".mobi", ".epub", ".srt", ".ass" ]
+    , ".mobi", ".epub", ".fb2", ".srt", ".ass" ]
     ..~ aBold <> fCyan
 
   , h "Sources"
