@@ -16,6 +16,8 @@
 
 !/.config/ncmpcpp/config
 
+!/.config/starship.toml
+
 #### mpv/ ####
 !/.config/mpv
 /.config/mpv/*

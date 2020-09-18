@@ -1,0 +1,42 @@
+prompt_order = [
+    "username",
+    "hostname",
+    "directory",
+    "git_branch",
+    "git_state",
+    "git_status",
+    "package",
+    "python",
+    "rust",
+    "elm",
+    "cmd_duration",
+    "line_break",
+    "jobs",
+    "character",
+]
+add_newline = false
+
+[character]
+symbol = "λ"
+
+[jobs]
+symbol = "+"
+
+[directory]
+truncate_to_repo = false
+
+[git_branch]
+symbol = "#"
+
+[package]
+symbol = "^"
+
+[python]
+symbol = "Py "
+pyenv_version_name = true
+
+[elm]
+symbol = "Elm "
+
+[rust]
+symbol = "Rust "

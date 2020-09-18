@@ -8,9 +8,6 @@ set +o histexpand
 # stop on errors
 #set -euo pipefail
 
-# split words on this chars only (useful for ``for``)
-#IFS=$'\n\t'
-
 export EDITOR=editor
 export LESS="WR"
 export LV="-c"
@@ -66,37 +63,11 @@ if [[ -x /usr/bin/lesspipe ]]; then
     eval "$(SHELL=/bin/sh lesspipe)"
 fi
 
-# set a fancy prompt (non-color, unless we know we "want" color)
-if [[ -z "$MINIMAL_PROMPT" ]]; then
-    case "$TERM" in
-        xterm-color) color_prompt=yes;;
-        rxvt-unicode-256color) color_prompt=yes;;
-    esac
-
-    if [[ -z "$color_prompt" ]]; then
-        if [[ -x /usr/bin/tput ]] && tput setaf 1 >&/dev/null; then
-            color_prompt=yes
-        else
-            color_prompt=
-        fi
+# fancy prompt
+if [[ ! -v STARSHIP_SHELL ]]; then
+    if $(which starship > /dev/null); then
+        eval "$(starship init bash)"
     fi
-
-    if [[ -z "$debian_chroot" ]] && [[ -r /etc/debian_chroot ]]; then
-        debian_chroot=$(cat /etc/debian_chroot)
-    fi
-
-    if [[ "$color_prompt" = yes ]]; then
-        if [[ -f ~/.bash_prompt ]]; then
-            source ~/.bash_prompt
-        else
-            PS1='${debian_chroot:+($debian_chroot)}\[\033[04;34m\]\u@\h\[\033[00m\]:\[\033[02;33m\]\w\[\033[00m\]\$ '
-        fi
-    else
-        PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
-    fi
-    unset color_prompt
-else
-    PS1='${debian_chroot:+($debian_chroot) }\w\$ '
 fi
 
 # configure dir colors
