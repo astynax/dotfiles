@@ -64,7 +64,7 @@ if [[ -x /usr/bin/lesspipe ]]; then
 fi
 
 # fancy prompt
-if [[ ! -v STARSHIP_SHELL ]]; then
+if $(which starship > /dev/null); then
     if $(which starship > /dev/null); then
         eval "$(starship init bash)"
     fi
