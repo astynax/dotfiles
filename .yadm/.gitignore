@@ -18,6 +18,8 @@
 
 !/.config/starship.toml
 
+!/.config/i3/*
+
 #### mpv/ ####
 !/.config/mpv
 /.config/mpv/*
@@ -52,12 +54,7 @@
 /.emacs.d/*
 !/.emacs.d/snippets
 
-#### i3/ ####
-!/.i3
-
 !/.lein/profiles.clj
-
-!/.ncmpcpp/config
 
 !/.ptpython/config.py
 
