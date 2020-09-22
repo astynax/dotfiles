@@ -619,7 +619,7 @@ _j_ ^ ^ _l_ _=_:equalize
   :diminish whole-line-or-region-local-mode
 
   :hook
-  (after-init . whole-line-or-region-mode))
+  (after-init . whole-line-or-region-global-mode))
 
 ;;;; Indirect region editing
 (use-package edit-indirect
@@ -1012,10 +1012,22 @@ _j_ ^ ^ _l_ _=_:equalize
 ;;; Languages
 ;;;; LSP
 (use-package lsp-mode
-  :commands lsp)
+  :commands lsp
+
+  :hook
+  (lsp-mode . lsp-enable-which-key-integration)
+
+  :custom
+  (lsp-keymap-prefix "C-c C-l"))
 
 (use-package lsp-ui
-  :commands lsp-ui-mode)
+  :commands lsp-ui-mode
+
+  :hook
+  (lsp-mode . lsp-ui-mode)
+
+  :custom
+  (lsp-ui-sideline-show-code-actions nil))
 
 (use-package company-lsp
   :commands company-lsp)
@@ -1142,6 +1154,7 @@ _j_ ^ ^ _l_ _=_:equalize
   (haskell-mode . eldoc-mode)
   (haskell-mode . smartparens-mode)
   (haskell-mode . my/boot-haskell)
+  (haskell-mode . lsp)
 
   :config
   (defun my/haskell-jump-to-loc ()
@@ -1193,18 +1206,6 @@ _j_ ^ ^ _l_ _=_:equalize
 (put 'haskell-stylish-on-save 'safe-local-variable #'booleanp)
 (put 'haskell-hayoo-url 'safe-local-variable #'stringp)
 
-(use-package flycheck-haskell
-  :after (haskell-mode)
-
-  :commands (flycheck-haskell-setup)
-
-  :hook
-  (haskell-mode . flycheck-haskell-setup)
-  (haskell-mode . flycheck-mode))
-
-(put 'flycheck-ghc-language-extensions 'safe-local-variable #'listp)
-(put 'flycheck-hlint-language-extensions 'safe-local-variable #'listp)
-
 (use-package hi2
   :after (haskell-mode)
 
@@ -1226,26 +1227,6 @@ _j_ ^ ^ _l_ _=_:equalize
 (put 'hi2-where-post-offset 'safe-local-variable #'numberp)
 (put 'hi2-left-offset 'safe-local-variable #'numberp)
 (put 'hi2-layout-offset 'safe-local-variable #'numberp)
-
-;; (use-package hindent
-;;   :if (executable-find "hindent")
-
-;;   :after (haskell-mode)
-
-;;   :init
-;;   (add-hook 'haskell-mode-hook #'hindent-mode)
-
-;;   :bind
-;;   (:map
-;;    my/haskell-map
-;;    ("f b" . hindent-reformat-buffer)
-;;    ("f r" . hindent-reformat-region)
-;;    ("f d" . hindent-reformat-decl))
-
-;;   :config
-;;   (setq-default hindent-reformat-buffer-on-save nil))
-
-;;(put 'hindent-reformat-buffer-on-save 'safe-local-variable #'booleanp)
 
 (use-package company-cabal
   :after (haskell-mode)
