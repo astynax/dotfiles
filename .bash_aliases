@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # some more ls aliases
-alias ls='/bin/ls -Fv --color=always'
-alias ll='/bin/ls -FvlGh --color=always --time-style=long-iso --group-directories-first'
-alias la='/bin/ls -FvA --color=always'
+alias ls='/bin/ls -Fv --color=auto'
+alias ll='/bin/ls -FvlGh --color=auto --time-style=long-iso --group-directories-first'
+alias la='/bin/ls -FvA --color=auto'
 alias l='/bin/ls -af1v'
 
 alias playlist-dl="youtube-dl -o '~/Downloads/youtube/%(uploader)s/%(playlist_mb_title)s/%(playlist_index)s. %(title)s.%(ext)s'"
