@@ -28,6 +28,18 @@ truncate_to_repo = false
 [git_branch]
 symbol = "#"
 
+[git_status]
+conflicted = "="
+ahead = "^"
+behind = "v"
+diverged = "X"
+untracked = "?"
+stashed = "$"
+modified = "~"
+staged = "+"
+renamed = "%"
+deleted = "-"
+
 [package]
 symbol = "^"
 
