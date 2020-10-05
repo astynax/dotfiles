@@ -1903,6 +1903,7 @@ _j_ ^ ^ _l_ _=_:equalize
 
   :bind
   ("C-c C" . org-capture)
+  ("C-c <backspace>" . org-mark-ring-goto)
   ("<f12>" . my/org-open-notes-file)
 
   (:map
@@ -1942,6 +1943,7 @@ _j_ ^ ^ _l_ _=_:equalize
   (org-todo-keywords '((sequence "TODO" "IN-PROGRESS" "DONE")))
   (org-use-sub-superscripts nil)
   (org-adapt-indentation nil)
+  (org-return-follows-link t)
 
   :config
   (require 'ob-shell)
@@ -1953,6 +1955,16 @@ _j_ ^ ^ _l_ _=_:equalize
       (emacs-lisp . t)
       (python . t)
       (haskell . t)))
+
+  (defun my/org-find-file (file)
+    "Find file, do it in other window witn C-u"
+    (if current-prefix-arg
+        (find-file-other-window file)
+      (find-file file)))
+
+  (setq org-link-frame-setup
+        (cons '(file . my/org-find-file)
+              (assq-delete-all 'file org-link-frame-setup)))
 
   (defun my/org-babel-load-langs ()
     (org-babel-do-load-languages
@@ -2106,6 +2118,24 @@ _j_ ^ ^ _l_ _=_:equalize
   ;; unbind M-tab
   (unbind-key "C-M-i" outline-minor-mode-map))
 
+;;;; Org-Roam
+(use-package org-roam
+  :hook
+  (after-init . org-roam-mode)
+
+  :custom
+  (org-roam-directory "~/org-roam")
+
+  :bind
+  (:map
+   org-roam-mode-map
+   ("C-c n l" . org-roam)
+   ("C-c n f" . org-roam-find-file)
+   ("C-c n g" . org-roam-graph)
+   :map
+   org-mode-map
+   ("C-c n i" . org-roam-insert)
+   ("C-c n I" . org-roam-insert-immediate)))
 ;;; Other
 ;;;; Nov
 (use-package nov
