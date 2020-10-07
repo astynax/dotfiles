@@ -18,7 +18,8 @@
 
 !/.config/starship.toml
 
-!/.config/i3/*
+!/.config/i3/
+/.config/i3/*
 
 #### mpv/ ####
 !/.config/mpv

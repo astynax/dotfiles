@@ -2,17 +2,22 @@
 
 set -e
 
-export STICK="$(xinput list --name-only | grep TrackPoint)"
-export PAD="$(xinput list --name-only | grep Synaptic)"
-export PROP="$(xinput list-props "$STICK" | grep -e ".*Enabled.*1$")"
+STICK="$(xinput list --name-only | grep TrackPoint)"
+T_PAD="$(xinput list --name-only | grep Synaptic)"
+STICK_ENABLED="$(xinput list-props "$STICK" | grep -e '.*Enabled.*1$' || true)"
+T_PAD_ENABLED="$(xinput list-props "$T_PAD" | grep -e '.*Enabled.*1$' || true)"
 
-if [ -z "$PROP" ]; then
-    xinput enable "$STICK"
-    xinput disable "$PAD"
-    notify-send "Use TrackPoint, Luke!"
+if [ -z "$STICK_ENABLED" ] && [ -z "$T_PAD_ENABLED" ]; then
+    xinput enable  "$STICK"
+    xinput disable "$T_PAD"
+    notify-send "Use the TrackPoint, Luke!"
+elif [ -n "$STICK_ENABLED" ] && [ -z "$T_PAD_ENABLED" ]; then
+    xinput disable "$STICK"
+    xinput enable  "$T_PAD"
+    notify-send "Use the TouchPad, Luke!"
 else
     xinput disable "$STICK"
-    xinput enable "$PAD"
-    notify-send "Use TouchPad, Luke!"
+    xinput disable "$T_PAD"
+    notify-send "Use the Mouse, Luke!"
 fi
 
