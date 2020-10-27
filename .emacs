@@ -113,6 +113,7 @@
 ;;; Faces
 (use-package faces
   :ensure nil
+
   :diminish
   (buffer-face-mode "")
 
@@ -292,6 +293,7 @@
 
 ;;;; Hydra
 (use-package hydra)
+
 ;;;; Uniquify
 (use-package uniquify
   :ensure nil
@@ -300,6 +302,7 @@
   (uniquify-strip-common-suffix t)
   (uniquify-after-kill-buffer-p t)
   (uniquify-buffer-name-style 'post-forward-angle-brackets))
+
 ;;;; Which key
 (use-package which-key
   :demand
@@ -1154,7 +1157,6 @@ _j_ ^ ^ _l_ _=_:equalize
   (haskell-mode . eldoc-mode)
   (haskell-mode . smartparens-mode)
   (haskell-mode . my/boot-haskell)
-  (haskell-mode . lsp)
 
   :config
   (defun my/haskell-jump-to-loc ()
@@ -1239,6 +1241,15 @@ _j_ ^ ^ _l_ _=_:equalize
 
 (use-package inf-haskell
   :ensure nil)
+
+(use-package lsp-haskell
+  :after (haskell-mode)
+
+  :hook
+  (haskell-mode . lsp)
+
+  :custom
+  (lsp-haskell-process-path-hie "haskell-language-server-wrapper"))
 
 ;;;; Python
 (use-package python
@@ -1908,7 +1919,8 @@ _j_ ^ ^ _l_ _=_:equalize
 
   (:map
    org-mode-map
-   ("C-c M-RET" . org-insert-heading-after-current))
+   ("C-c M-RET" . org-insert-heading-after-current)
+   ("C-c L" . org-cliplink))
 
   :hook
   (org-mode . variable-pitch-mode)
@@ -1927,7 +1939,8 @@ _j_ ^ ^ _l_ _=_:equalize
   (org-tag ((t (:weight normal :height 0.8))))
 
   :custom
-  (org-default-notes-file "~/Dropbox/org/buffer.org")
+  (org-directory "~/Dropbox/org")
+  (org-default-notes-file "~/Dropbox/org/notes.org")
   (org-edit-src-content-indentation 0)
   (org-ellipsis "…")
   (org-enforce-todo-dependencies t)
@@ -1981,47 +1994,12 @@ _j_ ^ ^ _l_ _=_:equalize
 
   (setq
    org-capture-templates
-   '(("n" "Buffer note" entry
-      (file+headline "" "Notes")
-      "* %U\n%?"
+   '(("t" "Add a daily note" entry
+      (file+olp+datetree "" "Daily")
+      "* %?\n%i"
       )
-
-     ("c" "Buffer clip" entry
-      (file+headline "" "Clips")
-      "* %U\n%x"
-      :immediate-finish
-      :kill-buffer
-      )
-
-     ("b" "Bookmark a Haskell module" entry
-      (file+function
-       ""
-       (lambda ()
-         ;; TODO: propose "file+headline-function"
-         (unless (derived-mode-p 'org-mode)
-           (error
-            "Target buffer \"%s\" for should be in Org mode"
-            (current-buffer)))
-         (let* ((file (buffer-file-name (org-capture-get :original-buffer)))
-                (rev (vc-working-revision file))
-                (branch (or (vc-git--symbolic-ref file)
-                            (substring rev 0 7))))
-           (goto-char (point-min))
-           (if (re-search-forward
-                (format org-complex-heading-regexp-format (regexp-quote branch))
-                nil t)
-               (goto-char (point-at-bol))
-             (goto-char (point-max))
-             (or (bolp) (insert "\n"))
-             (insert "* " branch "\n")
-             (insert ":PROPERTIES:\n")
-             (insert ":VISIBILITY: children\n")
-             (insert ":END:\n")
-             (beginning-of-line 0))
-           )))
-      "* [[file:/%F::%(with-current-buffer (org-capture-get :original-buffer) (number-to-string (line-number-at-pos)))][%(haskell-guess-module-name-from-file-name (buffer-file-name (org-capture-get :original-buffer)))]]"
-      :immediate-finish
-      :kill-buffer))))
+     ))
+  )
 
 (put 'org-default-notes-file 'safe-local-variable #'stringp)
 (put 'org-export-use-babel 'safe-local-variable #'null)
@@ -2118,24 +2096,6 @@ _j_ ^ ^ _l_ _=_:equalize
   ;; unbind M-tab
   (unbind-key "C-M-i" outline-minor-mode-map))
 
-;;;; Org-Roam
-(use-package org-roam
-  :hook
-  (after-init . org-roam-mode)
-
-  :custom
-  (org-roam-directory "~/org-roam")
-
-  :bind
-  (:map
-   org-roam-mode-map
-   ("C-c n l" . org-roam)
-   ("C-c n f" . org-roam-find-file)
-   ("C-c n g" . org-roam-graph)
-   :map
-   org-mode-map
-   ("C-c n i" . org-roam-insert)
-   ("C-c n I" . org-roam-insert-immediate)))
 ;;; Other
 ;;;; Nov
 (use-package nov
@@ -2166,19 +2126,6 @@ _j_ ^ ^ _l_ _=_:equalize
   :custom
   (olivetti-body-width 64))
 
-;;;; Quick note
-(use-package my-quick-note
-  :ensure nil
-
-  :preface
-  (defun my-quick-note/new ()
-    "Open a temporary Org-file with timestamped name."
-    (interactive)
-    (find-file (format-time-string "/tmp/%Y%m%d_%H%M%S.org" (current-time)))
-    (delete-other-windows)
-    (olivetti-mode))
-
-  (provide 'my-quick-note))
 ;;; Finalization
 ;; restore GC-limit after timeout
 (run-with-idle-timer
