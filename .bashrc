@@ -58,6 +58,12 @@ HISTIGNORE="&:bg:fg:exit:history:ranger:r:clear:encfs*:visit_efs*:tra *"
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
+_try_to_source() {
+    if [[ -s "$1" ]]; then
+        source "$1"
+    fi
+}
+
 # make less more friendly for non-text input files, see lesspipe(1)
 if [[ -x /usr/bin/lesspipe ]]; then
     eval "$(SHELL=/bin/sh lesspipe)"
@@ -65,9 +71,7 @@ fi
 
 # fancy prompt
 if $(which starship > /dev/null); then
-    if $(which starship > /dev/null); then
-        eval "$(starship init bash)"
-    fi
+    eval "$(starship init bash)"
 fi
 
 # configure dir colors
@@ -86,26 +90,40 @@ fi
 # Wasmer
 if [[ ! -v WASMER_DIR ]]; then
     export WASMER_DIR="$HOME/.wasmer"
-    if [[ -s "$WASMER_DIR/wasmer.sh" ]]; then
-        source "$WASMER_DIR/wasmer.sh"
-    fi
+    _try_to_source "$WASMER_DIR/wasmer.sh"
 fi
 
 # asdf
 if [[ ! -v ASDF_DIR ]]; then
-    if [[ -s "$HOME/.asdf/asdf.sh" ]]; then
-        source "$HOME/.asdf/asdf.sh"
-    fi
+    _try_to_source "$HOME/.asdf/asdf.sh"
 fi
 
 # .ok (https://github.com/secretGeek/ok-bash)
 if ! declare -f ok > /dev/null; then
-    if [[ ! -v _OK__PATH_TO_ME ]]; then
+    if [[ ! -v _OK__PATH_TO_ME && -d "$HOME/.ok-bash" ]]; then
         export _OK__PATH_TO_ME="$HOME/.ok-bash"
         export HISTIGNORE="$HISTIGNORE:ok*"
-    fi
-    if [[ -s "$_OK__PATH_TO_ME/ok.sh" ]]; then
         source "$_OK__PATH_TO_ME/ok.sh"
+    fi
+fi
+
+# fzf
+if [[ ! -v FZF_DIR && -v ASDF_DIR ]]; then
+    export FZF_DIR="$(asdf where fzf 2>/dev/null || true)"
+    if [[ ! -z "$FZF_DIR" ]]; then
+        _try_to_source "$FZF_DIR/shell/completion.bash"
+        _try_to_source "$FZF_DIR/shell/key-bindings.bash"
+        if $(which fd > /dev/null); then
+            _fzf_compgen_path() {
+               fd --hidden --follow --exclude ".git" . "$1"
+            }
+
+            _fzf_compgen_dir() {
+               fd --type d --hidden --follow --exclude ".git" . "$1"
+            }
+
+            export FZF_DEFAULT_COMMAND='fd --type f'
+        fi
     fi
 fi
 
