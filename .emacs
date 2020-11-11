@@ -1030,7 +1030,9 @@ _j_ ^ ^ _l_ _=_:equalize
   (lsp-mode . lsp-ui-mode)
 
   :custom
-  (lsp-ui-sideline-show-code-actions nil))
+  (lsp-ui-sideline-show-code-actions nil)
+  (lsp-ui-sideline-show-diagnostics nil)
+  (lsp-ui-doc-enable nil))
 
 (use-package company-lsp
   :commands company-lsp)
