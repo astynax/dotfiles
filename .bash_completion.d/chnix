@@ -1,7 +1,0 @@
-function _chnix() {
-    local cur=${COMP_WORDS[COMP_CWORD]}
-    local profiles=$(ls -1 /nix/var/nix/profiles | grep -v "-")
-    COMPREPLY=( $(compgen -W "$profiles" -- $cur) )
-}
-complete -F _chnix chnix
-
