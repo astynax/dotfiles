@@ -7,7 +7,7 @@ visualizer_fifo_path = /tmp/mpd.fifo
 visualizer_output_name = mpd_fifo
 visualizer_in_stereo = yes
 ## Available values: spectrum, wave, wave_filled, ellipse.
-visualizer_type = spectrum
+visualizer_type = wave
 visualizer_look = +|
 
 song_columns_list_format = (7f)[green]{l} (40)[]{t|f} (25)[cyan]{a} (5f)[magenta]{y} (30)[red]{b}
@@ -16,7 +16,7 @@ playlist_display_mode = columns
 browser_display_mode = columns
 
 user_interface = alternative
-startup_slave_screen = "visualizer"
+startup_slave_screen = browser
 startup_slave_screen_focus = no
 
 ignore_leading_the = yes
