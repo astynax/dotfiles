@@ -47,6 +47,10 @@ fi
 
 if [ -e /home/astynax/.nix-profile/etc/profile.d/nix.sh ]; then . /home/astynax/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
 
+if [ -f "$HOME/.nix-profile/lib/locale/locale-archive" ]; then
+    export LOCALE_ARCHIVE="$HOME/.nix-profile/lib/locale/locale-archive"
+fi
+
 export BAT_THEME=GitHub
 
 # if running bash
