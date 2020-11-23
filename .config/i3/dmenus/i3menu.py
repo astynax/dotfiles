@@ -32,5 +32,9 @@ run_menu({
         "VGA": ["i3-msg", "move workspace to output DP-2"],
         "DP-1": ["i3-msg", "move workspace to output DP-1"],
         "HDMI": ["i3-msg", "move workspace to output HDMI-1"]
-    }
-}, *QUICK, prefix="i3 ")
+    },
+    "configuration": {
+        "reload": ["i3-msg", "reload"],
+        "restart": ["i3-msg", "restart"],
+    },
+}, *QUICK, prefix="i3")

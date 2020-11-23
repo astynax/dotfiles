@@ -26,8 +26,9 @@ client.focused_inactive #b58900 #b58900 #eee8d5 #ff0000
 
 ################ MENUS ######################################################
 
-set $dmenu_run "rofi -show run"
-set $dmenu_apps "rofi -dmenu -i -p \"App:\""
+set $menu_run     exec --no-startup-id "rofi -lines 15 -show run"
+set $menu_apps    exec --no-startup-id "rofi -lines 15 -show drun"
+set $menu_windows exec --no-startup-id "rofi -lines 15 -show window"
 
 ################ RULES ######################################################
 for_window [class="^KeePassXC$"] floating enable, border pixel 1, move position center
@@ -50,24 +51,25 @@ hide_edge_borders smart
 ################ BINDINGS ###################################################
 
 # start a terminal
-bindsym $mod+Return       exec i3-sensible-terminal
+bindsym $mod+Return exec i3-sensible-terminal
 
 # some menus
-bindsym $mod+Shift+m exec --no-startup-id "ls -1 .screenlayout/*.sh      | rofi -dmenu -p 'Screen Layout:' | xargs -r sh"
-bindsym $mod+o       exec --no-startup-id "cd Dropbox/org && ls -1 *.org | rofi -dmenu -p 'ORG:'           | xargs -r emacs"
+bindsym $mod+Shift+m exec --no-startup-id "cd .screenlayout && ls -1 *.sh | rofi -dmenu -p 'Screen Layout' | xargs -r sh"
+bindsym $mod+o       exec --no-startup-id "cd Dropbox/org && ls -1 *.org  | rofi -dmenu -p 'ORG'           | xargs -r emacs"
 
 # reset output
-bindsym $mod+Control+Shift+i exec --no-startup-id "~/.screenlayout/internal.sh"
+bindsym $mod+Control+Shift+i exec --no-startup-id "xrandr --output eDP-1 --primary --mode 1920x1080 --pos 0x0 --rotate normal --output HDMI-1 --off --output DP-1 --off --output DP-2 --off"
 
 # kill focused window
 bindsym $mod+Shift+c kill
 
-# start a program launchers
-bindsym $mod+d exec $dmenu_run
-bindsym $mod+Shift+d exec --no-startup-id i3-dmenu-desktop --dmenu=$dmenu_apps
+# Menus
+bindsym $mod+d       $menu_run
+bindsym $mod+Shift+d $menu_apps
+bindsym $mod+q       $menu_windows
 
 # MPD menu
-bindsym $mod+m exec --no-startup-id "echo 'toggle\nnext\nprev\nplay\nstop' | rofi -dmenu -p 'MPD:' | xargs mpc"
+bindsym $mod+m exec --no-startup-id "echo 'toggle\nnext\nprev\nplay\nstop' | rofi -lines 5 -dmenu -p 'MPD' | xargs mpc"
 
 # PulseAudio Volume
 bindsym $mod+Shift+v exec --no-startup-id "$cfg_dir/sound_volume"
@@ -80,12 +82,6 @@ bindsym $mod+x exec --no-startup-id "keepassxc"
 
 # i3lock
 bindsym $mod+Mod1+l exec --no-startup-id "i3lock -c 000000"
-
-# Quickswitch menu
-bindsym $mod+q exec --no-startup-id "rofi -show window"
-
-# DuckDuckGo search TUI (https://github.com/jarun/ddgr)
-bindsym $mod+g exec --no-startup-id "xtermify -t DuckDuckGo ddgr"
 
 # change focus
 bindsym $mod+i     focus up
@@ -103,9 +99,6 @@ bindsym $mod+Shift+l     move right
 # scratchpad
 bindsym $mod+Shift+z move scratchpad
 bindsym $mod+z scratchpad show
-
-# open a new notetaking window
-bindsym $mod+n exec --no-startup-id "emacs --exec='(my-quick-note/new)'"
 
 # menus
 bindsym $mod+a exec --no-startup-id "$cfg_dir/dmenus/i3menu.py"
