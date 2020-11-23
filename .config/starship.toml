@@ -1,23 +1,25 @@
-prompt_order = [
-    "username",
-    "hostname",
-    "directory",
-    "git_branch",
-    "git_state",
-    "git_status",
-    "package",
-    "python",
-    "rust",
-    "elm",
-    "cmd_duration",
-    "line_break",
-    "jobs",
-    "character",
-]
+format = """\
+    $username\
+    $hostname\
+    $directory\
+    $git_branch\
+    $git_state\
+    $git_status\
+    $package\
+    $python\
+    $rust\
+    $elm\
+    $cmd_duration\
+    $line_break\
+    $jobs\
+    $character\
+    """
+
 add_newline = false
 
 [character]
-symbol = "λ"
+success_symbol = "[λ](bold green)"
+error_symbol = "[λ](bold red)"
 
 [jobs]
 symbol = "+"
