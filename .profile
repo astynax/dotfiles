@@ -51,8 +51,6 @@ if [ -f "$HOME/.nix-profile/lib/locale/locale-archive" ]; then
     export LOCALE_ARCHIVE="$HOME/.nix-profile/lib/locale/locale-archive"
 fi
 
-export BAT_THEME=GitHub
-
 # if running bash
 if [[ -n "$BASH_VERSION" ]]; then
     # include .bashrc if it exists

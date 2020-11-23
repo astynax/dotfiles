@@ -12,6 +12,13 @@ export EDITOR=editor
 export LESS="WR"
 export LV="-c"
 
+# TERM hack
+case "$TERM" in
+    rxvt-unicode-256color)
+        TERM=xterm-256color
+        ;;
+esac
+
 # user completions
 if [[ -d "$HOME/.bash_completion.d" ]]; then
     for a in $HOME/.bash_completion.d/*; do
@@ -126,4 +133,3 @@ if [[ ! -v FZF_DIR && -v ASDF_DIR ]]; then
         fi
     fi
 fi
-
