@@ -10,12 +10,20 @@ format = """\
     $rust\
     $elm\
     $cmd_duration\
+    $battery\
     $line_break\
     $jobs\
     $character\
     """
 
 add_newline = false
+
+[battery]
+format = "[BATTERY:$percentage]($style)"
+
+[[battery.display]]
+threshold = 10
+style = "bold red"
 
 [character]
 success_symbol = "[λ](bold green)"
