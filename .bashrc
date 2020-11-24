@@ -19,30 +19,31 @@ case "$TERM" in
         ;;
 esac
 
-# user completions
-if [[ -d "$HOME/.bash_completion.d" ]]; then
-    for a in $HOME/.bash_completion.d/*; do
-        source "$a"
-    done
-    unset a
-fi
-
-if [[ -d "$HOME/.local/etc/bash_completion.d" ]]; then
-    for a in $HOME/.local/etc/bash_completion.d/*; do
-        source "$a"
-    done
-    unset a
-fi
-
 # Alias definitions.
 if [[ -f ~/.bash_aliases ]]; then
     . ~/.bash_aliases
 fi
 
-# enable programmable completion
+# completions
 if [[ -f /etc/bash_completion ]] && ! shopt -oq posix; then
-    . /etc/bash_completion
+    source /etc/bash_completion
 fi
+_paths=(
+    # "/etc/bash_completion.d"  # buggy stuff!
+    "$HOME/.local/etc/.bash_completion.d"
+    "$HOME/.nix-profile/share/bash-completion/completions"
+    "$HOME/.bash_completion.d"
+)
+for p in "${_paths[@]}"; do
+    if [[ -d "$p" ]]; then
+        for a in $p/*; do
+            source "$a"
+        done
+        unset a
+    fi;
+done
+unset p
+unset _paths
 
 # don't put duplicate lines in the history. See bash(1) for more options
 # ... or force ignoredups and ignorespace
