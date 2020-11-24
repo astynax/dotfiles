@@ -9,6 +9,7 @@ format = """\
     $python\
     $rust\
     $elm\
+    $nix_shell\
     $cmd_duration\
     $battery\
     $line_break\
@@ -34,6 +35,7 @@ symbol = "+"
 
 [directory]
 truncate_to_repo = false
+read_only = "R"
 
 [git_branch]
 symbol = "#"
@@ -62,3 +64,6 @@ symbol = "Elm "
 
 [rust]
 symbol = "Rust "
+
+[nix_shell]
+symbol = "Nix "
