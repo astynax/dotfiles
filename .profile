@@ -45,16 +45,27 @@ if [[ ("$0" = "/usr/sbin/lightdm-session") && ("$DESKTOP_SESSION" = "i3") ]]; th
     export $(gnome-keyring-daemon -s)
 fi
 
-if [ -e /home/astynax/.nix-profile/etc/profile.d/nix.sh ]; then . /home/astynax/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
+# Nix
+if [[ -e "$HOME/.nix-profile/etc/profile.d/nix.sh" ]]; then
+    source "$HOME/.nix-profile/etc/profile.d/nix.sh";
+fi
 
-if [ -f "$HOME/.nix-profile/lib/locale/locale-archive" ]; then
+if [[ -f "$HOME/.nix-profile/lib/locale/locale-archive" ]]; then
     export LOCALE_ARCHIVE="$HOME/.nix-profile/lib/locale/locale-archive"
+fi
+
+if [[ -d "$HOME/.nix-profile/etc/profile.d" ]]; then
+    for i in "$HOME/.nix-profile/etc/profile.d/*.sh"; do
+        if [[ -r "$i" ]]; then
+            source "$i"
+        fi
+    done
 fi
 
 # if running bash
 if [[ -n "$BASH_VERSION" ]]; then
     # include .bashrc if it exists
     if [[ -f "$HOME/.bashrc" ]]; then
-	. "$HOME/.bashrc"
+        . "$HOME/.bashrc"
     fi
 fi
