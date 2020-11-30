@@ -10,7 +10,6 @@ set +o histexpand
 
 export EDITOR=editor
 export LESS="WR"
-export LV="-c"
 
 # TERM hack
 case "$TERM" in
