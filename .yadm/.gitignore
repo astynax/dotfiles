@@ -8,6 +8,8 @@
 !/.bash_completion.d
 /.bash_completion.d/asdf
 
+!/.bash.d
+
 ############# ~/.config/ ##############
 !/.config
 /.config/*
