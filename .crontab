@@ -1,0 +1,3 @@
+# install me using "crontab .crontab"!
+#
+*/20 * * * * check-battery.sh
