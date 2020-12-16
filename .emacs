@@ -2035,8 +2035,11 @@ _j_ ^ ^ _l_ _=_:equalize
 (use-package ox-slimhtml
   :after (org))
 
+(use-package ox-gemini
+  :after (org))
+
 (use-package ob-restclient
-  :after '(org restclient)
+  :after (org restclient)
 
   :commands (org-babel-execute:restclient)
 
