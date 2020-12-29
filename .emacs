@@ -1021,6 +1021,7 @@ _j_ ^ ^ _l_ _=_:equalize
   (lsp-mode . lsp-enable-which-key-integration)
 
   :custom
+  (lsp-enable-snippet nil)
   (lsp-keymap-prefix "C-c C-l"))
 
 (use-package lsp-ui
