@@ -1022,6 +1022,7 @@ _j_ ^ ^ _l_ _=_:equalize
 
   :custom
   (lsp-enable-snippet nil)
+  (lsp-auto-guess-root t)
   (lsp-keymap-prefix "C-c C-l"))
 
 (use-package lsp-ui
@@ -1029,6 +1030,11 @@ _j_ ^ ^ _l_ _=_:equalize
 
   :hook
   (lsp-mode . lsp-ui-mode)
+
+  :bind
+  (:map
+   lsp-ui-mode-map
+   ("M-g i" . lsp-ui-imenu))
 
   :custom
   (lsp-ui-sideline-show-code-actions nil)
