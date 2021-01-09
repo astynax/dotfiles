@@ -458,13 +458,15 @@ _j_ ^ ^ _l_ _=_:equalize
   :custom
   (ivy-use-virtual-buffers t)
   (ivy-initial-inputs-alist nil)
-  (ivy-re-builders-alist
-   '((swiper           . ivy--regex-plus)
-     (counsel-git-grep . ivy--regex-plus)
-     (counsel-grep     . ivy--regex-plus)
-     (counsel-ag       . ivy--regex-plus)
-     (counsel-rg       . ivy--regex-plus)
-     (t                . ivy--regex-fuzzy)))
+
+  :config
+  (setq ivy-re-builders-alist
+        '((swiper           . ivy--regex-plus)
+          (counsel-git-grep . ivy--regex-plus)
+          (counsel-grep     . ivy--regex-plus)
+          (counsel-ag       . ivy--regex-plus)
+          (counsel-rg       . ivy--regex-plus)
+          (t                . ivy--regex-fuzzy)))
 
   :hook
   (after-init . ivy-mode)
