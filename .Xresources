@@ -119,57 +119,6 @@ URxvt*color13:                 Tango_Plum0
 URxvt*color14:                 Sb_cyan
 URxvt*color15:                 SL_base3
 
-! base16 light
-! https://github.com/chriskempson/base16-xresources/blob/master/xresources/base16-solarized-light-256.Xresources
-
-#define base00 #fdf6e3
-#define base01 #eee8d5
-#define base02 #93a1a1
-#define base03 #839496
-#define base04 #657b83
-#define base05 #586e75
-#define base06 #073642
-#define base07 #002b36
-#define base08 #dc322f
-#define base09 #cb4b16
-#define base0A #b58900
-#define base0B #859900
-#define base0C #2aa198
-#define base0D #268bd2
-#define base0E #6c71c4
-#define base0F #d33682
-
-!URxvt.foreground:   base05
-!URxvt.background:   base00
-!URxvt.cursorColor:  base05
-
-!URxvt.color0:       base00
-!URxvt.color1:       base08
-!URxvt.color2:       base0B
-!URxvt.color3:       base0A
-!URxvt.color4:       base0D
-!URxvt.color5:       base0E
-!URxvt.color6:       base0C
-!URxvt.color7:       base05
-
-!URxvt.color8:       base03
-!URxvt.color9:       base08
-!URxvt.color10:      base0B
-!URxvt.color11:      base0A
-!URxvt.color12:      base0D
-!URxvt.color13:      base0E
-!URxvt.color14:      base0C
-!URxvt.color15:      base07
-
-!! Note: colors beyond 15 might not be loaded (e.g., xterm, urxvt),
-!! use 'shell' template to set these if necessary
-!URxvt.color16:      base09
-!URxvt.color17:      base0F
-!URxvt.color18:      base01
-!URxvt.color19:      base02
-!URxvt.color20:      base04
-!URxvt.color21:      base06
-
 !============================================================================
 ! Rofi
 
@@ -198,5 +147,42 @@ rofi.separator-style:                dash
 rofi.kb-primary-paste:               Shift+Insert
 rofi.kb-secondary-paste:             Control+y,Insert
 
-xterm*background:                    black
-xterm*foreground:                    gray
+!==============================================
+! XTerm
+
+XTerm.vt100.locale:                  false
+XTerm.vt100.utf8:                    true
+XTerm.vt100.scrollTtyOutput:         false
+XTerm.vt100.scrollKey:               true
+XTerm.vt100.bellIsUrgent:            true
+XTerm.vt100.metaSendsEscape:         true
+XTerm.vt100.allowBoldFonts:          true
+XTerm.vt100.faceName:                Inconsolata LGC
+XTerm.vt100.boldMode:                false
+XTerm.vt100.faceSize:                11
+XTerm.vt100.internalBorder:          5
+XTerm.borderWidth:                   0
+
+XTerm*background:              SL_base03
+XTerm*foreground:              SL_base0
+XTerm*fadeColor:               SL_base03
+XTerm*cursorColor:             SL_base1
+XTerm*pointerColorBackground:  SL_base01
+XTerm*pointerColorForeground:  SL_base1
+
+XTerm*color0:                  SL_base02
+XTerm*color1:                  SC_red
+XTerm*color2:                  SC_green
+XTerm*color3:                  SC_yellow
+XTerm*color4:                  SC_blue
+XTerm*color5:                  SC_magenta
+XTerm*color6:                  SC_cyan
+XTerm*color7:                  SL_base2
+XTerm*color8:                  SL_base1
+XTerm*color9:                  SC_orange
+XTerm*color10:                 Sb_green
+XTerm*color11:                 Sb_yellow
+XTerm*color12:                 Sb_blue
+XTerm*color13:                 Tango_Plum0
+XTerm*color14:                 Sb_cyan
+XTerm*color15:                 SL_base3
