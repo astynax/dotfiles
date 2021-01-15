@@ -30,6 +30,7 @@
         # apps
         ncmpcpp
         rofi
+        lagrange # Gemini client
       ];
     };
     pathsToLink = [ "/share/man" "/share/doc" "/bin" "/etc" ];
