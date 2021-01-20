@@ -9,5 +9,5 @@ PERCENT=$(\
     )
 
 if [ "$PERCENT" -lt "$DANGER_LEVEL" ]; then
-    zenity --warning --text "Charge me!" 2> /dev/null
+    zenity --warning --text "Charge me!" 2>/dev/null
 fi
