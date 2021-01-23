@@ -6,4 +6,3 @@ if [ ! -f "$FILE" ]; then
 else
     docker run --rm -i hadolint/hadolint < "$FILE"
 fi
-
