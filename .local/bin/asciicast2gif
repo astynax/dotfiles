@@ -1,0 +1,9 @@
+#!/bin/sh
+
+IMAGE="asciinema/asciicast2gif:latest"
+
+docker run --rm \
+       -u $(id -u):$(id -g) \
+       -v $PWD:/data \
+       $IMAGE \
+       $*
