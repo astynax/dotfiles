@@ -31,6 +31,7 @@
         ncmpcpp
         rofi
         lagrange # Gemini client
+        kristall # another one
       ];
     };
     pathsToLink = [ "/share/man" "/share/doc" "/bin" "/etc" ];
