@@ -1,4 +1,6 @@
-#!/bin/sh
+#!/bin/bash
+
+set -Eeuo pipefail
 
 DANGER_LEVEL=15
 
@@ -8,6 +10,8 @@ PERCENT=$(\
     | sed -e 's/[ %]//g' \
     )
 
-if [ "$PERCENT" -lt "$DANGER_LEVEL" ]; then
-    zenity --warning --text "Charge me!" 2>/dev/null
+echo "Battery: $PERCENT%"
+
+if [[ "$PERCENT" -lt "$DANGER_LEVEL" ]]; then
+    zenity --warning --text "Charge me!" > /dev/null 2>&1
 fi
