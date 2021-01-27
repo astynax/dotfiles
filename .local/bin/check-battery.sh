@@ -13,5 +13,5 @@ PERCENT=$(\
 echo "Battery: $PERCENT%"
 
 if [[ "$PERCENT" -lt "$DANGER_LEVEL" ]]; then
-    zenity --warning --text "Charge me!" > /dev/null 2>&1
+    notify-send --urgency=critical "Charge me!"
 fi

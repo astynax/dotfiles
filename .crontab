@@ -1,3 +1,1 @@
-# install me using "crontab .crontab"!
-#
-*/20 * * * * check-battery.sh
+*/10 * * * * export DISPLAY=:0.0 && export XAUTHORITY=/home/astynax/.Xauthority && .local/bin/check-battery.sh 2>&1 | logger -t check-battery
