@@ -27,6 +27,7 @@
         github-cli
         shellcheck
         upx
+        libheif # decoder for the iPad's photos
         # apps
         ncmpcpp
         rofi
