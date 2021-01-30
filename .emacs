@@ -143,6 +143,11 @@
 (use-package time
   :ensure nil
 
+  :preface
+  (defun insert-today ()
+    (interactive)
+    (insert (format-time-string "%Y-%m-%d" (current-time))))
+
   :custom
   (display-time-default-load-average nil)
   (display-time-24hr-format t)
@@ -1563,6 +1568,15 @@ _j_ ^ ^ _l_ _=_:equalize
 (use-package gemini-mode
   :ensure nil
 
+  :preface
+  (defun my/gemini/insert-gemlog-link ()
+    (interactive)
+    (let* ((title (read-string "title: "))
+           (slug (replace-regexp-in-string (rx (not alphanumeric)) "-" title))
+           (today (format-time-string "%Y-%m-%d" (current-time))))
+      (insert
+       (format "=> ./%s-%s.gmi %s - %s" today slug today title))))
+
   :after (visual-fill-column)
 
   :mode ("\\.gmi$" . gemini-mode))
@@ -1866,7 +1880,8 @@ _j_ ^ ^ _l_ _=_:equalize
    ("p" . terminal-here-project-launch))
 
   :custom
-  (terminal-here-project-root-function 'projectile-project-root))
+  (terminal-here-project-root-function 'projectile-project-root)
+  (terminal-here-terminal-command (list "x-terminal-emulator")))
 
 ;;;; RESTclient
 (use-package restclient)
