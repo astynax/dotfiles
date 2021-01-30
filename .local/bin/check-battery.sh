@@ -12,6 +12,10 @@ PERCENT=$(\
 
 echo "Battery: $PERCENT%"
 
+if [[ "$1" == "cron" && "$PERCENT" -lt 90 ]]; then
+    echo "$(date -Iseconds),$PERCENT" >> $HOME/.battery.csv
+fi
+
 if [[ "$PERCENT" -lt "$DANGER_LEVEL" ]]; then
     notify-send --urgency=critical "Charge me!"
 fi
