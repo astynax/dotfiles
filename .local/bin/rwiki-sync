@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -euo pipefail
+
+cd "$HOME/Projects/gitit.recursive.one/wikidata"
+
+git pull --no-stat
