@@ -1,5 +1,29 @@
-#!/bin/sh
+#!/usr/bin/env python3
 
-# Resize (via ImageMagic) cover art to not-so-big resolution
-convert "$1" -resize 700x700 "$1"
+import sys
+import os
 
+from plumbum import local
+
+
+def main(*args):
+    name, _ = args[1:] + (None,)
+    if name is None:
+        print("Usage: re-cover file")
+        return
+    original = local.path(name)
+    if not original.exists():
+        print(f"File '{name}' not found!")
+        sys.exit(1)
+    local["convert"](original, "-resize", "700x700", original)
+    _, ext = os.path.splitext(str(original))
+    cover = original.dirname / ("cover" + ext)
+    if not cover.exists():
+        if os.environ.get('RE_COVER_RENAME') or (
+            input(f"Rename to '{cover}' [y/N]? ").lower().startswith('y')
+        ):
+            original.move(cover)
+
+
+if __name__ == "__main__":
+    main(*sys.argv)
