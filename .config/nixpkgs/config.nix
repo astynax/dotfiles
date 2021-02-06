@@ -23,6 +23,7 @@
         ripgrep
         rq
         starship
+        du-dust
         # dev tools
         github-cli
         shellcheck
