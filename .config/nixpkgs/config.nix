@@ -28,12 +28,13 @@
         github-cli
         shellcheck
         upx
+        nix-tree
+        # misc
         libheif # decoder for the iPad's photos
         # apps
         ncmpcpp
         rofi
         lagrange # Gemini client
-        kristall # another one
       ];
     };
     pathsToLink = [ "/share/man" "/share/doc" "/bin" "/etc" ];
