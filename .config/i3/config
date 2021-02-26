@@ -26,9 +26,9 @@ client.focused_inactive #b58900 #b58900 #eee8d5 #ff0000
 
 ################ MENUS ######################################################
 
-set $menu_run     exec --no-startup-id "rofi -lines 15 -show run"
-set $menu_apps    exec --no-startup-id "rofi -lines 15 -show drun"
-set $menu_windows exec --no-startup-id "rofi -lines 15 -show window"
+set $menu_run     exec rofi -lines 15 -run-command 'echo {cmd}' -run-shell-command 'echo urxvt -e {cmd}' -show run | sh
+set $menu_apps    exec rofi -lines 15 -show drun
+set $menu_windows exec rofi -lines 15 -show window
 
 ################ RULES ######################################################
 for_window [class="^KeePassXC$"] floating enable, border pixel 1, move position center
@@ -54,8 +54,7 @@ hide_edge_borders smart
 bindsym $mod+Return exec i3-sensible-terminal
 
 # some menus
-bindsym $mod+Shift+m exec --no-startup-id "cd .screenlayout && ls -1 *.sh | rofi -dmenu -p 'Screen Layout' | xargs -r sh"
-bindsym $mod+o       exec --no-startup-id "cd Dropbox/org && ls -1 *.org  | rofi -dmenu -p 'ORG'           | xargs -r emacs"
+bindsym $mod+Shift+m exec "cd .screenlayout && ls -1 *.sh | rofi -dmenu -p 'Screen Layout' | xargs -r sh"
 
 # reset output
 bindsym $mod+Control+Shift+i exec --no-startup-id "xrandr --output eDP-1 --primary --mode 1920x1080 --pos 0x0 --rotate normal --output HDMI-1 --off --output DP-1 --off --output DP-2 --off"
@@ -69,19 +68,19 @@ bindsym $mod+Shift+d $menu_apps
 bindsym $mod+q       $menu_windows
 
 # MPD menu
-bindsym $mod+m exec --no-startup-id "echo 'toggle\nnext\nprev\nplay\nstop' | rofi -lines 5 -dmenu -p 'MPD' | xargs mpc"
+bindsym $mod+m exec "echo 'toggle\nnext\nprev\nplay\nstop' | rofi -lines 5 -dmenu -p 'MPD' | xargs mpc"
 
 # PulseAudio Volume
-bindsym $mod+Shift+v exec --no-startup-id "$cfg_dir/sound_volume"
+bindsym $mod+Shift+v exec "$cfg_dir/sound_volume"
 
 # Toggle trackpoint & trackpad
 bindsym $mod+F5 exec --no-startup-id "$cfg_dir/toggle_trackpoint"
 
 # KeePassXC
-bindsym $mod+x exec --no-startup-id "keepassxc"
+bindsym $mod+x exec "keepassxc"
 
 # i3lock
-bindsym $mod+Mod1+l exec --no-startup-id "i3lock -c 000000"
+bindsym $mod+Mod1+l exec "i3lock -c 000000"
 
 # change focus
 bindsym $mod+i     focus up
@@ -101,7 +100,7 @@ bindsym $mod+Shift+z move scratchpad
 bindsym $mod+z scratchpad show
 
 # menus
-bindsym $mod+a exec --no-startup-id "$cfg_dir/dmenus/i3menu.py"
+bindsym $mod+a exec "$cfg_dir/dmenus/i3menu.py"
 
 # split in horizontal/vertical  orientation
 bindsym $mod+h split h
