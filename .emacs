@@ -686,59 +686,12 @@ _j_ ^ ^ _l_ _=_:equalize
   :defer t
   :diminish (aggressive-indent-mode "↹"))
 
-(use-package indent-tools
-  :bind
-  ("C-c >" . indent-tools-hydra/body)
-
-  :custom
-  (indent-tools-indentation-offset 2))
-
 ;;;; Expand Region
 (use-package expand-region
   :after (org)  ;; ugly hack :(
   :bind
   ("M-]" . er/expand-region)
   ("M-[" . er/contract-region))
-
-;;;; Duplicate BoL or region
-(use-package my/duplicate-things
-  :ensure nil
-
-  :preface
-  ;; Duplicate start of line or region with C-M-<end>.
-  ;; From http://www.emacswiki.org/emacs/DuplicateStartOfLineOrRegio
-  (defun my/duplicate-things/duplicate-start-of-line-or-region ()
-    (interactive)
-    (if mark-active
-        (my/duplicate-things/duplicate-region)
-      (my/duplicate-things/duplicate-start-of-line)))
-
-  (defun my/duplicate-things/duplicate-start-of-line ()
-    (if (bolp)
-        (progn
-          (end-of-line)
-          (duplicate-start-of-line)
-          (beginning-of-line))
-      (let ((text (buffer-substring (point)
-                                    (beginning-of-thing 'line))))
-        (forward-line)
-        (push-mark)
-        (insert text)
-        (open-line 1))))
-
-  (defun my/duplicate-things/duplicate-region ()
-    (let* ((end (region-end))
-           (text (buffer-substring (region-beginning) end)))
-      (goto-char end)
-      (insert text)
-      (push-mark end)
-      (setq deactivate-mark nil)
-      (exchange-point-and-mark)))
-
-  (provide 'my/duplicate-things)
-
-  :bind
-  ("C-M-<end>" . my/duplicate-things/duplicate-start-of-line-or-region))
 
 ;;;; Undo tree
 (use-package undo-tree
@@ -785,9 +738,12 @@ _j_ ^ ^ _l_ _=_:equalize
 ;;;; Case formatting
 (use-package string-inflection
   :bind
-  (:prefix
-   "C-c c"
-   :prefix-map my/string-inflection-map
+  (:map
+   mode-specific-map
+   :prefix
+   "c"
+   :prefix-map
+   my/string-inflection-map
    ("c". string-inflection-all-cycle)
    ("s". string-inflection-underscore)
    ("C". string-inflection-camelcase)
@@ -802,50 +758,26 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; Multiple Cursors
 (use-package multiple-cursors
+  :preface
+  (setq-default my/mc-map (make-sparse-keymap "Multiple cursors"))
+
   :bind
   ("C->" . mc/mark-next-like-this)
   ("C-<" . mc/mark-previous-like-this)
   ("C-M->" . mc/mark-next-word-like-this)
   ("C-M-<" . mc/mark-previous-word-like-this)
-  ("C-S-<mouse-1>" . mc/add-cursor-on-click)
 
-  (:prefix
-   "C-c m"
-   :prefix-map my/mc-map
+  (:map
+   mode-specific-map
+   :prefix
+   "m"
+   :prefix-map
+   my/mc-map
    ("+" . mc/mark-all-like-this)
    ("r" . set-rectangular-region-anchor)
    ("c" . mc/edit-lines)
    ("e" . mc/edit-ends-of-lines)
    ("a" . mc/edit-beginnings-of-lines)))
-
-(use-package ace-mc
-  :after (multiple-cursors)
-
-  :bind
-  (:map
-   my/mc-map
-   ("SPC" . ace-mc-add-multiple-cursors)))
-
-;;;; Vim'ish folding
-(use-package vimish-fold
-  :bind
-  (:prefix
-   "C-c f"
-   :prefix-map my/vimish-fold-map
-   ("l" . vimish-fold-avy)
-   ("f" . vimish-fold)
-   ("F" . vimish-fold-refold)
-   ("u" . vimish-fold-unfold)
-   ("U" . vimish-fold-unfold-all)
-   ("d" . vimish-fold-delete)
-   ("SPC" . vimish-fold-toggle))
-
-  :custom-face
-  (vimish-fold-mouse-face ((t (:box (:line-width 1 :color "yellow")))))
-  (vimish-fold-overlay ((t (:box (:line-width 1 :color "dim gray")))))
-
-  :custom
-  (vimish-fold-indication-mode 'left-fringe))
 
 ;;;; Smart BOL
 (use-package my/smart-bol
@@ -948,7 +880,7 @@ _j_ ^ ^ _l_ _=_:equalize
 (put 'bookmark-default-file 'safe-local-variable #'stringp)
 (put 'bookmark-save-flag 'safe-local-variable #'numberp)
 
-;;;; Misc
+;;;; Mark ring
 (defadvice pop-to-mark-command (around ensure-new-position activate)
   "When popping the mark, continue popping until the cursor actually moves"
   (let ((p (point)))
@@ -958,7 +890,7 @@ _j_ ^ ^ _l_ _=_:equalize
 ;; C-u C-SPC C-SPC instead  C-u C-SPC C-u C-SPC
 (setq set-mark-command-repeat-pop t)
 
-;; xref tweaks
+;;;; Xref
 (defun my/do-then-quit (&rest args)
   (let ((win (selected-window)))
     (apply (car args) (rest args))
