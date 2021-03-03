@@ -670,7 +670,10 @@ _j_ ^ ^ _l_ _=_:equalize
   :hook
   (after-init . global-ethan-wspace-mode)
 
-  :bind ("C-c S" . ethan-wspace-clean-all))
+  :bind
+  (:map
+   mode-specific-map
+   ("S" . ethan-wspace-clean-all)))
 
 (use-package shrink-whitespace
   :bind
@@ -829,8 +832,10 @@ _j_ ^ ^ _l_ _=_:equalize
   (text-mode . my/typographics-fontify)
 
   :bind
-  (:prefix
-   "C-c 8"
+  (:map
+   mode-specific-map
+   :prefix
+   "8"
    :prefix-map my/typographics-map
    ("-" . "—")
    ("." . "…")))
@@ -912,7 +917,9 @@ _j_ ^ ^ _l_ _=_:equalize
 
 (use-package git-link
   :bind
-  ("C-c M-l" . git-link))
+  (:map
+   mode-specific-map
+   ("M-l" . git-link)))
 
 ;;;; GitHub
 (use-package my/github
@@ -1085,8 +1092,10 @@ _j_ ^ ^ _l_ _=_:equalize
   :bind
   (:map
    haskell-mode-map
-   :prefix "C-c SPC"
-   :prefix-map my/haskell-map
+   :prefix
+   "C-c SPC"
+   :prefix-map
+   my/haskell-map
    ("v" . haskell-cabal-visit-file)
    ("m" . haskell-auto-insert-module-template)
    ("I" . haskell-sort-imports)
@@ -1583,7 +1592,9 @@ _j_ ^ ^ _l_ _=_:equalize
   (company-transformers '(company-sort-by-occurrence))
 
   :bind
-  ("C-c /" . company-files)
+  (:map
+   mode-specific-map
+   ("/" . company-files))
   (:map
    company-mode-map
    ("M-<tab>" . company-complete))
@@ -1671,15 +1682,18 @@ _j_ ^ ^ _l_ _=_:equalize
    ("M-g M-n" . flymake-goto-next-error)))
 
 ;;;; Yasnippet
-(bind-keys
- :prefix "C-c y"
- :prefix-map my/yas-map)
-
 (use-package yasnippet
   :diminish (yas-minor-mode . "Ⓨ")
 
+  :preface
+  (setq-default my/yas-map (make-sparse-keymap "My Yasnippet map"))
+
   :bind
   (:map
+   mode-specific-map
+   :prefix
+   "y"
+   :prefix-map
    my/yas-map
    ("<tab>" . company-yasnippet))
 
@@ -1701,6 +1715,21 @@ _j_ ^ ^ _l_ _=_:equalize
 
 (use-package yasnippet-snippets
   :after (yasnippet))
+
+;;;; YankPad
+(use-package yankpad
+  :after (yasnippet)
+
+  :custom
+  (yankpad-file "~/Dropbox/org/yankpad.org")
+
+  :bind
+  (:map
+   my/yas-map
+   ("m" . yankpad-map)
+   ("y" . yankpad-insert)))
+
+(put 'yankpad-file 'safe-local-variable #'stringp)
 
 ;;;; Grep'likes
 (use-package wgrep
@@ -1787,27 +1816,17 @@ _j_ ^ ^ _l_ _=_:equalize
 (put 'projectile-globally-ignored-files 'safe-local-variable #'listp)
 (put 'projectile-globally-ignored-directories 'safe-local-variable #'listp)
 
-;;;; YankPad
-(use-package yankpad
-  :custom
-  (yankpad-file "~/Dropbox/org/yankpad.org")
-
-  :bind
-  (:map
-   my/yas-map
-   ("m" . yankpad-map)
-   ("y" . yankpad-insert)))
-
-(put 'yankpad-file 'safe-local-variable #'stringp)
-
 ;;;; Terminal here
 (use-package terminal-here
   :after (projectile)
 
   :bind
-  (:prefix
-   "C-c t"
-   :prefix-map my/terminal-here-map
+  (:map
+   mode-specific-map
+   :prefix
+   "t"
+   :prefix-map
+   my/terminal-here-map
    ("t" . terminal-here-launch)
    ("p" . terminal-here-project-launch))
 
@@ -1857,7 +1876,9 @@ _j_ ^ ^ _l_ _=_:equalize
   :bind
   ("M-<f5>" . flyspell-buffer)
   ("M-<f8>" . flyspell-goto-next-error)
-  ("C-c s" . flyspell-correct-word-before-point))
+  (:map
+   mode-specific-map
+   ("s" . flyspell-correct-word-before-point)))
 
 ;;; Org-mode/Outline
 ;;;; Org
@@ -1871,8 +1892,10 @@ _j_ ^ ^ _l_ _=_:equalize
   :commands (org-mode org-capture)
 
   :bind
-  ("C-c C" . org-capture)
-  ("C-c <backspace>" . org-mark-ring-goto)
+  (:map
+   mode-specific-map
+   ("C" . org-capture)
+   ("<backspace>" . org-mark-ring-goto))
   ("<f12>" . my/org-open-notes-file)
 
   (:map
