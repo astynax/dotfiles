@@ -35,6 +35,11 @@ unset _paths
 # workaround for @unable connect to the bus..."
 export NO_AT_BRIDGE=1
 
+# keyring daemon for bare i3 sessions
+if [[ ("$0" = "/usr/sbin/lightdm-session") && ("$DESKTOP_SESSION" = "i3") ]]; then
+    export $(gnome-keyring-daemon -s)
+fi
+
 # fix for ubuntu-control-center (& others?)
 if [[ $XDG_CURRENT_DESKTOP = "i3" ]]; then
     export XDG_CURRENT_DESKTOP="Unity"
