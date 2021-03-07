@@ -48,8 +48,3 @@ fi
 if [[ -f "$HOME/.nix-profile/lib/locale/locale-archive" ]]; then
     export LOCALE_ARCHIVE="$HOME/.nix-profile/lib/locale/locale-archive"
 fi
-
-# include .bashrc if it exists
-if [[ -f "$HOME/.bashrc" ]]; then
-   source "$HOME/.bashrc"
-fi

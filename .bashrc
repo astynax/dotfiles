@@ -1,8 +1,3 @@
-# If not running interactively, don't do anything
-if [[ -z "$PS1--" ]]; then
-    exit
-fi
-
 # stop on errors
 #set -euo pipefail
 
