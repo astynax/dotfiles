@@ -20,6 +20,7 @@
         shellcheck
         upx
         nix-tree
+        podman
         # misc
         libheif # decoder for the iPad's photos
         # apps
