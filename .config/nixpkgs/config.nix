@@ -20,7 +20,9 @@
         shellcheck
         upx
         nix-tree
-        podman
+        # podman and stuff
+        podman  # needs 'uidmap' in system
+        buildah
         # misc
         libheif # decoder for the iPad's photos
         # apps

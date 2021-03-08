@@ -12,5 +12,3 @@ alias grep='grep --color=auto'
 alias cat='bat'
 
 alias yank='xsel -bi'
-
-alias docker='podman'
