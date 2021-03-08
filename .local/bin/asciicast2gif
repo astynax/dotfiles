@@ -2,8 +2,7 @@
 
 IMAGE="asciinema/asciicast2gif:latest"
 
-docker run --rm \
-       -u $(id -u):$(id -g) \
+podman run --rm \
        -v $PWD:/data \
        $IMAGE \
        $*
