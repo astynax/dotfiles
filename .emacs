@@ -703,7 +703,8 @@ _j_ ^ ^ _l_ _=_:equalize
   :custom
   (undo-tree-auto-save-history t)
   (undo-tree-history-directory-alist
-   `((".*" . ,(format "%sundo-tree-history" user-emacs-directory))))
+   `((".*\\.emacs\\.d\\/elpa" . "/tmp/undo-tree-history")
+     (".*" . ,(format "%sundo-tree-history" user-emacs-directory))))
 
   :hook
   (after-init . global-undo-tree-mode))
@@ -1018,6 +1019,23 @@ _j_ ^ ^ _l_ _=_:equalize
   (add-to-list 'auto-mode-alist '("\\.pmd$" . pollen-mode))
   (add-to-list 'auto-mode-alist '("\\.pp$" pollen-mode t))
   (add-to-list 'auto-mode-alist '("\\.p$"  pollen-mode t)))
+
+;;;; Sly
+(use-package sly
+  :hook
+  (sly-editing-mode . smartparens-strict-mode)
+  (sly-editing-mode . rainbow-delimiters-mode)
+  (sly-mrepl-mode . smartparens-strict-mode)
+  (sly-mrepl-mode . rainbow-delimiters-mode)
+
+  :config
+  (when-let ((sbcl (executable-find "sbcl")))
+    (setq inferior-lisp-program sbcl))
+
+  (sp-local-pair
+   '(sly-editing-mode
+     sly-mrepl-mode)
+   "'" nil :actions nil))
 
 ;;;; Clojure
 (use-package clojure-mode
@@ -1889,14 +1907,12 @@ _j_ ^ ^ _l_ _=_:equalize
 
   :mode ("\\.org\\'" . org-mode)
 
-  :commands (org-mode org-capture)
-
   :bind
+  ("<f12>" . my/org-open-notes-file)
   (:map
    mode-specific-map
    ("C" . org-capture)
    ("<backspace>" . org-mark-ring-goto))
-  ("<f12>" . my/org-open-notes-file)
 
   (:map
    org-mode-map
@@ -1956,6 +1972,10 @@ _j_ ^ ^ _l_ _=_:equalize
         (find-file-other-window file)
       (find-file file)))
 
+  (defun my/org-open-notes-file ()
+    (interactive)
+    (find-file org-default-notes-file))
+
   (setq org-link-frame-setup
         (cons '(file . my/org-find-file)
               (assq-delete-all 'file org-link-frame-setup)))
@@ -1964,10 +1984,6 @@ _j_ ^ ^ _l_ _=_:equalize
     (org-babel-do-load-languages
      'org-babel-load-languages
      my/org-babel-langs))
-
-  (defun my/org-open-notes-file ()
-    (interactive)
-    (find-file org-default-notes-file))
 
   (defun my/org-mode-hook ()
     "Tweaks an org-mode"
