@@ -1,22 +1,10 @@
 Xft.dpi:                96
 Xft.antialias:          true
-Xft.rgba:               none
+Xft.rgba:               rgb
 Xft.hinting:            true
 Xft.autohint:           true
 Xft.hintstyle:          hintslight
-
-URxvt*font:             xft:Inconsolata LGC:pixelsize=15
-URxvt*boldFont:         xft:Inconsolata LGC:pixelsize=15:style=bold
-
-URxvt*scrollBar_right:  true
-! URxvt*visualBell: true
-URxvt*urgentOnBell:     true
-URxvt*scrollstyle:      plain
-URxvt*internalBorder:   0
-URxvt*externalBorder:   0
-URxvt*fading:           0
-
-URxvt.perl-ext-common:  font-size
+Xft.lcdfilter:          lcddefault
 
 !=============================================================================
 ! Tango colors
@@ -95,30 +83,6 @@ URxvt.perl-ext-common:  font-size
 #define Sb_magenta       #e83089
 #define Sb_cyan          #1fc7b9
 
-URxvt*background:              SL_base03
-URxvt*foreground:              SL_base0
-URxvt*fadeColor:               SL_base03
-URxvt*cursorColor:             SL_base1
-URxvt*pointerColorBackground:  SL_base01
-URxvt*pointerColorForeground:  SL_base1
-
-URxvt*color0:                  SL_base02
-URxvt*color1:                  SC_red
-URxvt*color2:                  SC_green
-URxvt*color3:                  SC_yellow
-URxvt*color4:                  SC_blue
-URxvt*color5:                  SC_magenta
-URxvt*color6:                  SC_cyan
-URxvt*color7:                  SL_base2
-URxvt*color8:                  SL_base1
-URxvt*color9:                  SC_orange
-URxvt*color10:                 Sb_green
-URxvt*color11:                 Sb_yellow
-URxvt*color12:                 Sb_blue
-URxvt*color13:                 Tango_Plum0
-URxvt*color14:                 Sb_cyan
-URxvt*color15:                 SL_base3
-
 !============================================================================
 ! Rofi
 
@@ -152,15 +116,24 @@ rofi.kb-secondary-paste:             Control+y,Insert
 
 XTerm.vt100.locale:                  false
 XTerm.vt100.utf8:                    true
+XTerm.vt100.utf8Title:               true
+
+XTerm.vt100.saveLines:               4096
 XTerm.vt100.scrollTtyOutput:         false
+XTerm.vt100.scrollBar:               true
+XTerm.vt100.rightScrollBar:          true
 XTerm.vt100.scrollKey:               true
+XTerm.vt100.scrollBarBorder:         0
+
 XTerm.vt100.bellIsUrgent:            true
 XTerm.vt100.metaSendsEscape:         true
+
 XTerm.vt100.allowBoldFonts:          true
-XTerm.vt100.faceName:                Inconsolata LGC
+XTerm.vt100.faceName:                DejaVu Mono :antialias=true
 XTerm.vt100.boldMode:                false
-XTerm.vt100.faceSize:                11
+XTerm.vt100.faceSize:                15
 XTerm.vt100.internalBorder:          5
+XTerm.scaleHeight:                   1.1
 XTerm.borderWidth:                   0
 
 XTerm*background:              SL_base03
