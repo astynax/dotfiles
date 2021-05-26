@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: df
+# key: df
+# --
+(defun $1 (${2:&rest _})
+  "${3:TODO: $1}"
+  (error "FIXME: $1"))$0

@@ -1245,7 +1245,6 @@ _j_ ^ ^ _l_ _=_:equalize
   :after (python)
 
   :hook
-  (python-mode . elpy-mode)
   (elpy-mode . flycheck-mode)
 
   :custom
@@ -1261,6 +1260,17 @@ _j_ ^ ^ _l_ _=_:equalize
   (unbind-key "<C-left>" elpy-mode-map)
   (unbind-key "<C-right>" elpy-mode-map))
 
+(use-package my/python
+  :ensure nil
+
+  :preface
+  (defun my/python-mode-hook ()
+    (if (executable-find "pyls")
+        (lsp)
+      (elpy-mode)))
+
+  :hook
+  (python-mode . my/python-mode-hook))
 ;;;; Rust
 (use-package rust-mode
   :mode
