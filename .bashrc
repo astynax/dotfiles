@@ -67,6 +67,10 @@ fi
 
 # fancy prompt
 if $(which starship > /dev/null); then
+    function _set_win_title() {
+	echo -ne "\033]0;[$(basename $(dirname $(pwd)))/$(basename $(pwd))]\007";
+    }
+    export starship_precmd_user_func="_set_win_title"
     eval "$(starship init bash)"
 fi
 
