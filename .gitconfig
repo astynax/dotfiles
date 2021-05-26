@@ -26,3 +26,5 @@
 	excludesfile = ~/.gitignore
 [pull]
 	rebase = true
+[init]
+	defaultBranch = master
