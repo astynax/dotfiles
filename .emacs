@@ -1263,14 +1263,18 @@ _j_ ^ ^ _l_ _=_:equalize
 (use-package my/python
   :ensure nil
 
+  :custom
+  (lsp-pylsp-configuration-sources ["flake8"])
+
   :preface
   (defun my/python-mode-hook ()
-    (if (executable-find "pyls")
+    (if (executable-find "pylsp")
         (lsp)
       (elpy-mode)))
 
   :hook
   (python-mode . my/python-mode-hook))
+
 ;;;; Rust
 (use-package rust-mode
   :mode
@@ -1368,16 +1372,8 @@ _j_ ^ ^ _l_ _=_:equalize
 (use-package elm-mode
   :mode "\\.elm\\'"
 
-  :hook
-  (elm-mode . my/elm-mode-hook)
-  (elm-mode . flycheck-mode)
-
-  :config
-  (defun my/elm-mode-hook ()
-    (elm--find-dependency-file-path)
-    (elm-indent-mode -1))
-
-  (setq elm-indent-look-past-empty-line nil))
+  :custom
+  (elm-indent-look-past-empty-line nil))
 
 (put 'elm-format-on-save 'safe-local-variable #'booleanp)
 (put 'elm-compile-arguments 'safe-local-variable #'listp)
@@ -1386,7 +1382,19 @@ _j_ ^ ^ _l_ _=_:equalize
   :after (elm-mode)
 
   :hook
+  (elm-mode . flycheck-mode)
   (flycheck-mode . flycheck-elm-setup))
+
+(use-package my/elm
+  :ensure nil
+
+  :preface
+  (defun my/elm-mode-hook ()
+    (elm--find-dependency-file-path)
+    (elm-indent-mode -1))
+
+  :hook
+  (elm-mode . my/elm-mode-hook))
 
 ;;;; Go
 (use-package go-mode
@@ -1435,12 +1443,34 @@ _j_ ^ ^ _l_ _=_:equalize
   ("\\.html?\\'" . web-mode)
   ("\\.css\\'" . web-mode)
 
+  :preface
+  (defun my/web-mode-hook ()
+    (add-hook 'hack-local-variables-hook
+              (defun my/web-mode-local-hook ()
+                (when web-mode-engines-alist
+                  (web-mode-guess-engine-and-content-type)
+                  (unless (string= web-mode-engine "none")
+                    (web-mode-set-engine web-mode-engine))))
+              0 t))
+
+  :hook
+  (web-mode . company-mode)
+  (web-mode . my/web-mode-hook)
+
+  :custom
+  (web-mode-enable-css-colorization t)
+  (web-mode-enable-engine-detection nil)
+  (web-mode-code-indent-offset 2)
+  (web-mode-markup-indent-offset 2)
+  (web-mode-script-padding 2)
+  (web-mode-css-indent-offset 2)
+  (web-mode-style-padding 2)
+
   :config
-  (setq web-mode-code-indent-offset 2
-        web-mode-markup-indent-offset 2
-        web-mode-script-padding 2
-        web-mode-css-indent-offset 2
-        web-mode-style-padding 2))
+  (add-to-list 'company-backends 'company-css))
+
+(put 'web-mode-engine 'safe-local-variable #'stringp)
+(put 'web-mode-engines-alist 'safe-local-variable #'listp)
 
 ;;;; PlantUML
 (use-package puml-mode
