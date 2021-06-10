@@ -2113,6 +2113,72 @@ _j_ ^ ^ _l_ _=_:equalize
    org-mode-map
    ("C-c l" . my/org/capture-gh-link)))
 
+(use-package my/org-slideshow
+  :ensure nil
+
+  :after (org)
+
+  :commands
+  (my/org-simple-slideshow
+   my/org-simple-slideshow-next
+   my/org-simple-slideshow-prev)
+
+  :bind
+  (:map
+   org-mode-map
+   ("<f5>" . my/org-simple-slideshow))
+
+  :preface
+  (provide 'my/org-slideshow)
+
+  :config
+  (defun my/org-renarrow (move)
+    (when (buffer-narrowed-p)
+      (beginning-of-buffer)
+      (widen)
+      (let ((pos (funcall move)))
+        (when pos
+          (org-narrow-to-subtree)
+          pos))))
+
+  (defun my/org-try-renarrow (move)
+    (when (buffer-narrowed-p)
+      (when (save-excursion
+              (save-restriction
+                (my/org-renarrow move)))
+        (my/org-renarrow move))))
+
+  (defun my/org-simple-slideshow-first ()
+    (interactive)
+    (when (buffer-narrowed-p)
+      (widen)
+      (beginning-of-buffer)
+      (org-next-visible-heading 1)
+      (when (org-at-heading-p)
+        (org-narrow-to-subtree))))
+
+  (defun my/org-simple-slideshow-next ()
+    (interactive)
+    (my/org-try-renarrow #'org-get-next-sibling))
+
+  (defun my/org-simple-slideshow-prev ()
+    (interactive)
+    (my/org-try-renarrow #'org-get-last-sibling))
+
+  (defhydra my/org-simple-slideshow-hydra ()
+    "Slideshow"
+    ("<home>" my/org-simple-slideshow-first "First")
+    ("<prior>" my/org-simple-slideshow-prev "Prev")
+    ("<next>" my/org-simple-slideshow-next "Next")
+    ("q" widen "Stop" :exit t))
+
+  (defun my/org-simple-slideshow ()
+    (interactive)
+    (unless (buffer-narrowed-p)
+      (org-narrow-to-subtree))
+    (when (buffer-narrowed-p)
+      (my/org-simple-slideshow-hydra/body))))
+
 ;;;; Outshine
 (use-package outshine
   :diminish
