@@ -6,5 +6,5 @@
                   ]
         :dependencies [[slamhound "1.5.5"]]
         :aliases {"slamhound" ["run" "-m" "slam.hound"]}}
- :repl {:dependencies [^:displace [org.clojure/clojure "1.9.3"]]}
+ :repl {:dependencies [^:displace [org.clojure/clojure "1.10.1"]]}
  }
