@@ -1390,7 +1390,8 @@ _j_ ^ ^ _l_ _=_:equalize
 
   :preface
   (defun my/elm-mode-hook ()
-    (elm--find-dependency-file-path)
+    (when (equal (f-ext (or (buffer-file-name) "")) "elm")
+      (elm--find-dependency-file-path))
     (elm-indent-mode -1))
 
   :hook
@@ -1414,13 +1415,9 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; PureScript
 (use-package purescript-mode
-  :ensure nil
-
   :mode "\\.purs\\'")
 
 (use-package psc-ide
-  :ensure nil
-
   :after (purescript-mode)
 
   :diminish psc-ide-mode
