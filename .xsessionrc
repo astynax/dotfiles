@@ -1,0 +1,6 @@
+test -r "$HOME/.profile" && . "$HOME/.profile"
+
+# fix for ubuntu-control-center (& others?)
+#if test "$XDG_CURRENT_DESKTOP" = "i3"; then
+#    export XDG_CURRENT_DESKTOP="XFCE"
+#fi
