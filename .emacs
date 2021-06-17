@@ -15,13 +15,15 @@
 (require 'package)
 
 (setq package-archives
-      `(("gnu" . "https://elpa.gnu.org/packages/")
+      '(("gnu" . "https://elpa.gnu.org/packages/")
         ("melpa" . "https://melpa.org/packages/")
         ("org" . "https://orgmode.org/elpa/")))
+(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+(setq package-enable-at-startup nil)
+(setq tls-checktrust "ask")
+(setq tls-program
+      '("gnutls-cli --x509cafile /etc/ssl/certs/ca-certificates.crt -p %p %h"))
 (package-initialize)
-
-(setq package-enable-at-startup nil
-      tls-checktrust "ask")
 
 (unless (package-installed-p 'gnu-elpa-keyring-update)
   (setq-default package-check-signature 'allow-unsigned)
@@ -988,9 +990,6 @@ _j_ ^ ^ _l_ _=_:equalize
   (lsp-ui-sideline-show-diagnostics nil)
   (lsp-ui-doc-enable nil))
 
-(use-package company-lsp
-  :commands company-lsp)
-
 ;;;; ELisp
 (use-package elisp-mode
   :ensure nil
@@ -998,6 +997,13 @@ _j_ ^ ^ _l_ _=_:equalize
   :config
   (add-hook 'emacs-lisp-mode-hook #'eldoc-mode)
   (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode))
+
+;;;; Shell Scripts
+(use-package sh-mode
+  :ensure nil
+
+  :mode
+  ("/\\.xsessionrc\\'|/\\.xprofile\\'" . sh-mode))
 
 ;;;; Racket (Geiser), Pollen
 (use-package geiser
@@ -1558,9 +1564,6 @@ _j_ ^ ^ _l_ _=_:equalize
   (processing-sketchbook-dir "~/Projects/processing"))
 
 ;;;; Gemini
-(use-package visual-fill-column
-  :ensure nil)
-
 (use-package gemini-mode
   :ensure nil
 
@@ -1890,7 +1893,9 @@ _j_ ^ ^ _l_ _=_:equalize
   (terminal-here-terminal-command (list "x-terminal-emulator")))
 
 ;;;; RESTclient
-(use-package restclient)
+(use-package restclient
+  :commands
+  (restclient-mode))
 
 (use-package company-restclient
   :after (restclient)
@@ -1906,9 +1911,13 @@ _j_ ^ ^ _l_ _=_:equalize
 ;;;; Docker
 (use-package docker
   :commands (docker))
+
 ;;; Spell Checking
 (use-package ispell
   :ensure nil
+
+  :commands
+  (ispell-buffer)
 
   :custom
   (ispell-really-aspell nil)
