@@ -4,7 +4,7 @@
       name = "my-packages";
       paths = [
         # nix itself
-        nix
+        # nix
         # locales for glibc
         glibcLocales
         # cli tools
@@ -26,8 +26,6 @@
         # misc
         libheif # decoder for the iPad's photos
         # apps
-        ncmpcpp
-        rofi
         lagrange # Gemini client
       ];
     };
