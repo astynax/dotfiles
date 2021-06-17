@@ -203,5 +203,3 @@ bar {
         active_workspace   #b58900 #b58900 #eee8d5
     }
 }
-
-exec dex -ae XFCE
