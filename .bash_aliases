@@ -1,7 +1,6 @@
-alias ls='/bin/ls -Fv --color=auto'
-alias ll='/bin/ls -FvlGh --color=auto --time-style=long-iso --group-directories-first'
-alias la='/bin/ls -FvA --color=auto'
-alias l='/bin/ls -af1v'
+alias ls='/bin/ls -NFv --color=auto'
+alias ll='/bin/ls -NFvlGh --color=auto --time-style=long-iso --group-directories-first'
+alias l='/bin/ls -Naf1v'
 
 alias e='emacs'
 alias ec='emacsclient -nq'
