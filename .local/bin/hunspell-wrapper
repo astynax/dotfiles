@@ -1,0 +1,6 @@
+#!/bin/sh
+if [ "$1" = "-D" ]; then
+    find -H /usr/share/hunspell/ -type f | sed -e 's/\.dic//' | sort
+else
+    hunspell $*
+fi

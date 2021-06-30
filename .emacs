@@ -1923,7 +1923,7 @@ _j_ ^ ^ _l_ _=_:equalize
   (ispell-really-aspell nil)
   (ispell-really-hunspell t)
   (ispell-encoding8-command t)
-  (ispell-program-name "hunspell")
+  (ispell-program-name "hunspell-wrapper")
   (ispell-dictionary "ru_RU,en_US")
 
   :config
