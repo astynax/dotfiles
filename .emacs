@@ -116,8 +116,7 @@
 (use-package faces
   :ensure nil
 
-  :diminish
-  (buffer-face-mode "")
+  :diminish (buffer-face-mode "")
 
   :config
   (set-face-attribute
@@ -294,7 +293,7 @@
   (volatile-highlights-mode 1))
 
 (use-package highlight-indentation
-  :diminish highlight-indentation-mode
+  :diminish
 
   :commands (highlight-indentation-mode))
 
@@ -315,7 +314,6 @@
   :demand
 
   :diminish
-  (which-key-mode "")
 
   :bind
   ("C-h C-k" . which-key-show-top-level)
@@ -460,7 +458,7 @@ _j_ ^ ^ _l_ _=_:equalize
 (use-package ivy
   :demand
 
-  :diminish ivy-mode
+  :diminish
 
   :custom
   (ivy-use-virtual-buffers t)
@@ -619,7 +617,7 @@ _j_ ^ ^ _l_ _=_:equalize
 ;;;; Subwords
 (use-package subword
   :ensure nil
-  :diminish subword-mode)
+  :diminish)
 
 ;;;; Electric
 (use-package electric
@@ -688,7 +686,7 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; Indentation
 (use-package aggressive-indent
-  :defer t
+  :commands (aggressive-indent-mode)
   :diminish (aggressive-indent-mode "↹"))
 
 ;;;; Expand Region
@@ -1192,7 +1190,7 @@ _j_ ^ ^ _l_ _=_:equalize
 (use-package hi2
   :after (haskell-mode)
 
-  :diminish hi2-mode
+  :diminish
 
   :hook
   (haskell-mode . hi2-mode)
@@ -1426,7 +1424,7 @@ _j_ ^ ^ _l_ _=_:equalize
 (use-package psc-ide
   :after (purescript-mode)
 
-  :diminish psc-ide-mode
+  :diminish
 
   :hook
   (purescript-mode . my/purescript-mode-hook)
@@ -1581,17 +1579,14 @@ _j_ ^ ^ _l_ _=_:equalize
   :mode ("\\.gmi$" . gemini-mode))
 
 ;;;; Dockerfile
-(use-package dockerfile-mode
-  :ensure nil
-
-  :mode "\\^Dockerfile\\'")
+(use-package dockerfile-mode)
 
 ;;; IDE
 ;;;; Autocompletion and abbreviation
 (use-package abbrev
   :ensure nil
 
-  :diminish (abbrev-mode ""))
+  :diminish)
 
 (use-package dabbrev
   :ensure nil
@@ -1664,8 +1659,6 @@ _j_ ^ ^ _l_ _=_:equalize
 (put 'company-backends 'safe-local-variable #'listp)
 
 (use-package company-posframe
-  :disabled ; TODO
-
   :after (company)
 
   :diminish
@@ -1699,7 +1692,7 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; Flycheck
 (use-package flycheck
-  :diminish "Ⓕ"
+  :diminish "⒡"
 
   :custom
   (flycheck-check-syntax-automatically
@@ -1741,7 +1734,7 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; Yasnippet
 (use-package yasnippet
-  :diminish (yas-minor-mode . "Ⓨ")
+  :diminish (yas-minor-mode . "⒴")
 
   :preface
   (setq-default my/yas-map (make-sparse-keymap "My Yasnippet map"))
@@ -2189,7 +2182,7 @@ _j_ ^ ^ _l_ _=_:equalize
 (use-package outshine
   :diminish
   (outline-minor-mode . "")
-  (outshine-mode . "⋱")
+  (outshine-mode . "⒪")
 
   :bind
   (:map
