@@ -83,34 +83,6 @@ Xft.lcdfilter:          lcddefault
 #define Sb_magenta       #e83089
 #define Sb_cyan          #1fc7b9
 
-!============================================================================
-! Rofi
-
-rofi.width:                          100
-rofi.lines:                          15
-rofi.columns:                        1
-rofi.font:                           mono 12
-
-rofi.color-enabled:                  true
-rofi.color-normal:                   #fdf6e3,#002b36,#eee8d5,#586e75,#eee8d5
-rofi.color-urgent:                   #fdf6e3,#dc322f,#eee8d5,#dc322f,#fdf6e3
-rofi.color-active:                   #fdf6e3,#268bd2,#eee8d5,#268bd2,#fdf6e3
-rofi.color-window:                   #eee8d5,#002b36
-
-rofi.bw:                             0
-rofi.location:                       6
-rofi.padding:                        5
-
-rofi.case-sensitive:                 false
-rofi.levenshtein-sort:               true
-rofi.fuzzy:                          true
-rofi.tokenize:                       true
-
-rofi.separator-style:                dash
-
-rofi.kb-primary-paste:               Shift+Insert
-rofi.kb-secondary-paste:             Control+y,Insert
-
 !==============================================
 ! XTerm
 
