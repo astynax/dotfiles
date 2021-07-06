@@ -1036,6 +1036,9 @@ _j_ ^ ^ _l_ _=_:equalize
   (when-let ((sbcl (executable-find "sbcl")))
     (setq inferior-lisp-program sbcl))
 
+  ;; do (ql:quickload :clhs) before!
+  (load (expand-file-name "~/quicklisp/clhs-use-local.el") t)
+
   (sp-local-pair
    '(sly-editing-mode
      sly-mrepl-mode)
