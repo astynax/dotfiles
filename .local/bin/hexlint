@@ -1,9 +1,0 @@
-#!/bin/sh
-
-DIR="$(pwd)/exercise"
-if [ ! -d "$DIR" ]; then
-    echo "Run from the challenge/exercise dir!"
-else
-    podman run --rm -u $(id -u):$(id -g) -v "$DIR":/usr/src/app:ro hexlint:latest
-fi
-
