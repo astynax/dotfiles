@@ -1139,6 +1139,7 @@ _j_ ^ ^ _l_ _=_:equalize
   (haskell-mode . eldoc-mode)
   (haskell-mode . smartparens-mode)
   (haskell-mode . my/boot-haskell)
+  (haskell-mode . interactive-haskell-mode)
 
   :config
   (defun my/haskell-jump-to-loc ()
@@ -1225,6 +1226,8 @@ _j_ ^ ^ _l_ _=_:equalize
   :ensure nil)
 
 (use-package lsp-haskell
+  :if nil
+
   :after (haskell-mode)
 
   :hook
