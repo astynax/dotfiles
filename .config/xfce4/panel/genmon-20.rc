@@ -1,0 +1,6 @@
+Command=.local/bin/_ydstatus.sh
+UseLabel=0
+Text=YD:
+UpdatePeriod=30000
+Font=Sans Bold 15
+
