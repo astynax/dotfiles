@@ -91,7 +91,7 @@
     <property name="plugin-16" type="string" value="cpugraph"/>
     <property name="plugin-7" type="string" value="pulseaudio">
       <property name="enable-keyboard-shortcuts" type="bool" value="true"/>
-      <property name="mpris-players" type="string" value="firefox.instance2019;firefox.instance2162;firefox.instance22906;firefox.instance23132;firefox.instance25386;firefox.instance27245;firefox.instance27543;firefox.instance28062;firefox.instance2825;firefox.instance2847;firefox.instance29069;firefox.instance4542"/>
+      <property name="mpris-players" type="string" value="" locked="*"/>
       <property name="enable-multimedia-keys" type="bool" value="false"/>
       <property name="enable-wnck" type="bool" value="false"/>
       <property name="enable-mpris" type="bool" value="false"/>
