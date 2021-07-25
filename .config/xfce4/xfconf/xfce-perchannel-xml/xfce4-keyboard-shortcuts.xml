@@ -37,6 +37,7 @@
         <property name="startup-notify" type="bool" value="true"/>
       </property>
       <property name="&lt;Super&gt;m" type="string" value="_mpd_menu.sh"/>
+      <property name="&lt;Shift&gt;&lt;Super&gt;m" type="string" value="_screen_layout_menu.sh"/>
     </property>
   </property>
   <property name="xfwm4" type="empty">
