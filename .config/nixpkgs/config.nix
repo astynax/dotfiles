@@ -20,9 +20,12 @@
         shellcheck
         upx
         nix-tree
+        mp3gain
         # podman and stuff
         podman  # needs 'uidmap' in system
         buildah
+        fuse3
+        fuse-overlayfs
         # misc
         libheif # decoder for the iPad's photos
         # apps
