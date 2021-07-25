@@ -25,20 +25,23 @@ EOF
     *)
         ICONS=/usr/share/icons/Adwaita/scalable
 
-        STATUS=$(yandex-disk status)
-        STATE=$(echo "$STATUS" | head -n 1 | sed -e 's/^[^:]*: //')
+        STATUS=$(yandex-disk status || true)
+        STATE=$(echo "$STATUS" | grep --color=never --only-matching -P -e '(?<=синхронизации: )\S+')
 
         echo -e "<tool>Yandex.Disk\n\n$STATUS</tool>"
 
         case "$STATE" in
-            "ожидание команды")
+            "ожидание")
                 echo "<img>$ICONS/emblems/emblem-default-symbolic.svg</img>"
                 ;;
-            "оработка данных")
+            "оработка")
                 echo "<img>$ICONS/emblems/emblem-synchronizing-symbolic.svg</img>"
                 ;;
             "остановлен")
                 echo "<img>$ICONS/emotes/face-sick-symbolic.svg</img>"
+                ;;
+            "синхронизация")
+                echo "<img>$ICONS/status/network-transmit-receive-symbolic.svg</img>"
                 ;;
             *)
                 echo "<img>$ICONS/emblems/emblem-important-symbolic.svg</img>"
