@@ -26,7 +26,7 @@ EOF
         ICONS=/usr/share/icons/Adwaita/scalable
 
         STATUS=$(yandex-disk status || true)
-        STATE=$(echo "$STATUS" | grep --color=never --only-matching -P -e '(?<=синхронизации: )\S+')
+        STATE=$(echo "$STATUS" | grep --color=never --only-matching -P -e '(?<=ядра синхронизации: )\S+')
 
         echo -e "<tool>Yandex.Disk\n\n$STATUS</tool>"
 
