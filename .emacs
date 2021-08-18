@@ -253,10 +253,10 @@
    ("<C-tab>" . dired-subtree-cycle)
    ("<S-iso-lefttab>" . dired-subtree-remove)))
 
-;; TODO
-;; (use-package diredfl
-;;   :hook
-;;   (dired-mode . diredfl-mode))
+(use-package diredfl
+  :hook
+  (dired-mode . diredfl-mode))
+
 ;;; UI
 ;;;; Highlights
 (use-package paren
@@ -266,6 +266,8 @@
   (show-paren-mode t))
 
 (use-package hl-line
+  :disabled
+
   :ensure nil
 
   :hook
@@ -383,11 +385,27 @@
 
 ;;;; Theme
 (use-package solarized-theme
+  :disabled
+
   :custom
-  (solarized-distinct-fringe-background t "Make the fringe to look distinct")
+  (solarized-distinct-fringe-background t "Make the fringe to look distinct"))
+
+(use-package modus-themes
+  :custom
+  (modus-themes-syntax '(faint yellow-comments))
+  (modus-themes-bold-constructs t)
 
   :config
-  (load-theme 'solarized-light))
+  (modus-themes-load-themes)
+  (load-theme 'modus-operandi))
+
+(use-package custom
+  :ensure nil
+
+  :after (modus-themes)
+
+  :config
+  (load-theme 'modus-operandi))
 
 ;;;; Window switching
 (use-package ace-window
@@ -531,7 +549,7 @@ _j_ ^ ^ _l_ _=_:equalize
   :demand
 
   :custom-face
-  (hl-todo ((t (:bold t :background "#073642"))))
+  (hl-todo ((t (:bold t :inverse-video t))))
 
   :custom
   (hl-todo-keyword-faces
@@ -701,7 +719,7 @@ _j_ ^ ^ _l_ _=_:equalize
   :diminish
 
   :custom
-  (undo-tree-auto-save-history t)
+  (undo-tree-auto-save-history nil) ;; TODO: enable someday
   (undo-tree-history-directory-alist
    `((".*\\.emacs\\.d\\/elpa" . "/tmp/undo-tree-history")
      (".*" . ,(format "%sundo-tree-history" user-emacs-directory))))
@@ -1970,15 +1988,15 @@ _j_ ^ ^ _l_ _=_:equalize
   (org-mode . smartparens-mode)
   (org-mode . my/org-mode-hook)
 
-  :custom-face
-  (org-link ((t (:inherit link :bold nil))))
-  (org-code ((t (:inherit fixed-pitch))))
-  (org-block ((t (:inherit fixed-pitch))))
-  (org-block-begin-line ((t (:inherit fixed-pitch))))
-  (org-block-end-line ((t (:inherit fixed-pitch))))
-  (org-table ((t (:inherit fixed-pitch))))
-  (org-code ((t (:inherit fixed-pitch))))
-  (org-tag ((t (:weight normal :height 0.8))))
+  ;; :custom-face
+  ;; (org-link ((t (:inherit link :bold nil))))
+  ;; (org-code ((t (:inherit fixed-pitch))))
+  ;; (org-block ((t (:inherit fixed-pitch))))
+  ;; (org-block-begin-line ((t (:inherit fixed-pitch))))
+  ;; (org-block-end-line ((t (:inherit fixed-pitch))))
+  ;; (org-table ((t (:inherit fixed-pitch))))
+  ;; (org-code ((t (:inherit fixed-pitch))))
+  ;; (org-tag ((t (:weight normal :height 0.8))))
 
   :custom
   (org-directory "~/Dropbox/org")
