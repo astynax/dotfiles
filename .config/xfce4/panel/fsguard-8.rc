@@ -3,7 +3,7 @@ red=2
 lab_size_visible=false
 progress_bar_visible=true
 hide_button=true
-label=
-label_visible=false
+label=D
+label_visible=true
 mnt=/
 
