@@ -22,7 +22,7 @@ HISTFILESIZE=2000
 PROMPT_COMMAND="history -a;history -n"
 
 # don`t add to history matching cmds
-HISTIGNORE="&:bg:fg:exit:history:ranger:r:clear:encfs*:visit_efs*:tra *:yadm *"
+HISTIGNORE="&:bg:fg:exit:history:ranger:r:clear:encfs*:visit_efs*"
 
 export EDITOR=editor
 export LESS="WR"
