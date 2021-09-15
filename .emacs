@@ -1253,6 +1253,7 @@ _j_ ^ ^ _l_ _=_:equalize
   (elpy-mode . flycheck-mode)
 
   :custom
+  (elpy-rpc-python-command "python3")
   (elpy-rpc-virtualenv-path 'current)
   (elpy-modules
    '(elpy-module-company
@@ -1269,6 +1270,7 @@ _j_ ^ ^ _l_ _=_:equalize
   :ensure nil
 
   :custom
+  (python-shell-interpreter "python3")
   (lsp-pylsp-configuration-sources ["flake8"])
 
   :preface
