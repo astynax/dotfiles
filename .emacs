@@ -81,7 +81,6 @@
   (x-select-enable-clipboard t "Use clipboard")
   (x-select-enable-primary t "Use primary buffer")
   (save-interprogram-paste-before-kill t)
-  (apropos-do-all t)
   (mouse-yank-at-point t "Yank at point using mouse")
   (resize-mini-windows t)
   (x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
@@ -189,10 +188,9 @@
   (kept-old-versions 0)
   (version-control t)
   (vc-make-backup-files t)
+  (create-lockfiles nil)
   ;; autosave
   (auto-save-default nil))
-
-(put 'create-lockfiles 'safe-local-variable #'booleanp)
 
 (use-package autorevert
   :ensure nil
@@ -208,7 +206,7 @@
   :ensure nil
 
   :custom
-  (dired-omit-files "^\\..*$")
+  (dired-omit-files "^\\..*$" "Omit the dotfiles")
   (dired-isearch-filenames 'dwim)
   (dired-recursive-copies 'always)
   (dired-recursive-deletes 'always)
@@ -229,15 +227,16 @@
   (dired-clean-up-buffers-too t)
   (dired-clean-confirm-killing-deleted-buffers t)
   (dired-x-hands-off-my-keys t)
-  (dired-bind-man nil)
-  (dired-bind-info nil)
 
   :bind
   ("C-x C-j" . dired-jump)
   ("C-x 4 C-j" . dired-jump-other-window))
 
 (use-package wdired
+  :ensure nil
+
   :commands wdired-change-to-wdired-mode
+
   :custom
   (wdired-allow-to-change-permissions t)
   (wdired-create-parent-directories t))
@@ -264,14 +263,6 @@
 
   :config
   (show-paren-mode t))
-
-(use-package hl-line
-  :disabled
-
-  :ensure nil
-
-  :hook
-  (after-init . global-hl-line-mode))
 
 (use-package visual-line
   :ensure nil
@@ -384,12 +375,6 @@
    ("z" . 'hydra-global-text-scale/body)))
 
 ;;;; Theme
-(use-package solarized-theme
-  :disabled
-
-  :custom
-  (solarized-distinct-fringe-background t "Make the fringe to look distinct"))
-
 (use-package modus-themes
   :custom
   (modus-themes-syntax '(faint yellow-comments))
@@ -397,14 +382,6 @@
 
   :config
   (modus-themes-load-themes)
-  (load-theme 'modus-operandi))
-
-(use-package custom
-  :ensure nil
-
-  :after (modus-themes)
-
-  :config
   (load-theme 'modus-operandi))
 
 ;;;; Window switching
