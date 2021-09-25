@@ -430,13 +430,12 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; Beacon
 (use-package beacon
+  :demand
+
   :diminish
 
   :bind
   ("<f11>" . beacon-blink)
-
-  :custom
-  (beacon-color "#A06600")
 
   :config
   (beacon-mode))
