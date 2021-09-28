@@ -115,6 +115,18 @@
 (use-package faces
   :ensure nil
 
+  :preface
+  (setq
+   my/faces/size 19
+
+   ;; TODO: make the font selection more robust
+   my/faces/fixed-family "JetBrains Mono"
+
+   my/faces/variable-family
+   (if (string-equal system-type "darwin")
+       "PT Serif"
+     "DejaVu Serif"))
+
   :diminish (buffer-face-mode "")
 
   :config
@@ -122,22 +134,22 @@
    'variable-pitch nil
    :font
    (font-spec
-    :family "DejaVu Serif"
-    :size 19))
+    :family my/faces/variable-family
+    :size my/faces/size))
 
   (set-face-attribute
    'fixed-pitch nil
    :font
    (font-spec
-    :family "JetBrains Mono"
-    :size 19))
+    :family my/faces/fixed-family
+    :size my/faces/size))
 
   (set-face-attribute
    'default nil
    :font
    (font-spec
-    :family "JetBrains Mono"
-    :size 19)))
+    :family my/faces/fixed-family
+    :size my/faces/size)))
 
 ;;; Date/Time
 (use-package time
@@ -1661,6 +1673,8 @@ _j_ ^ ^ _l_ _=_:equalize
 (put 'company-backends 'safe-local-variable #'listp)
 
 (use-package company-posframe
+  :if (not (string-equal system-type "darwin"))
+
   :after (company)
 
   :diminish
@@ -2069,6 +2083,7 @@ _j_ ^ ^ _l_ _=_:equalize
   :after (org))
 
 (use-package ox-slimhtml
+  :disabled  ;; TODO: am I need this?
   :after (org))
 
 (use-package ox-gemini
