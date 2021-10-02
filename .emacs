@@ -396,12 +396,6 @@
   (modus-themes-load-themes)
   (load-theme 'modus-operandi))
 
-;;;; Window switching
-(use-package ace-window
-  :bind
-  ("M-o" . ace-window)
-  ("C-x 4 o" . ace-swap-window))
-
 ;;;; Window sizing
 (use-package my/window-sizing
   :ensure nil
@@ -426,6 +420,28 @@ _j_ ^ ^ _l_ _=_:equalize
 
   :bind
   ("C-x 4 w" . 'hydra-window-sizing/body))
+
+;;;; Window switching
+(use-package ace-window
+  :bind
+  ("M-o" . ace-window))
+
+;;;; Window rotation
+(use-package rotate
+  :after (hydra ace-window)
+
+  :preface
+  (defhydra hydra-rotate ()
+    "Rotate"
+    ("4" rotate-window "Rotate")
+    ("l" rotate-layout "Layout")
+    ("o" ace-swap-window "Swap")
+    ("q" nil "Cancel"))
+
+  :bind
+  (:map
+   mode-specific-map
+   ("4" . 'hydra-rotate/body)))
 
 ;;;; Fullframe
 (use-package fullframe
