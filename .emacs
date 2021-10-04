@@ -1939,6 +1939,7 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;; Spell Checking
 (use-package ispell
+  :if (executable-find "hunspell")
   :ensure nil
 
   :commands
@@ -1948,10 +1949,12 @@ _j_ ^ ^ _l_ _=_:equalize
   (ispell-really-aspell nil)
   (ispell-really-hunspell t)
   (ispell-encoding8-command t)
-  (ispell-program-name "hunspell-wrapper")
+  (ispell-program-name "hunspell")
   (ispell-dictionary "ru_RU,en_US")
 
   :config
+  (when (executable-find "hunspell-wrapper")
+    (ispell-program-name "hunspell-wrapper"))
   ;; ispell-set-spellchecker-params has to be called
   ;; before ispell-hunspell-add-multi-dic will work
   (ispell-set-spellchecker-params)
