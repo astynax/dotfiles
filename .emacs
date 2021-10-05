@@ -2082,7 +2082,7 @@ _j_ ^ ^ _l_ _=_:equalize
   (org-mode . org-bullets-mode)
 
   :custom
-  (org-bullets-bullet-list '("●" "⭗" "⭘" "○")))
+  (org-bullets-bullet-list '("●" "○" "⦿" "⦾")))
 
 (use-package htmlize
   :after (org))
