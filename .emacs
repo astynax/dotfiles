@@ -2048,7 +2048,9 @@ _j_ ^ ^ _l_ _=_:equalize
 
   (defun my/org-open-notes-file ()
     (interactive)
-    (find-file org-default-notes-file))
+    (if (file-exists-p org-default-notes-file)
+        (find-file org-default-notes-file)
+      (message "%s doesn't exist!" org-default-notes-file)))
 
   (setq org-link-frame-setup
         (cons '(file . my/org-find-file)
