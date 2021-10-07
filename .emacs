@@ -1999,15 +1999,15 @@ _j_ ^ ^ _l_ _=_:equalize
   (org-mode . smartparens-mode)
   (org-mode . my/org-mode-hook)
 
-  ;; :custom-face
-  ;; (org-link ((t (:inherit link :bold nil))))
-  ;; (org-code ((t (:inherit fixed-pitch))))
-  ;; (org-block ((t (:inherit fixed-pitch))))
-  ;; (org-block-begin-line ((t (:inherit fixed-pitch))))
-  ;; (org-block-end-line ((t (:inherit fixed-pitch))))
-  ;; (org-table ((t (:inherit fixed-pitch))))
-  ;; (org-code ((t (:inherit fixed-pitch))))
-  ;; (org-tag ((t (:weight normal :height 0.8))))
+  :custom-face
+  (org-link ((t (:inherit link :bold nil))))
+  (org-code ((t (:inherit fixed-pitch))))
+  (org-block ((t (:inherit fixed-pitch))))
+  (org-block-begin-line ((t (:inherit fixed-pitch))))
+  (org-block-end-line ((t (:inherit fixed-pitch))))
+  (org-table ((t (:inherit fixed-pitch))))
+  (org-code ((t (:inherit fixed-pitch))))
+  (org-tag ((t (:weight normal :height 0.8))))
 
   :custom
   (org-directory "~/Dropbox/org")
