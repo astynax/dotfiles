@@ -1,2 +1,3 @@
 -o '~/Downloads/youtube/%(uploader)s - %(title)s.%(ext)s'
 -f 'bestvideo[height=720]+bestaudio/bestvideo[height=1080]+bestaudio/best[height<=1080]/html5-video-high/html5-video-med'
+--output-na-placeholder=''
