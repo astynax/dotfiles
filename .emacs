@@ -1689,6 +1689,8 @@ _j_ ^ ^ _l_ _=_:equalize
 (put 'company-backends 'safe-local-variable #'listp)
 
 (use-package company-posframe
+  :disabled
+
   :if (not (string-equal system-type "darwin"))
 
   :after (company)
@@ -1954,7 +1956,7 @@ _j_ ^ ^ _l_ _=_:equalize
 
   :config
   (when (executable-find "hunspell-wrapper")
-    (ispell-program-name "hunspell-wrapper"))
+    (setq-default ispell-program-name "hunspell-wrapper"))
   ;; ispell-set-spellchecker-params has to be called
   ;; before ispell-hunspell-add-multi-dic will work
   (ispell-set-spellchecker-params)
