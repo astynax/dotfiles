@@ -1,0 +1,7 @@
+# -*- mode: snippet, yas-indent-line: nil -*-
+# name: import Data.Map.Strict qualified
+# key: i
+# expand-env: ((yas-indent-line nil))
+# --
+import Data.Map.Strict (Map)
+import qualified Data.Map.Strict as Map

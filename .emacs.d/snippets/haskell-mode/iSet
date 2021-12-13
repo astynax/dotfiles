@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: import Data.Set qualified
+# key: i
+# expand-env: ((yas-indent-line nil))
+# --
+import Data.Set (Set)
+import qualified Data.Set as Set

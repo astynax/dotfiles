@@ -864,6 +864,13 @@ _j_ ^ ^ _l_ _=_:equalize
    ("." . "…")))
 
 ;;; Navigation
+;;;; imenu
+(use-package imenu
+  :ensure nil
+
+  :bind
+  ("M-g i" . imenu))
+
 ;;;; Avy
 (use-package avy
   :init
@@ -1149,7 +1156,8 @@ _j_ ^ ^ _l_ _=_:equalize
    ("A" . haskell-align-imports)
    ("S" . haskell-mode-stylish-buffer)
    ("y" . haskell-hayoo)
-   ("SPC" . haskell-hide-toggle))
+   ("h" . haskell-hide-toggle)
+   ("u" . my/haskell-swiper-todos))
 
   (:map
    haskell-mode-map
@@ -1164,6 +1172,11 @@ _j_ ^ ^ _l_ _=_:equalize
   (haskell-mode . interactive-haskell-mode)
 
   :config
+  (defun my/haskell-swiper-todos ()
+    "Shows the Swiper for todo-like items."
+    (interactive)
+    (swiper "undefined\\|TODO\\|FIXME"))
+
   (defun my/haskell-jump-to-loc ()
     "Opens the location of error from primary buffer"
     (interactive)

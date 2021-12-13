@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: trace
+# binding: C-c SPC t
+# condition: (region-active-p)
+# expand-env: ((yas-wrap-around-region t))
+# --
+let o_O = $0 in (trace $ "${1:Trace}: " <> show o_O) o_O
