@@ -521,6 +521,18 @@ _j_ ^ ^ _l_ _=_:equalize
   :config
   (counsel-mode 1))
 
+(use-package my/helpful-counsel
+  :ensure nil
+
+  :after (helpful counsel)
+
+  :preface
+  (provide 'my/helpful-counsel)
+
+  :custom
+  (counsel-describe-function-function #'helpful-callable)
+  (counsel-describe-variable-function #'helpful-variable))
+
 (use-package swiper
   :bind
   ("M-s s" . swiper)
@@ -566,6 +578,15 @@ _j_ ^ ^ _l_ _=_:equalize
 
   :bind
   ("M-s t" . hl-todo-occur))
+
+;;;; Helpful introspection
+(use-package helpful
+  :demand
+
+  :bind
+  ([remap describe-function] . helpful-callable)
+  ([remap describe-variable] . helpful-variable)
+  ([remap describe-key] . helpful-key))
 
 ;;; Behaviour
 ;;;; reverse-im
@@ -1021,9 +1042,22 @@ _j_ ^ ^ _l_ _=_:equalize
 (use-package elisp-mode
   :ensure nil
 
-  :config
-  (add-hook 'emacs-lisp-mode-hook #'eldoc-mode)
-  (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode))
+  :hook
+  (emacs-lisp-mode . eldoc-mode)
+  (emacs-lisp-mode . aggressive-indent-mode))
+
+(use-package my/helpful-elisp-mode
+  :ensure nil
+
+  :after (elisp-mode helpful)
+
+  :preface
+  (provide 'my/helpful-elisp-mode)
+
+  :bind
+  (:map
+   emacs-lisp-mode-map
+   ("C-c C-d" . helpful-at-point)))
 
 ;;;; Shell Scripts
 (use-package sh-mode
@@ -1034,8 +1068,6 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; Racket (Geiser), Pollen
 (use-package geiser
-  :ensure nil
-
   :mode
   ("\\.rkt\\'" . racket-mode)
 
@@ -1043,11 +1075,11 @@ _j_ ^ ^ _l_ _=_:equalize
   (racket-mode . smartparens-strict-mode))
 
 (use-package pollen-mode
-  :ensure nil
-
   :commands (pollen-mode)
 
   :init
+  ;; I don't use :mode because ~use-package~ doesn't support
+  ;; the (PATTERN MODE NON-NIL) format :/
   (add-to-list 'auto-mode-alist '("\\.pm$" . pollen-mode))
   (add-to-list 'auto-mode-alist '("\\.pmd$" . pollen-mode))
   (add-to-list 'auto-mode-alist '("\\.pp$" pollen-mode t))
