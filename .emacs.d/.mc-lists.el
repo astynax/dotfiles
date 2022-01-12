@@ -9,7 +9,6 @@
         counsel-unicode-char
         counsel-yank-pop
         dabbrev-completion
-        describe-key
         electric-newline-and-maybe-indent
         electric-pair-delete-pair
         end-of-buffer
@@ -24,7 +23,6 @@
         indent-to
         kill-sentence
         kill-visual-line
-        kmacro-end-or-call-macro
         markdown-demote
         markdown-electric-backquote
         markdown-outdent-or-delete
@@ -41,7 +39,6 @@
         outshine-kbd-TAB
         outshine-self-insert-command
         shrink-whitespace
-        smex
         sp-backward-delete-char
         sp-backward-unwrap-sexp
         sp-delete-char
@@ -52,18 +49,13 @@
         sp-splice-sexp
         string-inflection-all-cycle
         string-inflection-underscore
-        swiper-mc
         transpose-words
-        typo-cycle-ellipsis
         wdired-downcase-word
         wdired-finish-edit
         wdired-upcase-word
         whole-line-or-region-kill-region
         whole-line-or-region-kill-ring-save
         whole-line-or-region-yank
-        yaml-electric-backspace
-        yaml-electric-bar-and-angle
-        yaml-electric-dash-and-dot
         yas-abort-snippet
         yas-expand
         ))
@@ -79,9 +71,8 @@
         beginning-of-buffer
         elm-compile-buffer
         flycheck-next-error
+        haskell-process-load-file
         menu-bar-open
         overwrite-mode
         projectile-find-file
-        select-window-1
-        sh-assignment
         ))
