@@ -734,7 +734,7 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; Expand Region
 (use-package expand-region
-  :after (org)  ;; ugly hack :(
+  ;; :after (org)  ;; ugly hack :(
   :bind
   ("M-]" . er/expand-region)
   ("M-[" . er/contract-region))
@@ -1012,7 +1012,9 @@ _j_ ^ ^ _l_ _=_:equalize
 ;;; Languages
 ;;;; LSP
 (use-package lsp-mode
-  :commands lsp
+  :ensure nil
+
+  :commands (lsp)
 
   :hook
   (lsp-mode . lsp-enable-which-key-integration)
@@ -1023,7 +1025,7 @@ _j_ ^ ^ _l_ _=_:equalize
   (lsp-keymap-prefix "C-c C-l"))
 
 (use-package lsp-ui
-  :commands lsp-ui-mode
+  :after (lsp)
 
   :hook
   (lsp-mode . lsp-ui-mode)
@@ -1068,6 +1070,8 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; Racket (Geiser), Pollen
 (use-package geiser
+  :ensure nil
+
   :mode
   ("\\.rkt\\'" . racket-mode)
 
@@ -1075,6 +1079,8 @@ _j_ ^ ^ _l_ _=_:equalize
   (racket-mode . smartparens-strict-mode))
 
 (use-package pollen-mode
+  :ensure nil
+
   :commands (pollen-mode)
 
   :init
@@ -1107,6 +1113,8 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; Clojure
 (use-package clojure-mode
+  :ensure nil
+
   :mode
   ("\\.clj\\'" . clojure-mode)
   ("\\.cljc\\'" . clojure-mode)
@@ -1162,10 +1170,13 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; Haskell
 (use-package haskell-mode
+  :ensure nil
+
   :diminish haskell-mode
 
-  :init
-  (add-to-list 'magic-mode-alist '(".*env stack" . haskell-mode))
+  :magic
+  (".*env stack" . haskell-mode)
+  (".*env cabal" . haskell-mode)
 
   :mode
   ("\\.hs\\'" . haskell-mode)
@@ -1191,10 +1202,6 @@ _j_ ^ ^ _l_ _=_:equalize
    ("h" . haskell-hide-toggle)
    ("u" . my/haskell-swiper-todos))
 
-  (:map
-   haskell-mode-map
-   ("<f9>" . my/haskell-jump-to-loc))
-
   :hook
   (haskell-mode . haskell-decl-scan-mode)
   (haskell-mode . subword-mode)
@@ -1208,15 +1215,6 @@ _j_ ^ ^ _l_ _=_:equalize
     "Shows the Swiper for todo-like items."
     (interactive)
     (swiper "undefined\\|TODO\\|FIXME"))
-
-  (defun my/haskell-jump-to-loc ()
-    "Opens the location of error from primary buffer"
-    (interactive)
-    (-let (((path line col ...)
-            (split-string (gui-get-primary-selection) ":")))
-      (find-file-existing path)
-      (goto-line (string-to-number line))
-      (move-to-column (max 0 (- (string-to-number col) 1)))))
 
   (defun my/boot-haskell ()
     "Initialize haskell stuff"
@@ -1356,6 +1354,8 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; Rust
 (use-package rust-mode
+  :ensure nil
+
   :mode
   ("\\.rs\\'" . rust-mode)
 
@@ -1423,8 +1423,9 @@ _j_ ^ ^ _l_ _=_:equalize
   :bind
   (:map
    markdown-mode-map
-   ("C-c l" . my/markdown/capture-gh-link))
-  (:map
+   ("C-c l" . my/markdown/capture-gh-link)
+
+   :map
    gfm-mode-map
    ("C-c l" . my/markdown/capture-gh-link)))
 
@@ -1449,6 +1450,8 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; Elm
 (use-package elm-mode
+  :ensure nil
+
   :mode "\\.elm\\'"
 
   :custom
@@ -1484,31 +1487,40 @@ _j_ ^ ^ _l_ _=_:equalize
 
   :commands (go-mode)
 
-  :hook
-  (go-mode . my/go-mode-hook)
+  :hook (flycheck-mode)
 
   :config
   (defun my/go-mode-hook ()
-    (add-hook 'before-save-hook #'gofmt-before-save)
-    (flycheck-mode)))
+    (add-hook 'before-save-hook #'gofmt-before-save))
+
+  (when (executable-find "gofmt")
+    (add-hook 'go-mode-hook #'my/go-mode-hook)))
 
 ;;;; PureScript
 (use-package purescript-mode
-  :mode "\\.purs\\'")
+  :ensure nil
+
+  :mode "\\.purs\\'"
+
+  :hook
+  (purescript-mode . psc-ide-mode))
 
 (use-package psc-ide
+  :ensure nil
+
   :after (purescript-mode)
+
+  :commands (psc-ide-mode)
 
   :diminish
 
   :hook
+  (purescript-mode . company-mode)
+  (purescript-mode . flycheck-mode)
   (purescript-mode . my/purescript-mode-hook)
 
   :config
   (defun my/purescript-mode-hook ()
-    (psc-ide-mode)
-    (company-mode)
-    (flycheck-mode)
     (turn-on-purescript-indentation)))
 
 ;;;; Web
@@ -1571,6 +1583,8 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; TOML
 (use-package toml-mode
+  :ensure nil
+
   :mode "\\.toml\\'"
 
   :hook
@@ -1734,7 +1748,7 @@ _j_ ^ ^ _l_ _=_:equalize
 (put 'company-backends 'safe-local-variable #'listp)
 
 (use-package company-posframe
-  :disabled
+  :disabled ;; TODO: buggy :/
 
   :if (not (string-equal system-type "darwin"))
 
@@ -2150,13 +2164,6 @@ _j_ ^ ^ _l_ _=_:equalize
 (use-package ox-gfm
   :after (org))
 
-(use-package ox-slimhtml
-  :disabled  ;; TODO: am I need this?
-  :after (org))
-
-(use-package ox-gemini
-  :after (org))
-
 (use-package ob-restclient
   :after (org restclient)
 
@@ -2289,12 +2296,10 @@ _j_ ^ ^ _l_ _=_:equalize
 ;;; Other
 ;;;; Nov
 (use-package nov
+  :ensure nil
+
   :mode
   ("\\.epub\\'" . nov-mode))
-
-;;;; Fireplace
-(use-package fireplace
-  :commands (fireplace))
 
 ;;;; Olivetti
 (use-package olivetti
