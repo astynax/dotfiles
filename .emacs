@@ -15,9 +15,9 @@
 (require 'package)
 
 (setq package-archives
-      '(("gnu" . "https://elpa.gnu.org/packages/")
-        ("melpa" . "https://melpa.org/packages/")
-        ("org" . "https://orgmode.org/elpa/")))
+      `(("melpa" . "https://melpa.org/packages/")
+        ("org" . "https://orgmode.org/elpa/")
+        ,@package-archives))
 (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 (setq tls-checktrust "ask")
 (setq tls-program
@@ -116,6 +116,9 @@
 
   :diminish (buffer-face-mode "")
 
+  :preface
+  (setq my/font-height (if (string-equal system-type "darwin") 190 150))
+
   :custom
   (face-font-family-alternatives
    '(("Monospace" "courier" "fixed")
@@ -125,9 +128,9 @@
      ("courier" "CMU Typewriter Text" "Courier 10 Pitch" "fixed")))
 
   :custom-face
-  (variable-pitch ((t (:family "Serif" :height 190))))
-  (fixed-pitch ((t (:family "Monospace Serif" :height 190))))
-  (default ((t (:family "Monospace Serif" :height 190))))
+  (variable-pitch ((t (:family "Serif" :height ,my/font-height))))
+  (fixed-pitch ((t (:family "Monospace Serif" :height ,my/font-height))))
+  (default ((t (:family "Monospace Serif" :height ,my/font-height))))
   (mode-line ((t (:height 0.8))))
   (mode-line-inactive ((t (:height 0.8)))))
 
