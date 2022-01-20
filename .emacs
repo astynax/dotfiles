@@ -131,6 +131,14 @@
 
   :config
   (set-face-attribute
+   'mode-line nil
+   :height 0.8)
+
+  (set-face-attribute
+   'mode-line-inactive nil
+   :height 0.8)
+
+  (set-face-attribute
    'variable-pitch nil
    :font
    (font-spec
@@ -730,7 +738,7 @@ _j_ ^ ^ _l_ _=_:equalize
 ;;;; Indentation
 (use-package aggressive-indent
   :commands (aggressive-indent-mode)
-  :diminish (aggressive-indent-mode "↹"))
+  :diminish " AI")
 
 ;;;; Expand Region
 (use-package expand-region
@@ -754,7 +762,7 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; SmartParens & wrapping
 (use-package smartparens
-  :diminish (smartparens-mode . "🄢")
+  :diminish " S"
 
   :preface
   (defun my/no-electric-with-startparens ()
@@ -1785,7 +1793,7 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; Flycheck
 (use-package flycheck
-  :diminish "⒡"
+  :diminish " FC"
 
   :custom
   (flycheck-check-syntax-automatically
@@ -1827,7 +1835,7 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; Yasnippet
 (use-package yasnippet
-  :diminish (yas-minor-mode . "⒴")
+  :diminish (yas-minor-mode . " Y")
 
   :preface
   (setq-default my/yas-map (make-sparse-keymap "My Yasnippet map"))
@@ -1935,7 +1943,7 @@ _j_ ^ ^ _l_ _=_:equalize
   :custom
   (projectile-keymap-prefix (kbd "C-c p"))
   (projectile-mode-line-function
-   (lambda () (format "[%s]" (projectile-project-name)))))
+   (lambda () (format " [%s]" (projectile-project-name)))))
 
 (use-package counsel-projectile
   :after (projectile counsel ivy)
@@ -2274,7 +2282,7 @@ _j_ ^ ^ _l_ _=_:equalize
 (use-package outshine
   :diminish
   (outline-minor-mode . "")
-  (outshine-mode . "⒪")
+  (outshine-mode . " O")
 
   :bind
   (:map
