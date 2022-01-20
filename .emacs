@@ -114,49 +114,22 @@
 (use-package faces
   :ensure nil
 
-  :preface
-  (setq
-   my/faces/size 19
-
-   ;; TODO: make the font selection more robust
-   my/faces/fixed-family "JetBrains Mono"
-
-   my/faces/variable-family
-   (if (string-equal system-type "darwin")
-       "PT Serif"
-     "DejaVu Serif"))
-
   :diminish (buffer-face-mode "")
 
-  :config
-  (set-face-attribute
-   'variable-pitch nil
-   :font
-   (font-spec
-    :family my/faces/variable-family
-    :size my/faces/size))
+  :custom
+  (face-font-family-alternatives
+   '(("Monospace" "courier" "fixed")
+     ("Monospace Serif" "JetBrains Mono" "FreeMono" "courier" "fixed")
+     ("Serif" "PT Serif" "DejaVu Serif" "arial" "fixed")
+     ("Sans Serif" "PT Sans Serif" "DejaVu Sans Serif" "helvetica" "arial" "fixed")
+     ("courier" "CMU Typewriter Text" "Courier 10 Pitch" "fixed")))
 
-  (set-face-attribute
-   'fixed-pitch nil
-   :font
-   (font-spec
-    :family my/faces/fixed-family
-    :size my/faces/size))
-
-  (set-face-attribute
-   'default nil
-   :font
-   (font-spec
-    :family my/faces/fixed-family
-    :size my/faces/size))
-
-  (set-face-attribute
-   'mode-line nil
-   :height 0.8)
-
-  (set-face-attribute
-   'mode-line-inactive nil
-   :height 0.8))
+  :custom-face
+  (variable-pitch ((t (:family "Serif" :height 190))))
+  (fixed-pitch ((t (:family "Monospace Serif" :height 190))))
+  (default ((t (:family "Monospace Serif" :height 190))))
+  (mode-line ((t (:height 0.8))))
+  (mode-line-inactive ((t (:height 0.8)))))
 
 ;;; Date/Time
 (use-package time
@@ -248,8 +221,10 @@
   (dired-x-hands-off-my-keys t)
 
   :bind
-  ("C-x C-j" . dired-jump)
-  ("C-x 4 C-j" . dired-jump-other-window))
+  ([remap list-directory] . dired-jump)
+  (:map
+   ctl-x-4-map
+   ("C-d" . dired-jump-other-window)))
 
 (use-package wdired
   :ensure nil
