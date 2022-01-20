@@ -1,4 +1,4 @@
-;; -*- lexical-binding: t-*-
+;; -*- lexical-binding: t -*-
 ;;; Initialization
 ;; increase GC-limit up to 100M for boot speedup
 (setq gc-cons-threshold 100000000)
@@ -19,7 +19,6 @@
         ("melpa" . "https://melpa.org/packages/")
         ("org" . "https://orgmode.org/elpa/")))
 (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
-(setq package-enable-at-startup nil)
 (setq tls-checktrust "ask")
 (setq tls-program
       '("gnutls-cli --x509cafile /etc/ssl/certs/ca-certificates.crt -p %p %h"))
@@ -131,14 +130,6 @@
 
   :config
   (set-face-attribute
-   'mode-line nil
-   :height 0.8)
-
-  (set-face-attribute
-   'mode-line-inactive nil
-   :height 0.8)
-
-  (set-face-attribute
    'variable-pitch nil
    :font
    (font-spec
@@ -157,7 +148,15 @@
    :font
    (font-spec
     :family my/faces/fixed-family
-    :size my/faces/size)))
+    :size my/faces/size))
+
+  (set-face-attribute
+   'mode-line nil
+   :height 0.8)
+
+  (set-face-attribute
+   'mode-line-inactive nil
+   :height 0.8))
 
 ;;; Date/Time
 (use-package time
