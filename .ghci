@@ -1,20 +1,9 @@
 -- "chmod go-w to this!" --
 
--- work with local .ghci
-:def r. const(return ":cmd readFile \".ghci\"")
-:def rr \m -> return (":reload " ++ m ++ "\n:r.")
-:def >> \x -> return (":! echo \"" ++ x ++ "\" >> .ghci")
-
 -- colorize a prompt
-:set prompt "\ESC[32mλ> \ESC[m"
+:set prompt-function (\ms l -> pure $ "\n(" ++ unwords ms ++ ")\n\ESC[32m[" ++ show l ++ "]λ \ESC[0m\STX")
 :set prompt-cont ""
 
--- switch to Universum
-:def uni const(return ":set -XNoImplicitPrelude\nimport Universum as U\nimport qualified Prelude")
-
--- do some Turtle
-:def turt const(return ":set -XOverloadedStrings\nimport Turtle\nimport qualified Data.Text as T")
-
 -- source commands from file
-:def source \fn -> return (":cmd readFile " ++ fn)
+:def source (pure . (":cmd readFile " ++))
 
