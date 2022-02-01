@@ -87,6 +87,7 @@
         <value type="string" value="task manager"/>
         <value type="string" value="dropbox"/>
         <value type="string" value="xfce4-power-manager"/>
+        <value type="string" value="flameshot"/>
         <value type="string" value="transmission"/>
       </property>
     </property>
@@ -103,6 +104,7 @@
       <property name="display-name" type="uint" value="1"/>
       <property name="display-type" type="uint" value="1"/>
       <property name="display-scale" type="uint" value="80"/>
+      <property name="group-policy" type="uint" value="1"/>
     </property>
     <property name="plugin-10" type="string" value="power-manager-plugin"/>
     <property name="plugin-20" type="string" value="genmon"/>
