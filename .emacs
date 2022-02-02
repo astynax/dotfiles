@@ -54,6 +54,25 @@
 (use-package diminish)
 (use-package bind-key)
 
+;;;; use-package facades
+(defmacro def-package (name &rest body)
+  "Defines a virtual package with my/ prefix for the name."
+  `(use-package ,name
+     :ensure nil
+     ,@body
+     :preface
+     (provide ',name)))
+
+(put 'def-package 'lisp-indent-function 1)
+
+(defmacro setup-package (name &rest body)
+  "Configures an internal package."
+  `(use-package ,name
+     :ensure nil
+     ,@body))
+
+(put 'setup-package 'lisp-indent-function 1)
+
 ;;;; Overlays (kinda)
 (require 'cl-lib)
 
@@ -89,20 +108,16 @@ Each overlay is just a :if-condition for the use-package."
 (put 'overlay 'lisp-indent-function 1)
 
 ;;; Customization
-(use-package custom
-  :ensure nil
+(setup-package custom
   :custom
   (custom-safe-themes t "Trust all custom themes..."))
 
-(use-package cus-edit
-  :ensure nil
+(setup-package cus-edit
   :custom
   (custom-file null-device "Don't store customizations"))
 
 ;;; Emacs itself
-(use-package emacs
-  :ensure nil
-
+(setup-package emacs
   :init
   (defalias 'yes-or-no-p 'y-or-n-p)
   (put 'narrow-to-region 'disabled nil)
@@ -141,15 +156,12 @@ Each overlay is just a :if-condition for the use-package."
   (prefer-coding-system 'utf-8)
   (put 'overwrite-mode 'disabled t))
 
-(use-package frame
-  :ensure nil
+(setup-package frame
   :bind
   ("C-z" . nil))
 
 ;;; Faces
-(use-package faces
-  :ensure nil
-
+(setup-package faces
   :diminish (buffer-face-mode "")
 
   :preface
@@ -171,9 +183,7 @@ Each overlay is just a :if-condition for the use-package."
   (mode-line-inactive ((t (:height 0.8)))))
 
 ;;; Date/Time
-(use-package time
-  :ensure nil
-
+(setup-package time
   :preface
   (defun insert-today ()
     (interactive)
@@ -186,9 +196,7 @@ Each overlay is just a :if-condition for the use-package."
   (calendar-date-style 'european))
 
 ;;; Files
-(use-package files
-  :ensure nil
-
+(setup-package files
   :preface
   (setq-default
    my/backup-directory-per-session
@@ -223,9 +231,9 @@ Each overlay is just a :if-condition for the use-package."
   ;; autosave
   (auto-save-default nil))
 
-(use-package autorevert
-  :ensure nil
+(setup-package autorevert
   :diminish auto-revert-mode
+
   :config
   (global-auto-revert-mode t))
 
@@ -233,9 +241,7 @@ Each overlay is just a :if-condition for the use-package."
   :commands (backup-walker-start))
 
 ;;; Dired
-(use-package dired
-  :ensure nil
-
+(setup-package dired
   :custom
   (dired-omit-files "^\\..*$" "Omit the dotfiles")
   (dired-isearch-filenames 'dwim)
@@ -251,9 +257,7 @@ Each overlay is just a :if-condition for the use-package."
   :config
   (put 'dired-find-alternate-file 'disabled nil))
 
-(use-package dired-x
-  :ensure nil
-
+(setup-package dired-x
   :custom
   (dired-clean-up-buffers-too t)
   (dired-clean-confirm-killing-deleted-buffers t)
@@ -265,9 +269,7 @@ Each overlay is just a :if-condition for the use-package."
    ctl-x-4-map
    ("C-d" . dired-jump-other-window)))
 
-(use-package wdired
-  :ensure nil
-
+(setup-package wdired
   :commands wdired-change-to-wdired-mode
 
   :custom
@@ -291,15 +293,11 @@ Each overlay is just a :if-condition for the use-package."
 
 ;;; UI
 ;;;; Highlights
-(use-package paren
-  :ensure nil
-
+(setup-package paren
   :config
   (show-paren-mode t))
 
-(use-package visual-line
-  :ensure nil
-
+(setup-package visual-line
   :custom
   (visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
 
@@ -327,9 +325,7 @@ Each overlay is just a :if-condition for the use-package."
 (use-package hydra)
 
 ;;;; Uniquify
-(use-package uniquify
-  :ensure nil
-
+(setup-package uniquify
   :custom
   (uniquify-strip-common-suffix t)
   (uniquify-after-kill-buffer-p t)
@@ -362,9 +358,7 @@ Each overlay is just a :if-condition for the use-package."
 
 ;;;; Global text scale
 ;; source: https://www.emacswiki.org/emacs/GlobalTextScaleMode
-(use-package my/global-text-scale
-  :ensure nil
-
+(def-package my/global-text-scale
   :after (hydra)
 
   :preface
@@ -400,8 +394,6 @@ Each overlay is just a :if-condition for the use-package."
     ("0" my/global-text-scale/reset "Reset zoom" :exit t)
     ("q" nil "Cancel"))
 
-  (provide 'my/global-text-scale)
-
   :bind
   (:map
    mode-specific-map
@@ -418,9 +410,7 @@ Each overlay is just a :if-condition for the use-package."
   (load-theme 'modus-operandi))
 
 ;;;; Window sizing
-(use-package my/window-sizing
-  :ensure nil
-
+(def-package my/window-sizing
   :preface
   (defhydra hydra-window-sizing (:hint nil)
     "
@@ -436,8 +426,6 @@ _j_ ^ ^ _l_ _=_:equalize
     ("+" balance-windows)
     ("=" balance-windows-area)
     ("q" nil))
-
-  (provide 'my/window-sizing)
 
   :bind
   ("C-x 4 w" . 'hydra-window-sizing/body))
@@ -490,8 +478,7 @@ _j_ ^ ^ _l_ _=_:equalize
   (beacon-mode))
 
 ;;;; iBuffer
-(use-package ibuffer
-  :ensure nil
+(setup-package ibuffer
   :bind
   (:map
    mode-specific-map
@@ -542,13 +529,8 @@ _j_ ^ ^ _l_ _=_:equalize
   :config
   (counsel-mode 1))
 
-(use-package my/helpful-counsel
-  :ensure nil
-
+(def-package my/helpful-counsel
   :after (helpful counsel)
-
-  :preface
-  (provide 'my/helpful-counsel)
 
   :custom
   (counsel-describe-function-function #'helpful-callable)
@@ -633,20 +615,13 @@ _j_ ^ ^ _l_ _=_:equalize
   ("M-<f11>" . my/switch-to-scratch))
 
 ;;;; WWW Browser
-(use-package www
-  :ensure nil
-
-  :preface
-  (provide 'www)
-
+(def-package my/www
   :custom
   (browse-url-browser-function 'browse-url-firefox))
 
 ;;; Editing
 ;;;; isearch
-(use-package isearch
-  :ensure nil
-
+(setup-package isearch
   :custom
   (search-highlight t)
   (search-whitespace-regexp ".*?")
@@ -679,12 +654,11 @@ _j_ ^ ^ _l_ _=_:equalize
    ("C-SPC" . isearch/mark-and-exit)))
 
 ;;;; Subwords
-(use-package subword
-  :ensure nil
+(setup-package subword
   :diminish)
 
 ;;;; Electric
-(use-package electric
+(setup-package electric
   :hook
   (prog-mode . electric-pair-local-mode))
 
@@ -703,9 +677,7 @@ _j_ ^ ^ _l_ _=_:equalize
    ("'" . edit-indirect-region)))
 
 ;;;; Whitespaces
-(use-package whitespace
-  :ensure nil
-
+(setup-package whitespace
   :diminish
 
   :preface
@@ -755,7 +727,6 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; Expand Region
 (use-package expand-region
-  ;; :after (org)  ;; ugly hack :(
   :bind
   ("M-]" . er/expand-region)
   ("M-[" . er/contract-region))
@@ -848,9 +819,7 @@ _j_ ^ ^ _l_ _=_:equalize
    ("a" . mc/edit-beginnings-of-lines)))
 
 ;;;; Smart BOL
-(use-package my/smart-bol
-  :ensure nil
-
+(def-package my/smart-bol
   :preface
   (defun my/smarter-move-beginning-of-line (arg)
     "Move point back to indentation of beginning of line."
@@ -864,8 +833,7 @@ _j_ ^ ^ _l_ _=_:equalize
   ([remap move-beginning-of-line] . my/smarter-move-beginning-of-line))
 
 ;;;; ElDoc
-(use-package eldoc
-  :ensure nil
+(setup-package eldoc
   :diminish)
 
 ;;;; Visual RegExp
@@ -880,17 +848,13 @@ _j_ ^ ^ _l_ _=_:equalize
    ("m" . vr/mc-mark)))
 
 ;;;; Typographics
-(use-package my/typographics
-  :ensure nil
-
+(def-package my/typographics
   :preface
   (defun my/typographics-fontify ()
     "Add a font lock highlighting for some particular characters."
     (font-lock-add-keywords
      nil
      '(("—" . '(0 font-lock-warning-face t)))))
-
-  (provide 'my/typographics)
 
   :hook
   (prog-mode . my/typographics-fontify)
@@ -907,9 +871,7 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;; Navigation
 ;;;; imenu
-(use-package imenu
-  :ensure nil
-
+(setup-package imenu
   :bind
   ("M-g i" . imenu))
 
@@ -994,9 +956,7 @@ _j_ ^ ^ _l_ _=_:equalize
    ("M-l" . git-link)))
 
 ;;;; GitHub
-(use-package my/github
-  :ensure nil
-
+(def-package my/github
   :preface
   (defun my/github/match-file-url (s)
     "Extract a path and optional line number from GitHub URL"
@@ -1026,16 +986,12 @@ _j_ ^ ^ _l_ _=_:equalize
                (repeat 40 (or digit letter))
                eol)
            s)
-      t))
-
-  (provide 'my/github))
+      t)))
 
 ;;; Languages
 ;;;; LSP
 (overlay lsp
   (use-package lsp-mode
-    :ensure nil
-
     :commands (lsp)
 
     :hook
@@ -1063,20 +1019,13 @@ _j_ ^ ^ _l_ _=_:equalize
     (lsp-ui-doc-enable nil)))
 
 ;;;; ELisp
-(use-package elisp-mode
-  :ensure nil
-
+(setup-package elisp-mode
   :hook
   (emacs-lisp-mode . eldoc-mode)
   (emacs-lisp-mode . aggressive-indent-mode))
 
-(use-package my/helpful-elisp-mode
-  :ensure nil
-
+(def-package my/helpful-elisp-mode
   :after (elisp-mode helpful)
-
-  :preface
-  (provide 'my/helpful-elisp-mode)
 
   :bind
   (:map
@@ -1084,9 +1033,7 @@ _j_ ^ ^ _l_ _=_:equalize
    ("C-c C-d" . helpful-at-point)))
 
 ;;;; Shell Scripts
-(use-package sh-mode
-  :ensure nil
-
+(setup-package sh-mode
   :mode
   ("/\\.xsessionrc\\'|/\\.xprofile\\'" . sh-mode))
 
@@ -1309,7 +1256,7 @@ _j_ ^ ^ _l_ _=_:equalize
     :ensure nil)
 
   (use-package lsp-haskell
-    :if nil
+    :disabled
 
     :after (haskell-mode)
 
@@ -1321,9 +1268,7 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; Python
 (overlay python
-  (use-package python
-    :ensure nil
-
+  (setup-package python
     :mode
     ("\\.py\\'" . python-mode)
 
@@ -1355,9 +1300,7 @@ _j_ ^ ^ _l_ _=_:equalize
     (unbind-key "<C-left>" elpy-mode-map)
     (unbind-key "<C-right>" elpy-mode-map))
 
-  (use-package my/python
-    :ensure nil
-
+  (def-package my/python
     :custom
     (python-shell-interpreter "python3")
     (lsp-pylsp-configuration-sources ["flake8"])
@@ -1413,9 +1356,7 @@ _j_ ^ ^ _l_ _=_:equalize
     :config
     (unbind-key "DEL" gfm-mode-map))
 
-  (use-package my/markdown
-    :ensure nil
-
+  (def-package my/markdown
     :after (markdown-mode my/github)
 
     :preface
@@ -1437,8 +1378,6 @@ _j_ ^ ^ _l_ _=_:equalize
               (message "%s" "Non-local ref!"))
           (message "%s" "Non-github link!"))))
 
-    (provide 'my/markdown)
-
     :bind
     (:map
      markdown-mode-map
@@ -1448,13 +1387,8 @@ _j_ ^ ^ _l_ _=_:equalize
      gfm-mode-map
      ("C-c l" . my/markdown/capture-gh-link)))
 
-  (use-package my/markdown-binding-fixes
-    :ensure nil
-
-    :after markdown-mode
-
-    :preface
-    (provide 'my/markdown-binding-fixes)
+  (def-package my/markdown-binding-fixes
+    :after (markdown-mode)
 
     :bind
     (:map
@@ -1485,9 +1419,7 @@ _j_ ^ ^ _l_ _=_:equalize
     (elm-mode . flycheck-mode)
     (flycheck-mode . flycheck-elm-setup))
 
-  (use-package my/elm
-    :ensure nil
-
+  (def-package my/elm
     :preface
     (defun my/elm-mode-hook ()
       (when (equal (f-ext (or (buffer-file-name) "")) "elm")
@@ -1618,17 +1550,13 @@ _j_ ^ ^ _l_ _=_:equalize
 ;;;; Kotlin
 (overlay kotlin
   (use-package kotlin-mode
-    :ensure nil
-
     :mode "\\.kts?\\'"
 
     :hook
     (kotlin-mode . highlight-indentation-mode)))
 
 ;;;; Shell
-(use-package sh-script
-  :ensure nil
-
+(setup-package sh-script
   :mode
   ("\\.ok\\'" . shell-script-mode)
   ("\\.sh\\'" . shell-script-mode)
@@ -1681,14 +1609,10 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;; IDE
 ;;;; Autocompletion and abbreviation
-(use-package abbrev
-  :ensure nil
-
+(setup-package abbrev
   :diminish)
 
-(use-package dabbrev
-  :ensure nil
-
+(setup-package dabbrev
   :commands (dabbrev-expand dabbrev-completion)
 
   :custom
@@ -1702,8 +1626,7 @@ _j_ ^ ^ _l_ _=_:equalize
   (dabbrev-eliminate-newlines nil)
   (dabbrev-upcase-means-case-search t))
 
-(use-package hippie
-  :ensure nil
+(setup-package hippie
   :after (dabbrev)
 
   :custom
@@ -1814,9 +1737,7 @@ _j_ ^ ^ _l_ _=_:equalize
   (flycheck-mode . flycheck-color-mode-line-mode))
 
 ;;;; Flymake
-(use-package flymake
-  :ensure nil
-
+(setup-package flymake
   :preface
   (defvar my/flymake-minor-mode-map (make-keymap))
   (define-minor-mode my/flymake-minor-mode
@@ -2010,9 +1931,8 @@ _j_ ^ ^ _l_ _=_:equalize
     :commands (docker)))
 
 ;;; Spell Checking
-(use-package ispell
+(setup-package ispell
   :if (executable-find "hunspell")
-  :ensure nil
 
   :commands
   (ispell-buffer)
@@ -2032,9 +1952,7 @@ _j_ ^ ^ _l_ _=_:equalize
   (ispell-set-spellchecker-params)
   (ispell-hunspell-add-multi-dic "ru_RU,en_US"))
 
-(use-package flyspell
-  :ensure nil
-
+(setup-package flyspell
   :commands (flyspell-buffer flyspell-mode)
 
   :bind
@@ -2143,8 +2061,7 @@ _j_ ^ ^ _l_ _=_:equalize
       (file+olp+datetree "" "Daily")
       "* %?\n%i"
       )
-     ))
-  )
+     )))
 
 (put 'org-default-notes-file 'safe-local-variable #'stringp)
 (put 'org-export-use-babel 'safe-local-variable #'null)
@@ -2185,9 +2102,7 @@ _j_ ^ ^ _l_ _=_:equalize
     (add-to-list 'my/org-babel-langs '(restclient . t))
     (my/org-babel-load-langs)))
 
-(use-package my/org
-  :ensure nil
-
+(def-package my/org
   :after (org my/github)
 
   :preface
@@ -2209,16 +2124,12 @@ _j_ ^ ^ _l_ _=_:equalize
             (message "%s" "Non-local ref!"))
         (message "%s" "Non-github link!"))))
 
-  (provide 'my/org)
-
   :bind
   (:map
    org-mode-map
    ("C-c l" . my/org/capture-gh-link)))
 
-(use-package my/org-slideshow
-  :ensure nil
-
+(def-package my/org-slideshow
   :after (org)
 
   :commands
@@ -2230,9 +2141,6 @@ _j_ ^ ^ _l_ _=_:equalize
   (:map
    org-mode-map
    ("<f5>" . my/org-simple-slideshow))
-
-  :preface
-  (provide 'my/org-slideshow)
 
   :config
   (defun my/org-renarrow (move)
