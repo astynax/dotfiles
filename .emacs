@@ -462,8 +462,16 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; Popup windows manupulation
 (use-package popwin
+  :bind
+  (:map
+   help-mode-map
+   ("s" . popwin:stick-popup-window))
+
+  :bind-keymap
+  ("C-c P" . popwin:keymap)
+
   :config
-  (popwin-mode))
+  (popwin-mode 1))
 
 ;;;; Beacon
 (use-package beacon
