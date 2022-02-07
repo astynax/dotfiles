@@ -128,8 +128,6 @@ Each overlay is just a :if-condition for the use-package."
   (indicate-empty-lines t)
   (use-dialog-box nil "Disable dialog boxes")
   (enable-recursive-minibuffers t "Allow minibuffer commands in the minibuffer")
-  (x-select-enable-clipboard t "Use clipboard")
-  (x-select-enable-primary t "Use primary buffer")
   (save-interprogram-paste-before-kill t)
   (mouse-yank-at-point t "Yank at point using mouse")
   (resize-mini-windows t)
