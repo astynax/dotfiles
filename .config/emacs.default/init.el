@@ -7,7 +7,7 @@
 (defun my/configure ()
   "Opens user-init-file"
   (interactive)
-  (find-file user-init-file))
+  (find-file "~/.config/emacs.default/init.el"))
 
 (global-set-key (kbd "M-<f12>") 'my/configure)
 
@@ -76,7 +76,7 @@
 ;;;; Overlays (kinda)
 (require 'cl-lib)
 
-(defvar my/overlays-file "~/.emacs.d/overlays")
+(defvar my/overlays-file "~/.config/emacs.default/overlays")
 
 (defvar my/overlays
   "A list of enabled package sets (list of strings).
@@ -1939,6 +1939,11 @@ _j_ ^ ^ _l_ _=_:equalize
 ;;; Spell Checking
 (setup-package ispell
   :if (executable-find "hunspell")
+
+  :preface
+  ;; FIXME: remove after the Debian's site-lisp will be fixed
+  (unless (boundp 'ispell-menu-map-needed)
+    (defvar ispell-menu-map-needed nil))
 
   :commands
   (ispell-buffer)

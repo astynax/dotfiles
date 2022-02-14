@@ -1,3 +1,6 @@
 [submodule ".yadm-project"]
 	path = .yadm-project
 	url = https://github.com/TheLocehiliosan/yadm.git
+[submodule ".config/emacs"]
+	path = .config/emacs
+	url = https://github.com/plexus/chemacs2.git
