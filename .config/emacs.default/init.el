@@ -2011,8 +2011,8 @@ _j_ ^ ^ _l_ _=_:equalize
   (org-tag ((t (:weight normal :height 0.8))))
 
   :custom
-  (org-directory "~/Dropbox/org")
-  (org-default-notes-file "~/Dropbox/org/notes.org")
+  (org-directory "~/org")
+  (org-default-notes-file "~/org/notes.org")
   (org-edit-src-content-indentation 0)
   (org-ellipsis "…")
   (org-enforce-todo-dependencies t)
