@@ -1617,6 +1617,10 @@ _j_ ^ ^ _l_ _=_:equalize
 (overlay docker
   (use-package dockerfile-mode))
 
+;;;; Prolog
+(overlay prolog
+  (setup-package prolog))
+
 ;;; IDE
 ;;;; Autocompletion and abbreviation
 (setup-package abbrev
