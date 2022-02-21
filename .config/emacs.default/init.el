@@ -531,9 +531,13 @@ _j_ ^ ^ _l_ _=_:equalize
 
   :bind
   ([remap insert-char] . counsel-unicode-char)
+  (:map
+   counsel-mode-map
+   ("M-g m" . counsel-mark-ring)
+   ("M-g o" . counsel-outline))
 
-  :config
-  (counsel-mode 1))
+  :hook
+  (after-init . counsel-mode))
 
 (def-package my/helpful-counsel
   :after (helpful counsel)
