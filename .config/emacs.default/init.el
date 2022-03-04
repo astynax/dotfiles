@@ -629,6 +629,14 @@ _j_ ^ ^ _l_ _=_:equalize
   :custom
   (browse-url-browser-function 'browse-url-firefox))
 
+;;;; History
+(setup-package savehist
+  :hook
+  (after-init . savehist-mode)
+
+  :custom
+  (history-length 25))
+
 ;;; Editing
 ;;;; isearch
 (setup-package isearch
