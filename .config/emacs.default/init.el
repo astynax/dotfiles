@@ -626,8 +626,11 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; WWW Browser
 (def-package my/www
-  :custom
-  (browse-url-browser-function 'browse-url-firefox))
+  :config
+  (setq browse-url-browser-function
+        (pcase system-type
+          ('darwin 'browse-url-default-browser)
+          (_ 'browse-url-firefox))))
 
 ;;;; History
 (setup-package savehist
@@ -779,14 +782,17 @@ _j_ ^ ^ _l_ _=_:equalize
   (scheme-mode . smartparens-strict-mode)
   (eval-expression-minibuffer-setup . smartparens-strict-mode)
 
-  :custom
-  (sp-base-key-bindings 'sp)
-
   :bind
   (:map
-   sp-keymap
+   smartparens-mode-map
    ("M-J" . sp-split-sexp)
-   ("C-M-J" . sp-join-sexp))
+   ("C-M-J" . sp-join-sexp)
+   ("C-(" . sp-backward-slurp-sexp)
+   ("C-)" . sp-forward-slurp-sexp)
+   ("C-{" . sp-backward-barf-sexp)
+   ("C-}" . sp-forward-barf-sexp)
+   ("M-<delete>" . sp-unwrap-sexp)
+   ("M-<backspace>" . sp-backward-unwrap-sexp))
 
   :config
   (require 'smartparens-config)
