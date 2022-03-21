@@ -17,7 +17,6 @@
 
 (setq package-archives
       `(("melpa" . "https://melpa.org/packages/")
-        ("org" . "https://orgmode.org/elpa/")
         ,@package-archives))
 (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 (setq tls-checktrust "ask")
@@ -1998,9 +1997,7 @@ _j_ ^ ^ _l_ _=_:equalize
 ;;; Org-mode/Outline
 ;;;; Org
 (use-package org
-  :ensure org
-
-  :pin org
+  :pin gnu
 
   :mode ("\\.org\\'" . org-mode)
 
@@ -2222,6 +2219,23 @@ _j_ ^ ^ _l_ _=_:equalize
       (org-narrow-to-subtree))
     (when (buffer-narrowed-p)
       (my/org-simple-slideshow-hydra/body))))
+
+;;;; Roam
+(overlay org-roam
+  (use-package org-roam
+    :custom
+    (org-roam-directory (file-truename "~/org/roam"))
+
+    :bind
+    (:map
+     mode-specific-map
+     (:prefix
+      "r"
+      :prefix-map my/org-roam-map
+      ("f" . org-roam-node-find)
+      ("i" . org-roam-node-insert)
+      ("t" . org-roam-buffer-toggle)
+      ("S" . org-roam-db-sync)))))
 
 ;;;; Outshine
 (use-package outshine
