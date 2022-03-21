@@ -1063,9 +1063,9 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; Racket (Geiser), Pollen
 (overlay racket
-  (use-package geiser
+  (use-package geiser-racket
     :mode
-    ("\\.rkt\\'" . racket-mode)
+    ("\\.rkt\\'" . scheme-mode)
 
     :hook
     (racket-mode . smartparens-strict-mode))
