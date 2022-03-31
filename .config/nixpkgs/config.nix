@@ -8,7 +8,7 @@
         # locales for glibc
         glibcLocales
         # cli tools
-        ag
+        silver-searcher
         bat
         fd
         ripgrep
@@ -20,7 +20,7 @@
         shellcheck
         upx
         nix-tree
-        mp3gain
+        difftastic
         # podman and stuff
         podman  # needs 'uidmap' in system
         buildah
@@ -28,6 +28,7 @@
         fuse-overlayfs
         # misc
         libheif # decoder for the iPad's photos
+        mp3gain
         # apps
         lagrange # Gemini client
       ];
