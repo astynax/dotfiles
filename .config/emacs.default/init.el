@@ -267,7 +267,10 @@ Each overlay is just a :if-condition for the use-package."
    ("C-d" . dired-jump-other-window)))
 
 (setup-package wdired
-  :commands wdired-change-to-wdired-mode
+  :bind
+  (:map
+   dired-mode-map
+   ("C-c C-e" . wdired-change-to-wdired-mode))
 
   :custom
   (wdired-allow-to-change-permissions t)
@@ -430,7 +433,10 @@ _j_ ^ ^ _l_ _=_:equalize
 ;;;; Window switching
 (use-package ace-window
   :bind
-  ("M-o" . ace-window))
+  ("M-o" . ace-window)
+
+  :custom
+  (aw-scope 'frame))
 
 ;;;; Window rotation
 (use-package rotate
@@ -470,17 +476,13 @@ _j_ ^ ^ _l_ _=_:equalize
   :config
   (popwin-mode 1))
 
-;;;; Beacon
-(use-package beacon
+;;;; Pulsar
+(use-package pulsar
   :demand
 
-  :diminish
-
-  :bind
-  ("<f11>" . beacon-blink)
-
   :config
-  (beacon-mode))
+  (add-to-list 'pulsar-pulse-functions 'ace-window)
+  (pulsar-setup))
 
 ;;;; iBuffer
 (setup-package ibuffer
