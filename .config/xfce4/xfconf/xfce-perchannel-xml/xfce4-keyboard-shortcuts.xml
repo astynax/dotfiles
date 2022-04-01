@@ -39,6 +39,7 @@
       <property name="&lt;Super&gt;m" type="string" value="_mpd_menu.sh"/>
       <property name="&lt;Shift&gt;&lt;Super&gt;m" type="string" value="_screen_layout_menu.sh"/>
       <property name="&lt;Shift&gt;&lt;Super&gt;i" type="string" value="/home/astynax/.screenlayout/internal.sh"/>
+      <property name="&lt;Super&gt;v" type="string" value="vortaro.py"/>
     </property>
   </property>
   <property name="xfwm4" type="empty">
