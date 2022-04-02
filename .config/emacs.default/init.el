@@ -971,6 +971,28 @@ _j_ ^ ^ _l_ _=_:equalize
   :bind
   ("C-x g" . magit-status))
 
+(def-package my/magit-yadm
+  :after (magit)
+
+  :preface
+  (setq my/magit-yadm-dir (expand-file-name "~/.local/share/yadm/repo.git/"))
+
+  (defun my/magit-yadm-process-environment (env)
+    "Add GIT_DIR and GIT_WORK_TREE to ENV when in a special directory.
+https://github.com/magit/magit/issues/460 (@cpitclaudel)."
+    (let ((default (file-name-as-directory
+                    (expand-file-name default-directory)))
+          (home (expand-file-name "~/")))
+      (when (and (string= default home)
+                 (file-directory-p my/magit-yadm-dir))
+        (push (format "GIT_WORK_TREE=%s" home) env)
+        (push (format "GIT_DIR=%s" my/magit-yadm-dir) env)))
+    env)
+
+  :config
+  (advice-add 'magit-process-environment
+              :filter-return #'my/magit-yadm-process-environment))
+
 (use-package git-timemachine
   :commands (git-timemachine))
 
