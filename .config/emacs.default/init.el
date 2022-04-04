@@ -562,7 +562,13 @@ _j_ ^ ^ _l_ _=_:equalize
   (ivy-rich-path-style 'abbrev)
 
   :hook
-  (ivy-mode . ivy-rich-mode))
+  (ivy-mode . ivy-rich-mode)
+
+  :config
+  (ivy-rich-modify-column
+   'counsel-M-x
+   'counsel-M-x-transformer
+   '(:width 50)))
 
 (use-package smex)
 (use-package flx)
@@ -2287,7 +2293,8 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
       :prefix-map my/org-roam-map
       ("f" . org-roam-node-find)
       ("i" . org-roam-node-insert)
-      ("t" . org-roam-buffer-toggle)
+      ("d" . org-roam-dailies-map)
+      ("b" . org-roam-buffer-toggle)
       ("S" . org-roam-db-sync)))))
 
 ;;;; Outshine
