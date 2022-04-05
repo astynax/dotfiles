@@ -7,12 +7,13 @@ ROFI = local['rofi']['-dmenu', '-disable-history']
 INPUT = local['zenity']['--entry', '--title=Vortaro']
 CB = local['xsel']['-op']
 NOTIFY = local['notify-send']
-DICT = local['dict']
+DICT = local['dict']['--host', 'localhost']
 
 DICTS = (
     'fd-eng-rus',
     'wn',
     'gcide',
+    'jargon',
 )
 
 
