@@ -2320,6 +2320,42 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
   ;; unbind M-tab
   (unbind-key "C-M-i" outline-minor-mode-map))
 
+;;; eev
+(use-package eev
+  :bind
+  ("<f8>" . eepitch-this-line)
+  (:map
+   mode-specific-map
+   :prefix "e"
+   :prefix-map my/eev-map
+   ("e" . ee-eval-sexp-eol)
+   ("j" . eejump)
+   ("A" . eewrap-anchor)
+   ("S" . eewrap-sh)
+   ("F" . eewrap-find-fline)
+   ("h h" . find-here-links)
+   ("h 1" . find-here-links-1)
+   ("h 3" . find-here-links-3))
+
+  :config
+  (require 'eev-load)
+
+  (setq ee-find-youtube-video-program 'find-mpv-video)
+
+  (when (executable-find "atril")
+    ;; See:
+    ;;   (find-pdf-like-intro)
+    (defun     find-atril-page (fname &optional page &rest rest)
+      (find-bgprocess (ee-find-atril-page fname page)))
+    (defvar ee-find-atril-page-options '())
+    (defun  ee-find-atril-page (fname &optional page)
+      `("atril"
+        ,@ee-find-atril-page-options
+        ,@(if page `(,(format "--page-label=%d" page)))
+        ,fname))
+    (code-pdfbackend "atril-page")
+    (code-pdfbackendalias "pdf-page" "atril-page")))
+
 ;;; Other
 ;;;; Nov
 (overlay nov
