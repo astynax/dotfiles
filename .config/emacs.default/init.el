@@ -55,12 +55,11 @@
 
 ;;;; use-package facades
 (defmacro def-package (name &rest body)
-  "Defines a virtual package with my/ prefix for the name."
+  "Defines a virtual package."
   `(use-package ,name
      :ensure nil
-     ,@body
-     :preface
-     (provide ',name)))
+     :no-require t
+     ,@body))
 
 (put 'def-package 'lisp-indent-function 1)
 
