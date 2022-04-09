@@ -40,6 +40,7 @@
       <property name="&lt;Shift&gt;&lt;Super&gt;m" type="string" value="_screen_layout_menu.sh"/>
       <property name="&lt;Shift&gt;&lt;Super&gt;i" type="string" value="/home/astynax/.screenlayout/internal.sh"/>
       <property name="&lt;Super&gt;v" type="string" value="vortaro.py"/>
+      <property name="&lt;Super&gt;e" type="string" value="/home/astynax/.local/bin/_new-emacs-frame.sh"/>
     </property>
   </property>
   <property name="xfwm4" type="empty">
