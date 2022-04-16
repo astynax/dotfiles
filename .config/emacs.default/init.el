@@ -138,9 +138,11 @@ Each overlay is just a :if-condition for the use-package."
   ;; Cursor
   (line-number-mode t)
   (column-number-mode t)
+  (mode-line-position
+   '((mode-line-percent-position "%p ")
+     (line-number-mode ("%l" (column-number-mode ":%c")))))
   (blink-cursor-mode nil)
   (x-stretch-cursor t)
-  (mode-line-position '((line-number-mode ("%l" (column-number-mode ":%c")))))
   (shift-select-mode nil "No selection with <shift>")
   ;; Exit confirmation
   (kill-emacs-query-functions
@@ -606,6 +608,26 @@ _j_ ^ ^ _l_ _=_:equalize
   ([remap describe-function] . helpful-callable)
   ([remap describe-variable] . helpful-variable)
   ([remap describe-key] . helpful-key))
+
+;;;; Olivetti
+(use-package olivetti
+  :after (hydra)
+
+  :preface
+  (defhydra hydra-olivetti ()
+    "Olivetti"
+    ("o" olivetti-mode "Toggle" :exit t)
+    ("-" olivetti-shrink "Shrink")
+    ("=" olivetti-expand "Expand")
+    ("q" nil "Cancel"))
+
+  :bind
+  (:map
+   mode-specific-map
+   ("o" . 'hydra-olivetti/body))
+
+  :custom
+  (olivetti-body-width 64))
 
 ;;; Behaviour
 ;;;; reverse-im
@@ -2040,12 +2062,13 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
   (:map
    org-mode-map
    ("C-c M-RET" . org-insert-heading-after-current)
-   ("C-c L" . org-cliplink))
+   ([remap org-insert-link] . my/org-insert-link-dwim))
 
   :hook
   (org-mode . variable-pitch-mode)
   (org-mode . yas-minor-mode)
   (org-mode . smartparens-mode)
+  (org-mode . olivetti-mode)
   (org-mode . my/org-mode-hook)
 
   :custom-face
@@ -2114,74 +2137,6 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
     "Tweaks an org-mode"
     (setq-local truncate-lines nil))
 
-  (setq
-   org-capture-templates
-   '(("t" "Add a daily note" entry
-      (file+olp+datetree "" "Daily")
-      "* %?\n%i"
-      )
-     )))
-
-(put 'org-default-notes-file 'safe-local-variable #'stringp)
-(put 'org-export-use-babel 'safe-local-variable #'null)
-
-(use-package org-bullets
-  :after (org)
-
-  :hook
-  (org-mode . org-bullets-mode)
-
-  :custom
-  (org-bullets-bullet-list '("●" "○" "⦿" "⦾")))
-
-(use-package htmlize
-  :after (org))
-
-(use-package ox-pandoc
-  :if (executable-find "pandoc")
-
-  :after (org))
-
-(use-package org-cliplink
-  :bind
-  (:map
-   org-mode-map
-   ("C-c S-l" . org-cliplink)))
-
-(use-package ox-gfm
-  :after (org))
-
-(overlay restclient
-  (use-package ob-restclient
-    :after (org restclient)
-
-    :commands (org-babel-execute:restclient)
-
-    :config
-    (add-to-list 'my/org-babel-langs '(restclient . t))
-    (my/org-babel-load-langs)))
-
-(def-package my/org
-  :after (org my/github)
-
-  :preface
-  (defun my/org/capture-gh-link (&optional arg)
-    "Insert a MD-link for the killed GitHub URL."
-    (interactive "p")
-    (let* ((url (current-kill 0))
-           (match (my/github/match-file-url url))
-           (path (alist-get 'path match))
-           (line (alist-get 'line match))
-           (ref (alist-get 'ref match)))
-      (if path
-          (if (or (my/github/commit-hash-p ref) (= 4 arg))
-              (insert
-               (org-make-link-string
-                url
-                (format "%s%s" path (if line (format ":%s" line) ""))))
-            (message "%s" "Non-local ref!"))
-        (message "%s" "Non-github link!"))))
-
   ;; src: https://xenodium.com/emacs-dwim-do-what-i-mean/
   (defun my/org-insert-link-dwim ()
     "Like `org-insert-link' but with personal dwim preferences."
@@ -2211,11 +2166,72 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
             (t
              (call-interactively 'org-insert-link)))))
 
+  (setq
+   org-capture-templates
+   '(("t" "Add a daily note" entry
+      (file+olp+datetree "" "Daily")
+      "* %?\n%i"
+      )
+     )))
+
+(put 'org-default-notes-file 'safe-local-variable #'stringp)
+(put 'org-export-use-babel 'safe-local-variable #'null)
+
+(use-package org-bullets
+  :after (org)
+
+  :hook
+  (org-mode . org-bullets-mode)
+
+  :custom
+  (org-bullets-bullet-list '("●" "○" "⦿" "⦾")))
+
+(use-package htmlize
+  :after (org))
+
+(use-package ox-pandoc
+  :if (executable-find "pandoc")
+
+  :after (org))
+
+(use-package ox-gfm
+  :after (org))
+
+(overlay restclient
+  (use-package ob-restclient
+    :after (org restclient)
+
+    :commands (org-babel-execute:restclient)
+
+    :config
+    (add-to-list 'my/org-babel-langs '(restclient . t))
+    (my/org-babel-load-langs)))
+
+(def-package my/org/github
+  :after (org my/github)
+
+  :preface
+  (defun my/org-capture-gh-link (&optional arg)
+    "Insert a MD-link for the killed GitHub URL."
+    (interactive "p")
+    (let* ((url (current-kill 0))
+           (match (my/github/match-file-url url))
+           (path (alist-get 'path match))
+           (line (alist-get 'line match))
+           (ref (alist-get 'ref match)))
+      (if path
+          (if (or (my/github/commit-hash-p ref) (= 4 arg))
+              (insert
+               (org-make-link-string
+                url
+                (format "%s%s" path (if line (format ":%s" line) ""))))
+            (message "%s" "Non-local ref!"))
+        (message "%s" "Non-github link!"))))
+
   :bind
   (:map
    org-mode-map
-   ([remap org-insert-link] . my/org-insert-link-dwim)
-   ("C-c l" . my/org/capture-gh-link)))
+   ("C-c L" . my/org-capture-gh-link)))
 
 (def-package my/org-slideshow
   :after (org)
@@ -2292,9 +2308,31 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
       :prefix-map my/org-roam-map
       ("f" . org-roam-node-find)
       ("i" . org-roam-node-insert)
-      ("d" . org-roam-dailies-map)
       ("b" . org-roam-buffer-toggle)
-      ("S" . org-roam-db-sync)))))
+      ("S" . org-roam-db-sync)
+      ("m" . my/roam/find-node-for-major)))
+    (:map
+     my/org-roam-map
+     (:prefix
+      "d"
+      :prefix-map my/org-roam-dailies-map
+      ("d" . org-roam-dailies-capture-today)
+      ("D" . org-roam-dailies-capture-date)))
+
+    :preface
+    (defun my/roam/find-node-for-major
+        (&optional other-window)
+      "Finds a node for the current major mode."
+      (interactive current-prefix-arg)
+      (org-roam-node-find
+       other-window
+       (symbol-name major-mode)
+       nil
+       :templates
+       '(("d" "default" plain "%?"
+          :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
+                             "#+title: ${title}\n#+filetags: :emacs:\n")
+          :unnarrowed t))))))
 
 ;;;; Outshine
 (use-package outshine
@@ -2355,32 +2393,30 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
     (code-pdfbackend "atril-page")
     (code-pdfbackendalias "pdf-page" "atril-page")))
 
+;;; Browsing of the Web
+(setup-package eww
+  :hook
+  (eww-mode . olivetti-mode)
+
+  :bind
+  (:map
+   eww-mode-map
+   (":" . my/eww-browse-url))
+
+  :preface
+  (defun my/eww-browse-url (&optional new-window)
+    "Ask for URL and browse it using the EWW.
+Open in the new window if called with the UNIVERSAL ARG."
+    (interactive current-prefix-arg)
+    (when-let ((url (read-string "(eew) Browse: ")))
+      (eww-browse-url url new-window))))
+
 ;;; Other
 ;;;; Nov
 (overlay nov
   (use-package nov
     :mode
     ("\\.epub\\'" . nov-mode)))
-
-;;;; Olivetti
-(use-package olivetti
-  :after (hydra)
-
-  :preface
-  (defhydra hydra-olivetti ()
-    "Olivetti"
-    ("o" olivetti-mode "Toggle" :exit t)
-    ("-" olivetti-shrink "Shrink")
-    ("=" olivetti-expand "Expand")
-    ("q" nil "Cancel"))
-
-  :bind
-  (:map
-   mode-specific-map
-   ("o" . 'hydra-olivetti/body))
-
-  :custom
-  (olivetti-body-width 64))
 
 ;;; Finalization
 ;; restore GC-limit after timeout
