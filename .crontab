@@ -1,1 +1,0 @@
-*/10 * * * * export DISPLAY=:0.0 && export XAUTHORITY=/home/astynax/.Xauthority && .local/bin/check-battery.sh cron 2>&1 | logger -t check-battery
