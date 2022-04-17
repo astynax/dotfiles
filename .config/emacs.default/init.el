@@ -7,7 +7,7 @@
 (defun my/configure ()
   "Opens user-init-file"
   (interactive)
-  (find-file "~/.config/emacs.default/init.el"))
+  (find-file (concat user-emacs-directory "init.el")))
 
 (global-set-key (kbd "M-<f12>") 'my/configure)
 
@@ -1685,6 +1685,24 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
 (overlay prolog
   (setup-package prolog))
 
+;;;; UXNtal
+;; TODO: Wait for a proper package
+(eval-and-compile
+  (defun tal-mode-load-path ()
+    (let ((p (concat user-emacs-directory "vendor/tal-mode")))
+      (when (file-directory-p p)
+        (list p)))))
+
+(use-package tal-mode
+  :load-path (lambda () (tal-mode-load-path))
+
+  :mode "\\.tal$"
+
+  :bind
+  (:map
+   tal-mode-map
+   ("<f9>" . compile)))
+
 ;;; IDE
 ;;;; Autocompletion and abbreviation
 (setup-package abbrev
@@ -1862,9 +1880,10 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
     (unbind-key "<tab>" yas-minor-mode-map)
     (unbind-key "TAB" yas-minor-mode-map)
 
-    (yas-reload-all)
-    (when (file-exists-p "~/.emacs.d/snippets")
-      (add-to-list 'yas/snippet-dirs "~/.emacs.d/snippets")))
+    (let ((my-snippets (concat user-emacs-directory "snippets")))
+      (when (file-exists-p my-snippets)
+        (add-to-list 'yas/snippet-dirs my-snippets)))
+    (yas-reload-all))
 
   (use-package yasnippet-snippets
     :after (yasnippet))
