@@ -19,7 +19,6 @@ test -d "$HOME/.cargo/bin" && export PATH="$HOME/.cargo/bin:$PATH"
 test -d "$HOME/.poetry/bin" && export PATH="$HOME/.poetry/bin:$PATH"
 test -d "$HOME/.pyenv/bin" && export PATH="$HOME/.pyenv/bin:$PATH"
 test -d "$HOME/.wasmer/bin" && export PATH="$HOME/.wasmer/bin:$PATH"
-test -d "$HOME/.asdf/shims" && export PATH="$HOME/.asdf/shims:$PATH"
 test -d "$HOME/.local/bin" && export PATH="$HOME/.local/bin:$PATH"
 
 # Nix

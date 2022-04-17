@@ -90,5 +90,4 @@ fi
 source "$HOME/.bash.d/utils.bash"
 source "$HOME/.bash.d/efs.bash"
 source "$HOME/.bash.d/ok.bash"
-source "$HOME/.bash.d/fzf.bash"
 source "$HOME/.bash.d/j.bash"
