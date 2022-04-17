@@ -86,25 +86,6 @@ if [[ -x /usr/bin/dircolors ]]; then
             || eval "$(dircolors -b)"
 fi
 
-# pyenv
-if [[ ! -v PYENV_ROOT ]]; then
-    export PYENV_ROOT="$HOME/.pyenv"
-    if command -v pyenv 1>/dev/null 2>&1; then
-        eval "$(pyenv init -)"
-    fi
-fi
-
-# Wasmer
-if [[ ! -v WASMER_DIR ]]; then
-    export WASMER_DIR="$HOME/.wasmer"
-    _try_to_source "$WASMER_DIR/wasmer.sh"
-fi
-
-# asdf
-if [[ ! -v ASDF_DIR ]]; then
-    _try_to_source "$HOME/.asdf/asdf.sh"
-fi
-
 # load modules (kinda)
 source "$HOME/.bash.d/utils.bash"
 source "$HOME/.bash.d/efs.bash"
