@@ -2,6 +2,7 @@
 #set -euo pipefail
 
 set +o histexpand
+set -o noclobber
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -34,59 +35,16 @@ case "$TERM" in
         ;;
 esac
 
-# completions
-if [[ -f /etc/bash_completion ]] && ! shopt -oq posix; then
-    source /etc/bash_completion
-fi
-_paths=(
-    # "/etc/bash_completion.d"  # buggy stuff!
-    "$HOME/.local/etc/.bash_completion.d"
-    "$HOME/.nix-profile/share/bash-completion/completions"
-    "$HOME/.bash_completion.d"
-)
-for p in "${_paths[@]}"; do
-    if [[ -d "$p" ]]; then
-        for a in $p/*; do
-            source "$a"
-        done
-        unset a
-    fi;
-done
-unset p
-unset _paths
-
-source "$HOME/.bash.d/prelude.bash"
-
-# aliases
-_try_to_source "$HOME/.bash_aliases"
-
 # make less more friendly for non-text input files, see lesspipe(1)
 if [[ -x /usr/bin/lesspipe ]]; then
     eval "$(SHELL=/bin/sh lesspipe)"
 fi
 
-# fancy prompt
-if $(which starship > /dev/null); then
-    function _set_win_title() {
-        local here here_dir parent dir
-        here=$(pwd)
-        here_dir=$(dirname "$here")
-        parent=$(basename "$here_dir")
-        dir=$(basename "$here")
-        echo -ne "\033]0;[$parent/$dir]\007"
-    }
-    export starship_precmd_user_func="_set_win_title"
-    eval "$(starship init bash)"
-fi
+[[ -s "$HOME/.bash_aliases" ]] && source "$HOME/.bash_aliases"
 
-# configure dir colors
-if [[ -x /usr/bin/dircolors ]]; then
-    test -r ~/.dircolors \
-        && eval "$(dircolors -b ~/.dircolors)" \
-            || eval "$(dircolors -b)"
-fi
-
-# load modules (kinda)
+source "$HOME/.bash.d/completion.bash"
+source "$HOME/.bash.d/prompt.bash"
+source "$HOME/.bash.d/dircolors.bash"
 source "$HOME/.bash.d/utils.bash"
 source "$HOME/.bash.d/efs.bash"
 source "$HOME/.bash.d/ok.bash"
