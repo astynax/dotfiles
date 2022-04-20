@@ -38,9 +38,12 @@
       </property>
       <property name="&lt;Super&gt;m" type="string" value="_mpd_menu.sh"/>
       <property name="&lt;Shift&gt;&lt;Super&gt;m" type="string" value="_screen_layout_menu.sh"/>
-      <property name="&lt;Shift&gt;&lt;Super&gt;i" type="string" value="/home/astynax/.screenlayout/internal.sh"/>
       <property name="&lt;Super&gt;v" type="string" value="vortaro.py"/>
       <property name="&lt;Super&gt;e" type="string" value="/home/astynax/.local/bin/_new-emacs-frame.sh"/>
+      <property name="&lt;Super&gt;o" type="string" value="xdotool getactivewindow windowsize 75% 75% windowmove 12% 12%"/>
+      <property name="&lt;Super&gt;i" type="string" value="xdotool getactivewindow windowsize 40% 85% windowmove 5% 5%"/>
+      <property name="&lt;Super&gt;p" type="string" value="xdotool getactivewindow windowsize 40% 85% windowmove 55% 5%"/>
+      <property name="&lt;Primary&gt;&lt;Shift&gt;&lt;Super&gt;i" type="string" value="/home/astynax/.screenlayout/internal.sh"/>
     </property>
   </property>
   <property name="xfwm4" type="empty">
@@ -132,6 +135,8 @@
       <property name="&lt;Super&gt;l" type="string" value="cycle_windows_key"/>
       <property name="&lt;Super&gt;j" type="string" value="cycle_reverse_windows_key"/>
       <property name="&lt;Shift&gt;&lt;Super&gt;c" type="string" value="close_window_key"/>
+      <property name="&lt;Shift&gt;&lt;Super&gt;i" type="string" value="tile_left_key"/>
+      <property name="&lt;Shift&gt;&lt;Super&gt;p" type="string" value="tile_right_key"/>
     </property>
   </property>
   <property name="providers" type="array">
