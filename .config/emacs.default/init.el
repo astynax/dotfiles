@@ -84,6 +84,10 @@ Each overlay is just a :if-condition for the use-package."
   '())
 
 (defun my/overlays-configure ()
+  "Reloads the overlay list.
+
+Note: It won't trigger any use-packag'ing!"
+  (interactive)
   (when (file-exists-p my/overlays-file)
     (with-temp-buffer
       (insert-file-contents my/overlays-file)
@@ -212,6 +216,13 @@ Each overlay is just a :if-condition for the use-package."
     ;; back up unconditionaly
     (let ((buffer-backed-up nil))
       (backup-buffer)))
+
+  (defun my/kill-buffer-file-name ()
+    "Kills a file name of the current buffer if any."
+    (interactive)
+    (if-let ((name (buffer-file-name (current-buffer))))
+        (kill-new name)
+      (message "This bufer does'n have a file name")))
 
   :hook
   (before-save . my/backup-buffer)
@@ -2436,6 +2447,26 @@ Open in the new window if called with the UNIVERSAL ARG."
   (use-package nov
     :mode
     ("\\.epub\\'" . nov-mode)))
+
+;;; Hackernews
+(overlay hackernews
+  (use-package hackernews
+    :preface
+    (defun my/hackernews-browse (&optional external)
+      "Opens the BUTTON under cursor in eww
+ or call ~browse-url~ with universal arg."
+      (interactive current-prefix-arg)
+      (hackernews--visit
+       (point)
+       (if external #'browse-url
+         #'eww-browse-url)))
+
+    :bind
+    (:map
+     hackernews-button-map
+     ([remap push-button] . my/hackernews-browse)
+     ;; To be consistent with eww:
+     ("M-RET" . hackernews-button-browse-internal))))
 
 ;;; Finalization
 ;; restore GC-limit after timeout
