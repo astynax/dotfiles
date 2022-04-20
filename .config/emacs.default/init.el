@@ -477,6 +477,8 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; Popup windows manupulation
 (use-package popwin
+  :disabled ;; need to try popper
+
   :bind
   (:map
    help-mode-map
@@ -487,6 +489,25 @@ _j_ ^ ^ _l_ _=_:equalize
 
   :config
   (popwin-mode 1))
+
+(use-package popper
+  :demand
+
+  :bind
+  (("C-`" . popper-toggle-latest)
+   ("M-`" . popper-cycle)
+   ("C-M-`" . popper-toggle-type))
+
+  :init
+  (setq popper-reference-buffers
+        '("\\*Messages\\*"
+          "Output\\*$"
+          "\\*Async Shell Command\\*"
+          "\\*helpful .*\\*"
+          help-mode
+          compilation-mode))
+  (popper-mode +1)
+  (popper-echo-mode +1))
 
 ;;;; Pulsar
 (use-package pulsar
@@ -561,7 +582,10 @@ _j_ ^ ^ _l_ _=_:equalize
 
 (use-package swiper
   :bind
-  ("M-s s" . swiper)
+  (:map
+   search-map
+   ("." . swiper-thing-at-point)
+   ("s" . swiper))
 
   (:map
    isearch-mode-map
