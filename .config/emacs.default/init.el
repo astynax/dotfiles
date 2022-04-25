@@ -162,6 +162,10 @@ Note: It won't trigger any use-packag'ing!"
   :bind
   ("C-z" . nil))
 
+(setup-package simple
+  :bind
+  ([remap capitalize-word] . capitalize-dwim))
+
 ;;; Faces
 (setup-package faces
   :diminish (buffer-face-mode "")
@@ -1794,7 +1798,9 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
   (company-show-numbers t)
   (company-tooltip-align-annotations t)
   (company-require-match nil)
-  (company-transformers '(company-sort-by-occurrence))
+  (company-transformers '(company-sort-by-backend-importance
+                          company-sort-prefer-same-case-prefix
+                          company-sort-by-occurrence))
 
   :bind
   (:map
@@ -1802,25 +1808,12 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
    ("/" . company-files))
   (:map
    company-mode-map
-   ("M-<tab>" . company-complete))
+   ("M-<tab>" . company-manual-begin))
   (:map
    company-active-map
+   ("<tab>" . company-complete-selection)
    ("C-n" . company-select-next)
    ("C-p" . company-select-previous)))
-
-(put 'company-backends 'safe-local-variable #'listp)
-
-(use-package company-posframe
-  :disabled ;; TODO: buggy :/
-
-  :if (not (string-equal system-type "darwin"))
-
-  :after (company)
-
-  :diminish
-
-  :hook
-  (company-mode . company-posframe-mode))
 
 (use-package company-try-hard
   :after (company)
@@ -1844,7 +1837,7 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
   :bind
   (:map
    company-active-map
-   ("C-h" . company-quickhelp-manual-begin)))
+   ("C-d" . company-quickhelp-manual-begin)))
 
 ;;;; Flycheck
 (use-package flycheck
