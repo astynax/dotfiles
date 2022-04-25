@@ -2450,7 +2450,18 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
    eww-mode-map
    (":" . my/eww-browse-url))
 
+  :custom
+  (browse-url-browser-function my/browse-url-function)
+
   :preface
+  (defun my/browse-url-function (url &optional use-external-browser)
+    (interactive current-prefix-arg)
+    "Open URL in eww by default or use an external browser with universal arg."
+    (message "URL: %s" url)
+    (if use-external-browser
+        (browse-url-firefox url)
+      (eww-browse-url url t)))
+
   (defun my/eww-browse-url (&optional new-window)
     "Ask for URL and browse it using the EWW.
 Open in the new window if called with the UNIVERSAL ARG."
@@ -2475,8 +2486,8 @@ Open in the new window if called with the UNIVERSAL ARG."
       (interactive current-prefix-arg)
       (hackernews--visit
        (point)
-       (if external #'browse-url
-         #'eww-browse-url)))
+       (lambda (url)
+         (my/browse-url-function url external))))
 
     :bind
     (:map
