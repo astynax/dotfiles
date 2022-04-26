@@ -50,6 +50,11 @@
   :config
   (put 'use-package 'lisp-indent-function 1))
 
+(use-package quelpa)
+(use-package quelpa-use-package
+  :config
+  (quelpa-use-package-activate-advice))
+
 (use-package diminish)
 (use-package bind-key)
 
@@ -1725,22 +1730,16 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
   (setup-package prolog))
 
 ;;;; UXNtal
-;; TODO: Wait for a proper package
-(eval-and-compile
-  (defun tal-mode-load-path ()
-    (let ((p (concat user-emacs-directory "vendor/tal-mode")))
-      (when (file-directory-p p)
-        (list p)))))
+(overlay uxntal
+  (use-package tal-mode
+    :quelpa (tal-mode :repo "non/tal-mode" :fetcher github)
 
-(use-package tal-mode
-  :load-path (lambda () (tal-mode-load-path))
+    :mode "\\.tal$"
 
-  :mode "\\.tal$"
-
-  :bind
-  (:map
-   tal-mode-map
-   ("<f9>" . compile)))
+    :bind
+    (:map
+     tal-mode-map
+     ("<f9>" . compile))))
 
 ;;; IDE
 ;;;; Autocompletion and abbreviation
@@ -2232,6 +2231,16 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
 
   :custom
   (org-bullets-bullet-list '("●" "○" "⦿" "⦾")))
+
+(use-package org-menu
+  :after (org)
+
+  :quelpa (org-menu :repo "sheijk/org-menu" :fetcher github)
+
+  :bind
+  (:map
+   org-mode-map
+   ("C-c SPC" . org-menu)))
 
 (use-package htmlize
   :after (org))
