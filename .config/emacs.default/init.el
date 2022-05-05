@@ -1731,9 +1731,7 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
 
 ;;;; UXNtal
 (overlay uxntal
-  (use-package tal-mode
-    :quelpa (tal-mode :repo "non/tal-mode" :fetcher github)
-
+  (use-package uxntal-mode
     :mode "\\.tal$"
 
     :bind
