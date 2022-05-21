@@ -1109,32 +1109,8 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
 ;;; Languages
 ;;;; LSP
 (overlay lsp
-  (use-package lsp-mode
-    :commands (lsp)
-
-    :hook
-    (lsp-mode . lsp-enable-which-key-integration)
-
-    :custom
-    (lsp-enable-snippet nil)
-    (lsp-auto-guess-root t)
-    (lsp-keymap-prefix "C-c C-l"))
-
-  (use-package lsp-ui
-    :after (lsp)
-
-    :hook
-    (lsp-mode . lsp-ui-mode)
-
-    :bind
-    (:map
-     lsp-ui-mode-map
-     ("M-g i" . lsp-ui-imenu))
-
-    :custom
-    (lsp-ui-sideline-show-code-actions nil)
-    (lsp-ui-sideline-show-diagnostics nil)
-    (lsp-ui-doc-enable nil)))
+  (use-package eglot
+    :commands (eglot)))
 
 ;;;; ELisp
 (setup-package elisp-mode
@@ -1371,18 +1347,7 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
     :after (haskell-mode))
 
   (use-package inf-haskell
-    :ensure nil)
-
-  (use-package lsp-haskell
-    :disabled
-
-    :after (haskell-mode)
-
-    :hook
-    (haskell-mode . lsp)
-
-    :custom
-    (lsp-haskell-process-path-hie "haskell-language-server-wrapper")))
+    :ensure nil))
 
 ;;;; Python
 (overlay python
