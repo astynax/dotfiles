@@ -1977,6 +1977,21 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
 (put 'projectile-globally-ignored-files 'safe-local-variable #'listp)
 (put 'projectile-globally-ignored-directories 'safe-local-variable #'listp)
 
+;;;; project.el
+(setup-package project
+  :preface
+  (defun project-try-projectile (dir)
+    "Find a super-directory of DIR containing a .projectile file."
+    (let ((dir (locate-dominating-file dir ".projectile")))
+      (and dir (cons 'projectile dir))))
+
+  (defmethod project-root ((project (head projectile)))
+    (cdr project))
+
+  :config
+  (add-hook 'project-find-functions
+            #'project-try-projectile))
+
 ;;;; Terminal here
 (use-package terminal-here
   :after (projectile)
