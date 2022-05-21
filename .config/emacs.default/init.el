@@ -2452,13 +2452,12 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
    (":" . my/eww-browse-url))
 
   :custom
-  (browse-url-browser-function my/browse-url-function)
+  (browse-url-browser-function #'my/browse-url-function)
 
   :preface
   (defun my/browse-url-function (url &optional use-external-browser)
     (interactive current-prefix-arg)
     "Open URL in eww by default or use an external browser with universal arg."
-    (message "URL: %s" url)
     (if use-external-browser
         (browse-url-firefox url)
       (eww-browse-url url t)))
@@ -2467,8 +2466,15 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
     "Ask for URL and browse it using the EWW.
 Open in the new window if called with the UNIVERSAL ARG."
     (interactive current-prefix-arg)
-    (when-let ((url (read-string "(eew) Browse: ")))
-      (eww-browse-url url new-window))))
+    (let ((region (when (region-active-p)
+                    (buffer-substring-no-properties
+                     (region-beginning)
+                     (region-end)))))
+      (when-let ((url (read-string
+                       (format "(eew) Browse%s: "
+                               (if new-window " (new buffer)" ""))
+                       region)))
+        (eww-browse-url url new-window)))))
 
 ;;; Other
 ;;;; Nov
