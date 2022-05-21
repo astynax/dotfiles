@@ -62,7 +62,10 @@
   :config
   (put 'use-package 'lisp-indent-function 1))
 
-(use-package quelpa)
+(use-package quelpa
+  :custom
+  (quelpa-upgrade-interval 14))
+
 (use-package quelpa-use-package
   :config
   (quelpa-use-package-activate-advice))
@@ -151,6 +154,7 @@ Note: It won't trigger any use-packag'ing!"
   (mouse-yank-at-point t "Yank at point using mouse")
   (resize-mini-windows t)
   (x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
+  (ring-bell-function #'(lambda ()) "No bells, please!")
   ;; Window
   (tool-bar-mode nil)
   (scroll-bar-mode nil)
@@ -536,14 +540,12 @@ _j_ ^ ^ _l_ _=_:equalize
 
   :config
   (add-to-list 'pulsar-pulse-functions 'ace-window)
-  (pulsar-setup))
+  (pulsar-global-mode +1))
 
 ;;;; iBuffer
 (setup-package ibuffer
   :bind
-  (:map
-   mode-specific-map
-   ("b" . ibuffer)))
+  ([remap list-buffers] . ibuffer))
 
 ;;;; Ivy
 (use-package ivy
