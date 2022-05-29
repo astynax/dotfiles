@@ -271,6 +271,22 @@ Note: It won't trigger any use-packag'ing!"
   :config
   (global-auto-revert-mode t))
 
+(use-package f)
+
+(setup-package recentf
+  :after (f)
+
+  :preface
+  (defconst my/emacs-packages-directory (format "%selpa" user-emacs-directory)
+    "A directory where Emacs keeps packages.")
+
+  (defun my/in-packages-directory-p (path)
+    "Non-nil if path is inside of the directory where Emacs keeps packages."
+    (f-ancestor-of? my/emacs-packages-directory path))
+
+  :custom
+  (recentf-exclude (list #'my/in-packages-directory-p)))
+
 (use-package backup-walker
   :commands (backup-walker-start))
 
