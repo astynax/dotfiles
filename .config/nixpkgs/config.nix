@@ -15,12 +15,14 @@
         rq
         starship
         du-dust
+        fzf
         # dev tools
         github-cli
         shellcheck
         upx
         nix-tree
         difftastic
+        roswell
         # podman and stuff
         podman  # needs 'uidmap' in system
         buildah
