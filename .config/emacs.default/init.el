@@ -455,8 +455,15 @@ Note: It won't trigger any use-packag'ing!"
 ;;;; Theme
 (use-package modus-themes
   :custom
-  (modus-themes-syntax '(faint yellow-comments))
   (modus-themes-bold-constructs t)
+  (modus-themes-italic-constructs t)
+  (modus-themes-region '(bg-only accented))
+  (modus-themes-syntax '(faint yellow-comments))
+  (modus-themes-mixed-fonts t)
+  (modus-themes-box-buttons '(faint accented all-buttons))
+  (modus-themes-mode-line '(accented))
+  (modus-themes-paren-match '(intense))
+  (modus-themes-org-blocks '(gray-background))
 
   :config
   (modus-themes-load-themes)
