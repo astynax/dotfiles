@@ -81,6 +81,7 @@
       <property name="digital-format" type="string" value="%R | %d.%m %a"/>
       <property name="mode" type="uint" value="2"/>
       <property name="show-seconds" type="bool" value="false"/>
+      <property name="timezone" type="string" value="GMT-4"/>
     </property>
     <property name="plugin-6" type="string" value="systray">
       <property name="names-visible" type="array">
