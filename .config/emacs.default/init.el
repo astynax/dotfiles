@@ -2161,6 +2161,7 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
   (org-use-sub-superscripts nil)
   (org-adapt-indentation nil)
   (org-return-follows-link t)
+  (org-catch-invisible-edits 'smart)
 
   :config
   (require 'ob-shell)
@@ -2237,6 +2238,12 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
 
 (put 'org-default-notes-file 'safe-local-variable #'stringp)
 (put 'org-export-use-babel 'safe-local-variable #'null)
+
+(use-package org-appear
+  :after (org)
+
+  :custom
+  (org-appear-autolinks t))
 
 (use-package org-bullets
   :after (org)
@@ -2398,6 +2405,7 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
       (org-roam-node-find
        other-window
        (symbol-name major-mode)
+       nil
        nil
        :templates
        '(("d" "default" plain "%?"
