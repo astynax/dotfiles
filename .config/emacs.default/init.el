@@ -2527,12 +2527,25 @@ Open in the new window if called with the UNIVERSAL ARG."
        (lambda (url)
          (my/browse-url-function url external))))
 
+    (defun my/hackernews-yank-url ()
+      (interactive)
+      (when-let (btn (point))
+        (when (button-has-type-p btn 'hackernews-link)
+          (let ((url (button-get btn 'shr-url)))
+            (message "URL killed: %s" url)
+            (kill-new url)))))
+
     :bind
     (:map
      hackernews-button-map
      ([remap push-button] . my/hackernews-browse)
+     ("w" . my/hackernews-yank-url)
      ;; To be consistent with eww:
-     ("M-RET" . hackernews-button-browse-internal))))
+     ("M-RET" . hackernews-button-browse-internal))
+
+    :config
+    (push '("\\`\\*hackernews .*\\*\\'" (display-buffer-same-window))
+          display-buffer-alist)))
 
 ;;; Finalization
 ;; restore GC-limit after timeout
