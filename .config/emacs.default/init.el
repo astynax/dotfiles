@@ -2423,8 +2423,7 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
       ("D" . org-roam-dailies-capture-date)))
 
     :preface
-    (defun my/roam/find-node-for-major
-        (&optional other-window)
+    (defun my/roam/find-node-for-major (&optional other-window)
       "Finds a node for the current major mode."
       (interactive current-prefix-arg)
       (org-roam-node-find
@@ -2435,7 +2434,13 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
        :templates
        '(("d" "default" plain "%?"
           :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
-                             "#+title: ${title}\n#+filetags: :emacs:\n")
+                             "#+title: ${title}
+
+${title} is a major mode for [[id:%(org-roam-node-id (org-roam-node-from-title-or-alias \"Emacs\"))][Emacs]].
+
+#+BEGIN_SRC emacs-lisp
+(describe-function '${title})
+#+END_SRC")
           :unnarrowed t))))))
 
 ;;;; Outshine
