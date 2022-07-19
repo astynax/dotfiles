@@ -2413,6 +2413,7 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
       ("i" . org-roam-node-insert)
       ("b" . org-roam-buffer-toggle)
       ("S" . org-roam-db-sync)
+      ("w" . my/roam/kill-link)
       ("m" . my/roam/find-node-for-major)))
     (:map
      my/org-roam-map
@@ -2422,7 +2423,23 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
       ("d" . org-roam-dailies-capture-today)
       ("D" . org-roam-dailies-capture-date)))
 
-    :preface
+    :config
+    (defun my/roam/kill-link ()
+      "Returns an org-link to the current org-roam node or file+line."
+      (interactive)
+      (when-let ((link (if-let* ((id (org-roam-id-at-point))
+                                 (node (org-roam-node-from-id id)))
+                           (org-make-link-string
+                            (format "id:%s" id)
+                            (org-roam-node-title node))
+                         (when-let ((fname (buffer-file-name (current-buffer))))
+                           (org-make-link-string
+                            (format "file:%s::%s" fname
+                                    (line-number-at-pos (point)))
+                            fname)))))
+        (kill-new link)
+        (message "Link was killed...")))
+
     (defun my/roam/find-node-for-major (&optional other-window)
       "Finds a node for the current major mode."
       (interactive current-prefix-arg)
