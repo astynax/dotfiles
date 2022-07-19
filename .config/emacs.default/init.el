@@ -268,27 +268,34 @@ Note: It won't trigger any use-packag'ing!"
 (setup-package autorevert
   :diminish auto-revert-mode
 
-  :config
-  (global-auto-revert-mode t))
+  :hook
+  (after-init . global-auto-revert-mode)
 
-(use-package f)
+  :custom
+  (global-auto-revert-non-file-buffers t))
 
 (setup-package recentf
-  :after (f)
-
   :preface
   (defconst my/emacs-packages-directory (format "%selpa" user-emacs-directory)
     "A directory where Emacs keeps packages.")
 
   (defun my/in-packages-directory-p (path)
     "Non-nil if path is inside of the directory where Emacs keeps packages."
-    (f-ancestor-of? my/emacs-packages-directory path))
+    (string-prefix-p my/emacs-packages-directory path))
 
   :custom
   (recentf-exclude (list #'my/in-packages-directory-p)))
 
 (use-package backup-walker
   :commands (backup-walker-start))
+
+(setup-package so-long
+  :hook
+  (after-init . global-so-long-mode)
+
+  :config
+  (setq-default bidi-paragraph-direction 'left-to-right)
+  (setq-default bidi-inhibit-bpa t))
 
 ;;; Dired
 (setup-package dired
@@ -557,13 +564,21 @@ _j_ ^ ^ _l_ _=_:equalize
   (popper-mode +1)
   (popper-echo-mode +1))
 
-;;;; Pulsar
-(use-package pulsar
-  :demand
+;;;; Pulse on move
+;; https://karthinks.com/software/batteries-included-with-emacs/#pulse--pulse-dot-el
+(setup-package pulse
+  :preface
+  (defun pulse-line (&rest _)
+    "Pulse the current line."
+    (pulse-momentary-highlight-one-line (point)))
 
   :config
-  (add-to-list 'pulsar-pulse-functions 'ace-window)
-  (pulsar-global-mode +1))
+  (dolist (command '(scroll-up-command
+                     scroll-down-command
+                     recenter-top-bottom
+                     other-window
+                     ace-window))
+    (advice-add command :after #'pulse-line)))
 
 ;;;; iBuffer
 (setup-package ibuffer
@@ -799,6 +814,11 @@ _j_ ^ ^ _l_ _=_:equalize
   :hook
   (after-init . whole-line-or-region-global-mode))
 
+;;;; Deleting selection on input
+(setup-package delsel
+  :hook
+  (after-init . delete-selection-mode))
+
 ;;;; Indirect region editing
 (use-package edit-indirect
   :bind
@@ -1001,6 +1021,11 @@ _j_ ^ ^ _l_ _=_:equalize
    :prefix-map my/typographics-map
    ("-" . "—")
    ("." . "…")))
+
+;;;; Fill/unfill
+(use-package unfill
+  :bind
+  ([remap fill-paragraph] . unfill-toggle))
 
 ;;; Navigation
 ;;;; imenu
@@ -2513,6 +2538,15 @@ Open in the new window if called with the UNIVERSAL ARG."
   (use-package nov
     :mode
     ("\\.epub\\'" . nov-mode)))
+
+;;;; MPD
+(defun mpd-play (dir &rest dirs)
+  (let ((items (string-join (mapcar #'shell-quote-argument
+                                    (cons dir dirs)) " ")))
+    (with-temp-buffer
+      (shell-command
+       (format "mpc clear && mpc add %s && mpc play --quiet" items)
+       t))))
 
 ;;; Hackernews
 (overlay hackernews
