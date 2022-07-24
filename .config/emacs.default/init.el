@@ -2526,6 +2526,26 @@ Open in the new window if called with the UNIVERSAL ARG."
        (format "mpc clear && mpc add %s && mpc play --quiet" items)
        t))))
 
+(defun mpd-current-file ()
+  "Returns a file name that MPD is playing now."
+  (with-temp-buffer
+    (shell-command "mpc current -f \"%file%\"" t)
+    (let ((name (string-trim (buffer-string))))
+      (if (string-empty-p name) nil name))))
+
+(defun mpd-link-album ()
+  "Insert an mpd-play link to album/artist (directory)
+of the file that MPD is playing now."
+  (interactive)
+  (if-let* ((file (mpd-current-file))
+            (dir (string-trim-right (file-name-directory file) "/")))
+      (let ((dir (read-string "Make an MPD link to: " dir)))
+        (insert
+         (org-make-link-string
+          (format "elisp:(mpd-play \"%s\")" dir)
+          (format "play \"%s\"" dir))))
+    (message "Nothing is playing now")))
+
 ;;; Hackernews
 (overlay hackernews
   (use-package hackernews
