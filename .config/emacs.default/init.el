@@ -531,20 +531,6 @@ _j_ ^ ^ _l_ _=_:equalize
   (fullframe magit-log-current quit-window))
 
 ;;;; Popup windows manupulation
-(use-package popwin
-  :disabled ;; need to try popper
-
-  :bind
-  (:map
-   help-mode-map
-   ("s" . popwin:stick-popup-window))
-
-  :bind-keymap
-  ("C-c P" . popwin:keymap)
-
-  :config
-  (popwin-mode 1))
-
 (use-package popper
   :demand
 
@@ -724,6 +710,11 @@ _j_ ^ ^ _l_ _=_:equalize
 
   :custom
   (olivetti-body-width 64))
+
+;;;; Embark
+(use-package embark
+  :bind
+  ("C-." . embark-act))
 
 ;;; Behaviour
 ;;;; reverse-im
@@ -950,26 +941,11 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; Multiple Cursors
 (use-package multiple-cursors
-  :preface
-  (setq-default my/mc-map (make-sparse-keymap "Multiple cursors"))
-
   :bind
   ("C->" . mc/mark-next-like-this)
   ("C-<" . mc/mark-previous-like-this)
   ("C-M->" . mc/mark-next-word-like-this)
-  ("C-M-<" . mc/mark-previous-word-like-this)
-
-  (:map
-   mode-specific-map
-   :prefix
-   "m"
-   :prefix-map
-   my/mc-map
-   ("+" . mc/mark-all-like-this)
-   ("r" . set-rectangular-region-anchor)
-   ("c" . mc/edit-lines)
-   ("e" . mc/edit-ends-of-lines)
-   ("a" . mc/edit-beginnings-of-lines)))
+  ("C-M-<" . mc/mark-previous-word-like-this))
 
 ;;;; Smart BOL
 (def-package my/smart-bol
@@ -994,11 +970,7 @@ _j_ ^ ^ _l_ _=_:equalize
   :bind
   (:map
    global-map
-   ([remap query-replace] . vr/query-replace))
-
-  (:map
-   my/mc-map
-   ("m" . vr/mc-mark)))
+   ([remap query-replace] . vr/query-replace)))
 
 ;;;; Typographics
 (def-package my/typographics
@@ -1311,7 +1283,7 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
     (:map
      haskell-mode-map
      :prefix
-     "C-c SPC"
+     "C-c m"
      :prefix-map
      my/haskell-map
      ("v" . haskell-cabal-visit-file)
@@ -1731,22 +1703,6 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
     (processing-location "~/.software/processing/processing-java")
     (processing-application-dir "~/.software/processing/")
     (processing-sketchbook-dir "~/Projects/processing")))
-
-;;;; Gemini
-(overlay gemini
-  (use-package gemini-mode
-    :preface
-    (defun my/gemini/insert-gemlog-link ()
-      (interactive)
-      (let* ((title (read-string "title: "))
-             (slug (replace-regexp-in-string (rx (not alphanumeric)) "-" title))
-             (today (format-time-string "%Y-%m-%d" (current-time))))
-        (insert
-         (format "=> ./%s-%s.gmi %s - %s" today slug today title))))
-
-    :after (visual-fill-column)
-
-    :mode ("\\.gmi$" . gemini-mode)))
 
 ;;;; Dockerfile
 (overlay docker
@@ -2287,7 +2243,7 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
   :bind
   (:map
    org-mode-map
-   ("C-c SPC" . org-menu)))
+   ("C-c m" . org-menu)))
 
 (use-package htmlize
   :after (org))
