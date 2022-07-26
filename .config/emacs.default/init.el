@@ -1741,7 +1741,7 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
   (dabbrev-eliminate-newlines nil)
   (dabbrev-upcase-means-case-search t))
 
-(setup-package hippie
+(setup-package hippie-exp
   :after (dabbrev)
 
   :custom
@@ -1749,9 +1749,6 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
    '(try-expand-dabbrev-visible
      try-expand-dabbrev
      try-expand-dabbrev-all-buffers
-     try-expand-dabbrev-from-kill
-     try-expand-list-all-buffers
-     try-expand-list
      try-expand-line-all-buffers
      try-expand-line
      try-complete-file-name-partially
@@ -1760,6 +1757,37 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
 
   :bind
   ([remap dabbrev-expand] . hippie-expand))
+
+(use-package hippie-completing-read
+  :after (hippie-exp)
+
+  :quelpa
+  (hippie-completing-read
+   :repo "duckwork/hippie-completing-read"
+   :fetcher github)
+
+  :preface
+  (fset 'hippie-expand-less
+        (make-hippie-expand-function
+         '(try-expand-dabbrev-visible
+           try-expand-dabbrev
+           try-expand-dabbrev-all-buffers
+           try-expand-line-all-buffers
+           try-expand-line)))
+
+  :bind
+  (:map
+   mode-specific-map
+   ("M-/" . hippie-completing-less-read))
+
+  :config
+  ;; TODO: issue: https://github.com/duckwork/hippie-completing-read/issues/2
+  (setq hippie-completing-read-cycle-threshold 0)
+
+  (defun hippie-completing-less-read ()
+    "Offer `completing-read' based completion for word at point."
+    (interactive)
+    (hippie-completing-read-expand-with 'hippie-expand-less)))
 
 (use-package company
   :demand
@@ -2518,33 +2546,37 @@ Open in the new window if called with the UNIVERSAL ARG."
     ("\\.epub\\'" . nov-mode)))
 
 ;;;; MPD
-(defun mpd-play (dir &rest dirs)
-  (let ((items (string-join (mapcar #'shell-quote-argument
-                                    (cons dir dirs)) " ")))
+(def-package mpd
+  :after (org)
+
+  :preface
+  (defun mpd-play (dir &rest dirs)
+    (let ((items (string-join (mapcar #'shell-quote-argument
+                                      (cons dir dirs)) " ")))
+      (with-temp-buffer
+        (shell-command
+         (format "mpc clear && mpc add %s && mpc play --quiet" items)
+         t))))
+
+  (defun mpd-current-file ()
+    "Returns a file name that MPD is playing now."
     (with-temp-buffer
-      (shell-command
-       (format "mpc clear && mpc add %s && mpc play --quiet" items)
-       t))))
+      (shell-command "mpc current -f \"%file%\"" t)
+      (let ((name (string-trim (buffer-string))))
+        (if (string-empty-p name) nil name))))
 
-(defun mpd-current-file ()
-  "Returns a file name that MPD is playing now."
-  (with-temp-buffer
-    (shell-command "mpc current -f \"%file%\"" t)
-    (let ((name (string-trim (buffer-string))))
-      (if (string-empty-p name) nil name))))
-
-(defun mpd-link-album ()
-  "Insert an mpd-play link to album/artist (directory)
+  (defun mpd-link-album ()
+    "Insert an mpd-play link to album/artist (directory)
 of the file that MPD is playing now."
-  (interactive)
-  (if-let* ((file (mpd-current-file))
-            (dir (string-trim-right (file-name-directory file) "/")))
-      (let ((dir (read-string "Make an MPD link to: " dir)))
-        (insert
-         (org-make-link-string
-          (format "elisp:(mpd-play \"%s\")" dir)
-          (format "play \"%s\"" dir))))
-    (message "Nothing is playing now")))
+    (interactive)
+    (if-let* ((file (mpd-current-file))
+              (dir (string-trim-right (file-name-directory file) "/")))
+        (let ((dir (read-string "Make an MPD link to: " dir)))
+          (insert
+           (org-make-link-string
+            (format "elisp:(mpd-play \"%s\")" dir)
+            (format "play \"%s\"" dir))))
+      (message "Nothing is playing now"))))
 
 ;;; Hackernews
 (overlay hackernews
