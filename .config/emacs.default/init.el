@@ -1763,8 +1763,8 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
 
   :quelpa
   (hippie-completing-read
-   :repo "duckwork/hippie-completing-read"
-   :fetcher github)
+   :fetcher git
+   :url "https://codeberg.org/acdw/hippie-completing-read.el")
 
   :preface
   (fset 'hippie-expand-less
@@ -1780,14 +1780,13 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
    mode-specific-map
    ("M-/" . hippie-completing-less-read))
 
-  :config
-  ;; TODO: issue: https://github.com/duckwork/hippie-completing-read/issues/2
-  (setq hippie-completing-read-cycle-threshold 0)
+  :custom
+  (hippie-completing-read-threshold 0)
 
   (defun hippie-completing-less-read ()
     "Offer `completing-read' based completion for word at point."
     (interactive)
-    (hippie-completing-read-expand-with 'hippie-expand-less)))
+    (hippie-completing-read-expand-with #'hippie-expand-less)))
 
 (use-package company
   :demand
