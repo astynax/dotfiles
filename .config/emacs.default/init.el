@@ -96,12 +96,11 @@
 
 (defvar my/overlays-file "~/.config/emacs.default/overlays")
 
-(defvar my/overlays
+(defvar my/overlays '()
   "A list of enabled package sets (list of strings).
 
 If some name is listed here then corresponding package set will be loaded.
-Each overlay is just a :if-condition for the use-package."
-  '())
+Each overlay is just a :if-condition for the use-package.")
 
 (defun my/overlays-configure ()
   "Reloads the overlay list.
