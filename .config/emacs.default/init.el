@@ -2382,8 +2382,9 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
 ;;;; Roam
 (overlay org-roam
   (use-package org-roam
-    :custom
-    (org-roam-directory (file-truename "~/org/roam"))
+    :preface
+    (setq-default org-roam-directory (file-truename "~/org/roam"))
+    (setq-default my/org-roam-map (make-sparse-keymap "My Org Roam map"))
 
     :bind
     (:map
@@ -2440,7 +2441,31 @@ ${title} is a major mode for [[id:%(org-roam-node-id (org-roam-node-from-title-o
 #+BEGIN_SRC emacs-lisp
 (describe-function '${title})
 #+END_SRC")
-          :unnarrowed t))))))
+          :unnarrowed t)))))
+
+  (def-package my/org-roam-searching
+    :bind
+    (:map
+     my/org-roam-map
+     ("g" . my/roam/rg)
+     ("." . my/roam/rg-thing-at-point))
+
+    :preface
+    (rg-define-search my/roam/rg
+      "Simple search over the Org Roam dir."
+      :query ask
+      :format literal
+      :files "*.org"
+      :dir org-roam-directory
+      :confirm prefix)
+
+    (rg-define-search my/roam/rg-thing-at-point
+      "Search for the thing at point over the Org Roam directory."
+      :query point
+      :format literal
+      :files "*.org"
+      :dir org-roam-directory
+      :confirm prefix)))
 
 ;;;; Outshine
 (use-package outshine
