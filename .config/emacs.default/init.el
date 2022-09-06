@@ -151,14 +151,11 @@ Note: It won't trigger any use-packag'ing!"
   (enable-recursive-minibuffers t "Allow minibuffer commands in the minibuffer")
   (save-interprogram-paste-before-kill t)
   (mouse-yank-at-point t "Yank at point using mouse")
-  (resize-mini-windows t)
   (x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
   (ring-bell-function #'(lambda ()) "No bells, please!")
-  ;; Window
-  (tool-bar-mode nil)
-  (scroll-bar-mode nil)
-  (menu-bar-mode nil)
-  (frame-title-format "Emacs: %b")
+  ;; Windowing
+  (resize-mini-windows t)
+  (split-width-threshold 120) ; depends on font width!
   ;; Cursor
   (line-number-mode t)
   (column-number-mode t)
@@ -179,6 +176,12 @@ Note: It won't trigger any use-packag'ing!"
   (put 'overwrite-mode 'disabled t))
 
 (setup-package frame
+  :custom
+  (tool-bar-mode nil)
+  (scroll-bar-mode nil)
+  (menu-bar-mode nil)
+  (frame-title-format "Emacs: %b")
+
   :bind
   ("C-z" . nil))
 
