@@ -64,7 +64,7 @@
 
 (use-package quelpa
   :custom
-  (quelpa-upgrade-interval 14))
+  (quelpa-upgrade-interval 60))
 
 (use-package quelpa-use-package
   :config
@@ -694,6 +694,9 @@ _j_ ^ ^ _l_ _=_:equalize
 (use-package olivetti
   :after (hydra)
 
+  :hook
+  (helpful-mode . olivetti-mode)
+
   :preface
   (defhydra hydra-olivetti ()
     "Olivetti"
@@ -708,7 +711,7 @@ _j_ ^ ^ _l_ _=_:equalize
    ("o" . 'hydra-olivetti/body))
 
   :custom
-  (olivetti-body-width 64))
+  (olivetti-body-width 70))
 
 ;;;; Embark
 (use-package embark
@@ -2169,6 +2172,8 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
   (org-adapt-indentation nil)
   (org-return-follows-link t)
   (org-catch-invisible-edits 'smart)
+  (org-special-ctrl-a/e 'reversed)
+  (org-special-ctrl-k t)
 
   :config
   (require 'ob-shell)
