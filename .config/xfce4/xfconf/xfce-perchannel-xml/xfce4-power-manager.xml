@@ -17,7 +17,7 @@
     <property name="blank-on-battery" type="int" value="10"/>
     <property name="dpms-on-battery-sleep" type="uint" value="30"/>
     <property name="dpms-on-ac-off" type="uint" value="0"/>
-    <property name="blank-on-ac" type="int" value="0"/>
+    <property name="blank-on-ac" type="int" value="20"/>
     <property name="dpms-on-ac-sleep" type="uint" value="0"/>
     <property name="inactivity-sleep-mode-on-battery" type="uint" value="1"/>
     <property name="show-panel-label" type="int" value="1"/>
