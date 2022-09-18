@@ -1149,7 +1149,16 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
 ;;;; LSP
 (overlay lsp
   (use-package eglot
-    :commands (eglot)))
+    :commands (eglot))
+
+  (def-package my/eglot
+    :after (eglot embark)
+
+    :bind
+    (:map
+     embark-identifier-map
+     ("R" . eglot-rename)
+     ("." . eglot-code-actions))))
 
 ;;;; ELisp
 (setup-package elisp-mode
