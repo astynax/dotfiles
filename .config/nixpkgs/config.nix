@@ -4,7 +4,7 @@
       name = "my-packages";
       paths = [
         # nix itself
-        # nix
+        nix
         # locales for glibc
         glibcLocales
         # cli tools
@@ -18,6 +18,7 @@
         fzf
         # dev tools
         github-cli
+        ghorg
         shellcheck
         upx
         nix-tree
