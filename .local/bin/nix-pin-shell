@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+# add gcroots for shell.nix
+#
+# source: https://github.com/ianthehenry/sd-nix/blob/master/shell
+
+set -euo pipefail
+
+extra_args=""
+if [[ -e shell.nix.lock ]]; then
+  extra_args="-I nixpkgs=https://api.github.com/repos/NixOS/nixpkgs/tarball/$(cat shell.nix.lock)"
+  fi
+
+nix-build shell.nix $extra_args -A inputDerivation -o .nix-shell-inputs >/dev/null
+nix-shell shell.nix $extra_args

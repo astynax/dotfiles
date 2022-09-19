@@ -1,2 +1,3 @@
 .dir-locals.el
+.nix-shell-inputs
 .ok
