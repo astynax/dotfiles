@@ -1,0 +1,4 @@
+# update nix channel
+nix-channel --update
+# update my packages
+nix-env --remove-all -iA nixpkgs.myPackages
