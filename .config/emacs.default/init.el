@@ -721,6 +721,17 @@ _j_ ^ ^ _l_ _=_:equalize
   :bind
   ("C-." . embark-act))
 
+(def-package my/helpful-embark
+  :after (embark helpful)
+
+  :bind
+  (:map
+   embark-function-map
+   ("h" . helpful-function))
+  (:map
+   embark-symbol-map
+   ("h" . helpful-symbol)))
+
 ;;; Behaviour
 ;;;; reverse-im
 (use-package reverse-im
