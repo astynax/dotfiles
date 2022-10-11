@@ -732,6 +732,14 @@ _j_ ^ ^ _l_ _=_:equalize
    embark-symbol-map
    ("h" . helpful-symbol)))
 
+(def-package my/helpful-counsel
+  :after (embark counsel)
+;; TODO: teach embark to work with counsel-M-x properly
+  :bind
+  (:map
+   counsel-describe-map
+   ("C-." . embark-act)))
+
 ;;; Behaviour
 ;;;; reverse-im
 (use-package reverse-im
@@ -2203,6 +2211,7 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
   (require 'ob-python)
   (require 'ob-haskell)
 
+  (setq org-babel-python-command "python3")
   (defvar my/org-babel-langs
     '((shell . t)
       (emacs-lisp . t)

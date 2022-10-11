@@ -2,3 +2,5 @@
 nix-channel --update
 # update my packages
 nix-env --remove-all -iA nixpkgs.myPackages
+# restart emacs
+systemctl --user restart emacs.service
