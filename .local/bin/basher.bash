@@ -1,25 +1,22 @@
 #!/usr/bin/env bash
 
-F=/tmp/basher_cmd.sh
+ID=$(uuidgen)
+ENV_FILE=/tmp/$ID.env
 
 if [[ -z "$1" ]]; then
-    if [[ ! -f $F ]]; then
-        echo "Usage: basher.bash cmd line to run"
-        exit
+    if [[ -z "$CMD" || -z "$DIR" ]]; then
+        echo "CWD & DIR variables should be set"
+        exit 1
     fi
-    mapfile -t LINES < $F
-    DIR=${LINES[0]}
     if [[ -d "$DIR" ]]; then
         cd "$DIR"
-        CMD=${LINES[1]}
         (setsid $CMD &)
     else
-        echo "Wrong CWD: $DIR"
+        echo "Wrong DIR: $DIR"
     fi
     exit
 else
-    pwd > $F
-    echo $* >> $F
-    ID=$(uuidgen)
+    echo DIR=$(pwd) > $ENV_FILE
+    echo CMD=$* >> $ENV_FILE
     systemctl --user start basher@"$ID".service
 fi

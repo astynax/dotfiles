@@ -2,8 +2,9 @@
 Description=Run and fork using bash
 
 [Service]
+EnvironmentFile=%T/%i.env
 ExecStart=/usr/bin/bash /home/astynax/.local/bin/basher.bash
-Restart=on-failure
+Restart=no
 Type=forking
 
 [Install]
