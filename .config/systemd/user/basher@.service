@@ -1,0 +1,10 @@
+[Unit]
+Description=Run and fork using bash
+
+[Service]
+ExecStart=/usr/bin/bash /home/astynax/.local/bin/basher.bash
+Restart=on-failure
+Type=forking
+
+[Install]
+WantedBy=graphical-session.target
