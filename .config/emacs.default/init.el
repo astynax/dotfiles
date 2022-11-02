@@ -1751,6 +1751,11 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
      tal-mode-map
      ("<f9>" . compile))))
 
+;;;; Lua
+(overlay lua
+  (use-package lua-mode
+    :mode "\\.lua$"))
+
 ;;; IDE
 ;;;; Autocompletion and abbreviation
 (setup-package abbrev
