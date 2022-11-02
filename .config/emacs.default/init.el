@@ -2291,6 +2291,23 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
             (t
              (call-interactively 'org-insert-link)))))
 
+  (setup-package org-attach
+    :after (org)
+
+    :config
+    (defun my/attach-clipboard-image ()
+      (interactive)
+      (when-let* ((tmp (temporary-file-directory))
+                  (fn (format "%sclipboard.png" tmp)))
+        (if (file-exists-p fn)
+            (org-attach-attach fn nil 'mv)
+          (message "No %s file to attach." fn))))
+
+    (add-to-list 'org-attach-commands
+                 (list '(?I)
+                       #'my/attach-clipboard-image
+                       "Save image in clipboard as PNG and attach it")))
+
   (setq
    org-capture-templates
    '(("t" "Add a daily note" entry
