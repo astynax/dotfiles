@@ -813,6 +813,17 @@ _j_ ^ ^ _l_ _=_:equalize
    ("M-/" . isearch-complete)
    ("C-SPC" . isearch/mark-and-exit)))
 
+;;;; Symbol Overlay
+(use-package symbol-overlay
+  :bind
+  (:map
+   search-map
+   ("h i" . symbol-overlay-put)
+   ("h p" . symbol-overlay-switch-backward)
+   ("h n" . symbol-overlay-switch-forward)
+   ("h m" . symbol-overlay-mode)
+   ("h R" . symbol-overlay-remove-all)))
+
 ;;;; Subwords
 (setup-package subword
   :diminish)
@@ -894,7 +905,14 @@ _j_ ^ ^ _l_ _=_:equalize
 (use-package expand-region
   :bind
   ("M-]" . er/expand-region)
-  ("M-[" . er/contract-region))
+  ("M-[" . er/contract-region)
+
+  :custom
+  (expand-region-show-usage-message nil)
+
+  :config
+  (setq er--show-expansion-message t)
+  (add-to-list 'expand-region-exclude-text-mode-expansions 'org-mode))
 
 ;;;; Undo tree
 (use-package undo-tree
@@ -971,19 +989,11 @@ _j_ ^ ^ _l_ _=_:equalize
   ("C-M->" . mc/mark-next-word-like-this)
   ("C-M-<" . mc/mark-previous-word-like-this))
 
-;;;; Smart BOL
-(def-package my/smart-bol
-  :preface
-  (defun my/smarter-move-beginning-of-line (arg)
-    "Move point back to indentation of beginning of line."
-    (interactive "^p")
-    (let ((orig-point (point)))
-      (back-to-indentation)
-      (when (= orig-point (point))
-        (move-beginning-of-line 1))))
-
+;;;; Move Where I Mean
+(use-package mwim
   :bind
-  ([remap move-beginning-of-line] . my/smarter-move-beginning-of-line))
+  ([remap move-beginning-of-line] . mwim-beginning)
+  ([remap move-end-of-line] . mwim-end))
 
 ;;;; ElDoc
 (setup-package eldoc
