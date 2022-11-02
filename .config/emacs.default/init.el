@@ -1414,12 +1414,6 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
   (put 'hi2-left-offset 'safe-local-variable #'numberp)
   (put 'hi2-layout-offset 'safe-local-variable #'numberp)
 
-  (use-package company-cabal
-    :after (haskell-mode)
-
-    :config
-    (add-to-list 'company-backends 'company-cabal))
-
   (use-package shakespeare-mode
     :after (haskell-mode))
 
@@ -1478,10 +1472,7 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
 (overlay rust
   (use-package rust-mode
     :mode
-    ("\\.rs\\'" . rust-mode)
-
-    :config
-    (add-to-list 'company-dabbrev-code-modes 'rust-mode))
+    ("\\.rs\\'" . rust-mode))
 
   (use-package flycheck-rust
     :after (rust-mode)
@@ -1619,7 +1610,6 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
     :commands (turn-on-purescript-indentation)
 
     :hook
-    (purescript-mode . company-mode)
     (purescript-mode . flycheck-mode)
     (purescript-mode . my/purescript-mode-hook)
 
@@ -1647,7 +1637,6 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
                 0 t))
 
     :hook
-    (web-mode . company-mode)
     (web-mode . my/web-mode-hook)
 
     :custom
@@ -1657,10 +1646,7 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
     (web-mode-markup-indent-offset 2)
     (web-mode-script-padding 2)
     (web-mode-css-indent-offset 2)
-    (web-mode-style-padding 2)
-
-    :config
-    (add-to-list 'company-backends 'company-css))
+    (web-mode-style-padding 2))
 
   (put 'web-mode-engine 'safe-local-variable #'stringp)
   (put 'web-mode-engines-alist 'safe-local-variable #'listp))
@@ -1785,6 +1771,7 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
   (dabbrev-upcase-means-case-search t))
 
 (setup-package hippie-exp
+  :disabled                             ; TODO: remove?
   :after (dabbrev)
 
   :custom
@@ -1796,12 +1783,10 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
      try-expand-line
      try-complete-file-name-partially
      try-complete-file-name
-     try-expand-all-abbrevs))
-
-  :bind
-  ([remap dabbrev-expand] . hippie-expand))
+     try-expand-all-abbrevs)))
 
 (use-package hippie-completing-read
+  :disabled                             ; TODO: remove?
   :after (hippie-exp)
 
   :quelpa
@@ -1818,21 +1803,56 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
            try-expand-line-all-buffers
            try-expand-line)))
 
-  :bind
-  (:map
-   mode-specific-map
-   ("M-/" . hippie-completing-less-read))
-
-  :custom
-  (hippie-completing-read-threshold 0)
-
   (defun hippie-completing-less-read ()
     "Offer `completing-read' based completion for word at point."
     (interactive)
-    (hippie-completing-read-expand-with #'hippie-expand-less)))
+    (hippie-completing-read-expand-with #'hippie-expand-less))
+
+  :bind
+  ([remap dabbrev-expand] . hippie-expand)
+  ([remap dabbrev-completion] . hippie-completing-less-read)
+
+  (:map
+   mode-specific-map
+   ("M-/" . hippie-completing-read))
+
+  :custom
+  (hippie-completing-read-threshold 0))
+
+(use-package cape
+  :bind
+  ([remap dabbrev-completion] . cape-dabbrev)
+  (:map
+   mode-specific-map
+   ("M-/" . cape-file))
+
+  :init
+  (add-to-list 'completion-at-point-functions #'cape-file))
+
+(setup-package minibuffer
+  :bind
+  ("M-<tab>" . completion-at-point))
+
+(use-package corfu
+  :demand
+
+  :hook
+  (after-init . global-corfu-mode)
+
+  :bind
+  (:map
+   corfu-map
+   ("SPC" . corfu-insert-separator))
+
+  :custom
+  (corfu-quit-no-match nil)
+  (corfu-quit-at-boundary nil)
+
+  :config
+  (unbind-key "<tab>" 'corfu-map))
 
 (use-package company
-  :demand
+  :disabled                             ; TODO: remove?
 
   :diminish
 
@@ -1866,6 +1886,7 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
    ("C-p" . company-select-previous)))
 
 (use-package company-try-hard
+  :disabled ; TODO: remove?
   :after (company)
 
   :bind
@@ -1874,6 +1895,8 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
    ("M-<tab>" . company-try-hard)))
 
 (use-package company-flx
+  :disabled ; TODO: remove?
+
   :after (company)
 
   :hook
@@ -1938,14 +1961,6 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
     (setq-default my/yas-map (make-sparse-keymap "My Yasnippet map"))
 
     :bind
-    (:map
-     mode-specific-map
-     :prefix
-     "y"
-     :prefix-map
-     my/yas-map
-     ("<tab>" . company-yasnippet))
-
     (:map
      yas-minor-mode-map
      ("C-c <tab>" . yas-expand))
@@ -2102,18 +2117,7 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
 (overlay restclient
   (use-package restclient
     :commands
-    (restclient-mode))
-
-  (use-package company-restclient
-    :after (restclient)
-
-    :hook
-    (restclient-mode . my/restclient-mode-hook)
-
-    :config
-    (defun my/restclient-mode-hook ()
-      (add-to-list 'company-backends
-                   'company-restclient))))
+    (restclient-mode)))
 
 ;;;; Docker
 (overlay docker
