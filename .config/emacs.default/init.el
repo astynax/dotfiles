@@ -1185,9 +1185,11 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
 
     :bind
     (:map
+     mode-specific-map
+     ("SPC" . eglot-code-actions))
+    (:map
      embark-identifier-map
-     ("R" . eglot-rename)
-     ("." . eglot-code-actions))))
+     ("R" . eglot-rename))))
 
 ;;;; ELisp
 (setup-package elisp-mode
@@ -2212,7 +2214,7 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
   (require 'ob-haskell)
 
   ;; why it is a defconst?
-  (setq org-time-stamp-formats '("<%Y-%m-%d>" "<%Y-%m-%d %H:%M>"))
+  (setq org-time-stamp-formats '("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>"))
 
   (setq org-babel-python-command "python3")
   (defvar my/org-babel-langs
