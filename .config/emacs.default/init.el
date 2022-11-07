@@ -1317,7 +1317,6 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
     :mode
     ("\\.hs\\'" . haskell-mode)
     ("\\.lhs\\'" . literate-haskell-mode)
-    ("\\.cabal\\'" . haskell-cabal-mode)
     ("\\.hamlet\\'" . shakespeare-hamlet-mode)
     ("\\.julius\\'" . shakespeare-julius-mode)
     ("routes\\'" . haskell-yesod-parse-routes-mode)
@@ -1343,7 +1342,7 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
     (haskell-mode . subword-mode)
     (haskell-mode . eldoc-mode)
     (haskell-mode . smartparens-mode)
-    (haskell-mode . my/boot-haskell)
+    (haskell-mode . my/haskell-setup)
     (haskell-mode . interactive-haskell-mode)
 
     :config
@@ -1352,8 +1351,8 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
       (interactive)
       (swiper "undefined\\|TODO\\|FIXME"))
 
-    (defun my/boot-haskell ()
-      "Initialize haskell stuff"
+    (defun my/haskell-setup ()
+      "Configure haskell stuff"
       (interactive)
       (setq tags-case-fold-search nil))
 
@@ -1391,6 +1390,16 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
 
   (put 'haskell-stylish-on-save 'safe-local-variable #'booleanp)
   (put 'haskell-hayoo-url 'safe-local-variable #'stringp)
+
+  (use-package company-cabal
+    :mode
+    ("\\.cabal\\'" . haskell-cabal-mode)
+
+    :hook
+    (haskell-cabal-mode . company-mode)
+
+    :config
+    (add-to-list 'company-backends 'company-cabal))
 
   (use-package hi2
     :after (haskell-mode)
@@ -1856,13 +1865,9 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
   :config
   (unbind-key "<tab>" 'corfu-map))
 
+;; TODO: remove someday (now it is necessary for the cabal & elpy)
 (use-package company
-  :disabled                             ; TODO: remove?
-
   :diminish
-
-  :hook
-  (after-init . global-company-mode)
 
   :custom
   (company-minimum-prefix-length 1)
@@ -1879,9 +1884,6 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
 
   :bind
   (:map
-   mode-specific-map
-   ("/" . company-files))
-  (:map
    company-mode-map
    ("M-<tab>" . company-manual-begin))
   (:map
@@ -1890,32 +1892,11 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
    ("C-n" . company-select-next)
    ("C-p" . company-select-previous)))
 
-(use-package company-try-hard
-  :disabled ; TODO: remove?
-  :after (company)
-
-  :bind
-  (:map
-   company-active-map
-   ("M-<tab>" . company-try-hard)))
-
 (use-package company-flx
-  :disabled ; TODO: remove?
-
   :after (company)
 
   :hook
   (company-mode . company-flx-mode))
-
-(use-package company-quickhelp
-  :after (company)
-
-  :diminish company-quickhelp-mode
-
-  :bind
-  (:map
-   company-active-map
-   ("C-d" . company-quickhelp-manual-begin)))
 
 ;;;; Flycheck
 (use-package flycheck
