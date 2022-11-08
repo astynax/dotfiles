@@ -734,11 +734,29 @@ _j_ ^ ^ _l_ _=_:equalize
 
 (def-package my/helpful-counsel
   :after (embark counsel)
-;; TODO: teach embark to work with counsel-M-x properly
+  ;; TODO: teach embark to work with counsel-M-x properly
   :bind
   (:map
    counsel-describe-map
    ("C-." . embark-act)))
+
+(def-package my/embark
+  :after (embark)
+
+  :bind
+  (:map
+   embark-file-map
+   ("J" . my/embark-terminal-jump))
+
+  :preface
+  (defun my/embark-terminal-jump (arg)
+    "Open a FILE (or FILE's DIR) in XTerm."
+    (interactive "f")
+    (if-let ((default-directory
+               (if (file-directory-p arg) arg
+                 (file-name-directory arg))))
+        (shell-command "basher.bash xterm -maximized -e bash")
+      (message "Can't detect a suitable directory to open!"))))
 
 ;;; Behaviour
 ;;;; reverse-im
