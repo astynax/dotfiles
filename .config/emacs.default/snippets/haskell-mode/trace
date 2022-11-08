@@ -1,6 +1,5 @@
 # -*- mode: snippet -*-
 # name: trace
-# binding: C-c SPC t
 # condition: (region-active-p)
 # expand-env: ((yas-wrap-around-region t))
 # --

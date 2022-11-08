@@ -1963,9 +1963,6 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
   (use-package yasnippet
     :diminish (yas-minor-mode . " Y")
 
-    :preface
-    (setq-default my/yas-map (make-sparse-keymap "My Yasnippet map"))
-
     :bind
     (:map
      yas-minor-mode-map
@@ -1995,7 +1992,11 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
 
     :bind
     (:map
-     my/yas-map
+     mode-specific-map
+     :prefix
+     "y"
+     :prefix-map
+     my/yankpad-map
      ("m" . yankpad-map)
      ("y" . yankpad-insert)))
 
