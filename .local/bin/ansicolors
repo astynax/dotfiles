@@ -1,0 +1,10 @@
+#!/usr/bin/env python3
+
+from plumbum import colors
+
+print('\n'.join(
+    ''.join(
+        (colors.bg[bg] | colors.fg[fg] | (f'{fg:x}' + (colors.bold | f'{bg:x}')))
+        for fg in range(16)
+    ) for bg in range(16))
+)
