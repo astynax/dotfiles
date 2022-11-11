@@ -568,10 +568,20 @@ _j_ ^ ^ _l_ _=_:equalize
                      ace-window))
     (advice-add command :after #'pulse-line)))
 
-;;;; iBuffer
+;;;; Buffers
 (setup-package ibuffer
   :bind
   ([remap list-buffers] . ibuffer))
+
+(def-package my/buffers
+  :bind
+  ([remap kill-buffer] . my/kill-this-buffer)
+
+  :preface
+  (defun my/kill-this-buffer ()
+    "Kills the current buffer"
+    (interactive)
+    (kill-buffer (current-buffer))))
 
 ;;;; Ivy
 (use-package ivy
