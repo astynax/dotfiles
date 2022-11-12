@@ -1,9 +1,0 @@
-[Unit]
-Description=Run and fork using bash
-Wants=graphical-session.target
-
-[Service]
-EnvironmentFile=%T/%i.env
-ExecStart=/usr/bin/bash /home/astynax/.local/bin/basher.bash
-Restart=no
-Type=forking
