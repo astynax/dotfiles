@@ -1211,18 +1211,20 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
       t)))
 
 ;;; Languages
-;;;; LSP
+;;;; Eglot (LSP client)
 (overlay lsp
   (use-package eglot
-    :commands (eglot))
+    :commands (eglot)
+
+    :bind
+    (:map
+     mode-specific-map
+     ("SPC" . eglot-code-actions)))
 
   (def-package my/eglot
     :after (eglot embark)
 
     :bind
-    (:map
-     mode-specific-map
-     ("SPC" . eglot-code-actions))
     (:map
      embark-identifier-map
      ("R" . eglot-rename))))
