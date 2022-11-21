@@ -27,6 +27,8 @@
         markdown-electric-backquote
         markdown-outdent-or-delete
         markdown-promote
+        mwim-beginning
+        mwim-end
         my/smarter-move-beginning-of-line
         org-beginning-of-line
         org-ctrl-c-ctrl-c
