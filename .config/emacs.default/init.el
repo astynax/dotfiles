@@ -349,6 +349,10 @@ Note: It won't trigger any use-packag'ing!"
   :hook
   (dired-mode . diredfl-mode))
 
+(use-package dired-narrow
+  :commands
+  (dired-narrow))
+
 ;;; UI
 ;;;; Highlights
 (setup-package paren
@@ -1245,7 +1249,14 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
     :bind
     (:map
      mode-specific-map
-     ("SPC" . eglot-code-actions)))
+     ("SPC" . eglot-code-actions))
+
+    :config
+    (defadvice eglot--snippet-expansion-fn
+        (around my/eglot-snippet-expansion-advice activate)
+      ;; TODO: think about a proper snippet skipping
+      (unless (derived-mode-p 'haskell-mode)
+        a-do-it)))
 
   (def-package my/eglot
     :after (eglot embark)
