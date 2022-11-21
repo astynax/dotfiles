@@ -13,13 +13,13 @@ if locale -a | grep 'ru_RU.utf8' > /dev/null ; then
 fi
 
 # set PATH so it includes user's bin dirs
-test -d "$HOME/.cabal/bin" && export PATH="$HOME/.cabal/bin:$PATH"
-test -d "$HOME/.ghcup/bin" && export PATH="$HOME/.ghcup/bin:$PATH"
-test -d "$HOME/.cargo/bin" && export PATH="$HOME/.cargo/bin:$PATH"
-test -d "$HOME/.poetry/bin" && export PATH="$HOME/.poetry/bin:$PATH"
-test -d "$HOME/.pyenv/bin" && export PATH="$HOME/.pyenv/bin:$PATH"
-test -d "$HOME/.wasmer/bin" && export PATH="$HOME/.wasmer/bin:$PATH"
-test -d "$HOME/.local/bin" && export PATH="$HOME/.local/bin:$PATH"
+test -d "$HOME/.cabal/bin" && export PATH="$PATH:$HOME/.cabal/bin"
+test -d "$HOME/.ghcup/bin" && export PATH="$PATH:$HOME/.ghcup/bin"
+test -d "$HOME/.cargo/bin" && export PATH="$PATH:$HOME/.cargo/bin"
+test -d "$HOME/.poetry/bin" && export PATH="$PATH:$HOME/.poetry/bin"
+test -d "$HOME/.local/bin" && export PATH="$PATH:$HOME/.local/bin"
+test -d "$HOME/.local/share/JetBrains/Toolbox/scripts" && \
+    export PATH="$PATH:$HOME/.local/share/JetBrains/Toolbox/scripts"
 
 # Flatpak
 test -d "/var/lib/flatpak/exports/bin" && \

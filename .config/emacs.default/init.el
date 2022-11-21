@@ -11,18 +11,6 @@
 
 (global-set-key (kbd "M-<f12>") 'my/configure)
 
-;;; PATH
-(mapc
- #'(lambda (p)
-     (when (file-directory-p p)
-       (add-to-list 'exec-path p)))
- '("~/.nix-profile/bin"
-   "~/.local/bin"
-   "~/.ghcup/bin"
-   "~/.cabal/bin"
-   "~/.cargo/bin"
-   ))
-
 ;;; Package management
 ;;;; package.el
 (require 'package)
