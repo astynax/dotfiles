@@ -736,8 +736,14 @@ _j_ ^ ^ _l_ _=_:equalize
 
 ;;;; Embark
 (use-package embark
+  :demand
+
   :bind
-  ("C-." . embark-act))
+  ("C-." . embark-act)
+  ([remap describe-bindings] . embark-bindings)
+  (:map
+   embark-command-map
+   ("g" . nil)))
 
 (def-package my/helpful-embark
   :after (embark helpful)
@@ -880,6 +886,38 @@ _j_ ^ ^ _l_ _=_:equalize
 (setup-package delsel
   :hook
   (after-init . delete-selection-mode))
+
+;;;; Narrowing
+(setup-package bindings
+  :bind
+  (:map
+   narrow-map
+   ("n" . my/narrow-or-widen-dwim))
+
+  :preface
+  ;; Source: http://endlessparentheses.com/emacs-narrow-or-widen-dwim.html
+  (defun my/narrow-or-widen-dwim (p)
+    "Widen if buffer is narrowed, narrow-dwim otherwise.
+Dwim means: region, org-src-block, org-subtree, or
+defun, whichever applies first. Narrowing to
+org-src-block actually calls `org-edit-src-code'.
+
+With prefix P, don't widen, just narrow even if buffer
+is already narrowed."
+    (interactive "P")
+    (declare (interactive-only))
+    (cond ((and (buffer-narrowed-p) (not p)) (widen))
+          ((region-active-p)
+           (narrow-to-region (region-beginning)
+                             (region-end)))
+          ((derived-mode-p 'org-mode)
+           ;; `org-edit-src-code' is not a real narrowing
+           ;; command. Remove this first conditional if
+           ;; you don't want it.
+           (cond ((ignore-errors (org-edit-src-code) t))
+                 ((ignore-errors (org-narrow-to-block) t))
+                 (t (org-narrow-to-subtree))))
+          (t (narrow-to-defun)))))
 
 ;;;; Indirect region editing
 (use-package edit-indirect
@@ -1904,6 +1942,12 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
 
   :config
   (unbind-key "<tab>" 'corfu-map))
+
+(use-package corfu-doc
+  :after corfu
+
+  :hook
+  (corfu-mode . corfu-doc-mode))
 
 ;; TODO: remove someday (now it is necessary for the cabal & elpy)
 (use-package company
