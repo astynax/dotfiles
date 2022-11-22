@@ -800,7 +800,15 @@ _j_ ^ ^ _l_ _=_:equalize
 ;;;; WWW Browser
 (setup-package browse-url
   :config
-  (setq browse-url-browser-function 'eww-browse-url)
+  (defun my/browse-url-browser-function (url &optional use-external-browser)
+    "Open URL in eww by default or use an external browser with universal arg."
+    (interactive current-prefix-arg)
+    (funcall (if use-external-browser
+                 browse-url-secondary-browser-function
+               #'eww-browse-url)
+             url))
+
+  (setq browse-url-browser-function 'my/browse-url-browser-function)
   (setq browse-url-secondary-browser-function
         (pcase system-type
           ('darwin 'browse-url-default-browser)
@@ -2779,9 +2787,7 @@ of the file that MPD is playing now."
       (hackernews--visit
        (point)
        (lambda (url)
-         (funcall (if external browse-url-secondary-browser-function
-                    browse-url-browser-function)
-                  url))))
+         (funcall 'my/browse-url-browser-function url external))))
 
     (defun my/hackernews-yank-url ()
       (interactive)
