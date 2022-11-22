@@ -798,12 +798,71 @@ _j_ ^ ^ _l_ _=_:equalize
   ("M-<f11>" . my/switch-to-scratch))
 
 ;;;; WWW Browser
-(def-package my/www
+(setup-package browse-url
   :config
-  (setq browse-url-browser-function
+  (setq browse-url-browser-function 'eww-browse-url)
+  (setq browse-url-secondary-browser-function
         (pcase system-type
           ('darwin 'browse-url-default-browser)
           (_ 'browse-url-firefox))))
+
+(setup-package eww
+  :hook
+  (eww-mode . olivetti-mode)
+
+  :bind
+  (:map
+   eww-mode-map
+   (":" . my/eww-browse-url))
+
+  :custom
+  (eww-search-prefix "https://duckduckgo.com/html/?q=")
+  (eww-use-external-browser-for-content-type "\\`\\(video/\\|audio\\)")
+
+  :config
+  (defun my/eww-browse-url (&optional new-window)
+    "Ask for URL and browse it using the EWW.
+Open in the new window if called with the UNIVERSAL ARG."
+    (interactive current-prefix-arg)
+    (let ((region (when (region-active-p)
+                    (buffer-substring-no-properties
+                     (region-beginning)
+                     (region-end)))))
+      (when-let ((url (read-string
+                       (format "(eew) Browse%s: "
+                               (if new-window " (new buffer)" ""))
+                       region)))
+        (eww-browse-url url new-window)))))
+
+(setup-package shr
+  :custom
+  (shr-use-colors nil)
+  (shr-max-image-proportion 0.6)
+  (shr-image-animate nil)
+  (shr-discard-aria-hidden t)
+  (shr-cookie-policy nil))
+
+(setup-package url-cookie
+  :custom
+  (url-cookie-untrusted-urls '(".*")))
+
+(def-package prot/eww
+  :hook
+  (eww-after-render . prot-eww--rename-buffer)
+
+  :preface
+  ;; TODO 2021-10-15: Deprecate this in favour of what we added to Emacs29.
+  ;; <https://protesilaos.com/codelog/2021-10-15-emacs-29-eww-rename-buffers/>.
+  (defun prot-eww--rename-buffer ()
+    "Rename EWW buffer using page title or URL.
+To be used by `eww-after-render-hook'."
+    (let ((name (if (eq "" (plist-get eww-data :title))
+                    (plist-get eww-data :url)
+                  (plist-get eww-data :title))))
+      (rename-buffer (format "*%s # eww*" name) t)))
+
+  (advice-add 'eww-back-url :after #'prot-eww--rename-buffer)
+  (advice-add 'eww-forward-url :after #'prot-eww--rename-buffer))
 
 ;;;; History
 (setup-package savehist
@@ -2667,40 +2726,7 @@ ${title} is a major mode for [[id:%(org-roam-node-id (org-roam-node-from-title-o
     (code-pdfbackend "atril-page")
     (code-pdfbackendalias "pdf-page" "atril-page")))
 
-;;; Browsing of the Web
-(setup-package eww
-  :hook
-  (eww-mode . olivetti-mode)
 
-  :bind
-  (:map
-   eww-mode-map
-   (":" . my/eww-browse-url))
-
-  :custom
-  (browse-url-browser-function #'my/browse-url-function)
-
-  :preface
-  (defun my/browse-url-function (url &optional use-external-browser)
-    (interactive current-prefix-arg)
-    "Open URL in eww by default or use an external browser with universal arg."
-    (if use-external-browser
-        (browse-url-firefox url)
-      (eww-browse-url url t)))
-
-  (defun my/eww-browse-url (&optional new-window)
-    "Ask for URL and browse it using the EWW.
-Open in the new window if called with the UNIVERSAL ARG."
-    (interactive current-prefix-arg)
-    (let ((region (when (region-active-p)
-                    (buffer-substring-no-properties
-                     (region-beginning)
-                     (region-end)))))
-      (when-let ((url (read-string
-                       (format "(eew) Browse%s: "
-                               (if new-window " (new buffer)" ""))
-                       region)))
-        (eww-browse-url url new-window)))))
 
 ;;; Other
 ;;;; Nov
@@ -2753,7 +2779,9 @@ of the file that MPD is playing now."
       (hackernews--visit
        (point)
        (lambda (url)
-         (my/browse-url-function url external))))
+         (funcall (if external browse-url-secondary-browser-function
+                    browse-url-browser-function)
+                  url))))
 
     (defun my/hackernews-yank-url ()
       (interactive)
