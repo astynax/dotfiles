@@ -32,8 +32,6 @@
         # misc
         libheif # decoder for the iPad's photos
         mp3gain
-        # apps
-        lagrange # Gemini client
       ];
     };
     pathsToLink = [ "/share/man" "/share/doc" "/bin" "/etc" ];
