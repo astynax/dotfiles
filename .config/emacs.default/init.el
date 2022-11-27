@@ -976,6 +976,8 @@ is already narrowed."
            (cond ((ignore-errors (org-edit-src-code) t))
                  ((ignore-errors (org-narrow-to-block) t))
                  (t (org-narrow-to-subtree))))
+          ((derived-mode-p 'markdown-mode)
+           (markdown-narrow-to-subtree))
           (t (narrow-to-defun)))))
 
 ;;;; Indirect region editing
@@ -2337,6 +2339,7 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
   :custom
   (org-directory "~/org")
   (org-default-notes-file "~/org/notes.org")
+  (org-agenda-files '("~/org/notes.org"))
   (org-edit-src-content-indentation 0)
   (org-ellipsis "…")
   (org-enforce-todo-dependencies t)
