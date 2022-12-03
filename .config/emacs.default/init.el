@@ -774,6 +774,11 @@ _j_ ^ ^ _l_ _=_:equalize
         (shell-command "basher.bash xterm -maximized -e bash")
       (message "Can't detect a suitable directory to open!"))))
 
+;;; Images
+(setup-package image
+  :config
+  (when (executable-find "mogrify")
+    (setq image-use-external-converter t)))
 ;;; Behaviour
 ;;;; reverse-im
 (use-package reverse-im
@@ -1931,8 +1936,10 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
   (dabbrev-upcase-means-case-search t))
 
 (setup-package hippie-exp
-  :disabled                             ; TODO: remove?
   :after (dabbrev)
+
+  :bind
+  ([remap dabbrev-expand] . hippie-expand)
 
   :custom
   (hippie-expand-try-functions-list
@@ -1944,40 +1951,6 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
      try-complete-file-name-partially
      try-complete-file-name
      try-expand-all-abbrevs)))
-
-(use-package hippie-completing-read
-  :disabled                             ; TODO: remove?
-  :after (hippie-exp)
-
-  :quelpa
-  (hippie-completing-read
-   :fetcher git
-   :url "https://codeberg.org/acdw/hippie-completing-read.el")
-
-  :preface
-  (fset 'hippie-expand-less
-        (make-hippie-expand-function
-         '(try-expand-dabbrev-visible
-           try-expand-dabbrev
-           try-expand-dabbrev-all-buffers
-           try-expand-line-all-buffers
-           try-expand-line)))
-
-  (defun hippie-completing-less-read ()
-    "Offer `completing-read' based completion for word at point."
-    (interactive)
-    (hippie-completing-read-expand-with #'hippie-expand-less))
-
-  :bind
-  ([remap dabbrev-expand] . hippie-expand)
-  ([remap dabbrev-completion] . hippie-completing-less-read)
-
-  (:map
-   mode-specific-map
-   ("M-/" . hippie-completing-read))
-
-  :custom
-  (hippie-completing-read-threshold 0))
 
 (use-package cape
   :bind
