@@ -22,6 +22,6 @@
     <property name="inactivity-sleep-mode-on-battery" type="uint" value="1"/>
     <property name="show-panel-label" type="int" value="1"/>
     <property name="brightness-level-on-battery" type="uint" value="15"/>
-    <property name="critical-power-level" type="uint" value="5"/>
+    <property name="critical-power-level" type="uint" value="10"/>
   </property>
 </channel>
