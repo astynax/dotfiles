@@ -38,8 +38,6 @@ fi
 export DICTIONARY=en_US
 if [ -d "$HOME/.local/share/hunspell" ]; then
     export DICPATH="$HOME/.local/share/hunspell"
-    test -f "$DICPATH/hyph_ru_RU.dic" && \
-        export DICTIONARY="hyph_ru_RU,$DICTIONARY"
     test -f "$DICPATH/russian-aot.dic" && \
         export DICTIONARY="russian-aot,$DICTIONARY"
 fi

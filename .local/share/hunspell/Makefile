@@ -2,4 +2,4 @@ RU:=https://extensions.libreoffice.org/assets/downloads/48/dict_pack_ru-aot-0.4.
 
 russian-aot.dic:
 	wget -O /tmp/dict.zip $(RU) && \
-		unzip /tmp/dict.zip '*.aff' '*.dic'
+		unzip /tmp/dict.zip russian-aot.dic russian-aot.aff

@@ -2258,8 +2258,6 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
   (ispell-program-name "hunspell")
 
   :config
-  (when (executable-find "hunspell-wrapper")
-    (setq-default ispell-program-name "hunspell-wrapper"))
   (setq-default ispell-dictionary (or (getenv "DICTIONARY")
                                       "ru_RU,en_US"))
   ;; ispell-set-spellchecker-params has to be called
