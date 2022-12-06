@@ -1979,6 +1979,7 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
 
   :hook
   (after-init . global-corfu-mode)
+  (corfu-mode . corfu-popupinfo-mode)
 
   :bind
   (:map
@@ -1991,12 +1992,6 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
 
   :config
   (unbind-key "<tab>" 'corfu-map))
-
-(use-package corfu-doc
-  :after corfu
-
-  :hook
-  (corfu-mode . corfu-doc-mode))
 
 ;; TODO: remove someday (now it is necessary for the cabal & elpy)
 (use-package company
