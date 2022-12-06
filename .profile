@@ -33,3 +33,13 @@ fi
 if test -f "$HOME/.nix-profile/lib/locale/locale-archive"; then
     export LOCALE_ARCHIVE="$HOME/.nix-profile/lib/locale/locale-archive"
 fi
+
+# Hunspell dictionaries
+export DICTIONARY=en_US
+if [ -d "$HOME/.local/share/hunspell" ]; then
+    export DICPATH="$HOME/.local/share/hunspell"
+    test -f "$DICPATH/hyph_ru_RU.dic" && \
+        export DICTIONARY="hyph_ru_RU,$DICTIONARY"
+    test -f "$DICPATH/russian-aot.dic" && \
+        export DICTIONARY="russian-aot,$DICTIONARY"
+fi
