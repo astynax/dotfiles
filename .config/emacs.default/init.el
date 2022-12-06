@@ -418,7 +418,7 @@ Note: It won't trigger any use-packag'ing!"
   :bind
   ("C-h C-m" . discover-my-major))
 
-;;;; Global text scale
+;;;; Text scale
 ;; source: https://www.emacswiki.org/emacs/GlobalTextScaleMode
 (def-package my/global-text-scale
   :after (hydra)
@@ -460,6 +460,14 @@ Note: It won't trigger any use-packag'ing!"
   (:map
    mode-specific-map
    ("z" . 'hydra-global-text-scale/body)))
+
+(setup-package face-remap
+  :config
+  ;; don't want Emacs to use <S> for text scaling as it does on MacOS by default
+  (unbind-key "s-+" global-map)
+  (unbind-key "s--" global-map)
+  (unbind-key "s-=" global-map)
+  (unbind-key "s-0" global-map))
 
 ;;;; Theme
 (use-package modus-themes
