@@ -1084,6 +1084,17 @@ is already narrowed."
     "Disables electric parens with smartparens enabled"
     (electric-pair-local-mode -1))
 
+  (defun my/dwim-exchange-pnm-or-sexp (&optional arg)
+    "Works as exchange-point-and-mark when region is active or
+jumps between the end and begigging of sexp if region is inactive."
+    (interactive current-prefix-arg)
+    (if (region-active-p)
+        (exchange-point-and-mark arg)
+      (let ((old-point (point)))
+        (sp-end-of-sexp arg)
+        (when (eql (point) old-point)
+          (sp-beginning-of-sexp arg)))))
+
   :hook
   (smartparens-mode . my/no-electric-with-startparens)
   (emacs-lisp-mode . smartparens-strict-mode)
@@ -1095,6 +1106,7 @@ is already narrowed."
   :bind
   (:map
    smartparens-mode-map
+   ("C-x C-x" . my/dwim-exchange-pnm-or-sexp)
    ("M-J" . sp-split-sexp)
    ("C-M-J" . sp-join-sexp)
    ("C-(" . sp-backward-slurp-sexp)
@@ -1182,6 +1194,19 @@ is already narrowed."
   ([remap fill-paragraph] . unfill-toggle))
 
 ;;; Navigation
+;;;; Keyboard arrows
+(def-package my/keyboard-arrows
+  :bind
+  (:map
+   global-map
+   ;; I just need to build a proper habit for these actions :)
+   ("C-<up>" . nil)
+   ("C-<down>" . nil)
+   ("C-<left>" . nil)
+   ("M-<left>" . nil)
+   ("C-<right>" . nil)
+   ("M-<right>" . nil)))
+
 ;;;; imenu
 (setup-package imenu
   :bind
