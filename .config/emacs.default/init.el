@@ -596,24 +596,27 @@ _j_ ^ ^ _l_ _=_:equalize
     "Switches between buffers with the same major mode as the current one.
 Chooses between buffers of the current project if any."
     (interactive)
-    (cl-block 'body
-      (let* ((current-mode major-mode)
-             (here (current-buffer))
-             (bs (sort (cl-loop for b in (if-let ((p (project-current)))
-                                             (project-buffers p)
-                                           (buffer-list))
-                                if (eql current-mode (with-current-buffer b
-                                                       major-mode))
-                                collect b)
-                       #'(lambda (b1 b2) (string< (buffer-file-name b1)
-                                             (buffer-file-name b2))))))
-        (when bs
-          (message "~s" bs)
-          ;; (if-let ((target (or (do ((b bs (cdr bs)))
-          ;;                          ((eql b here) (cadr bs)))
-          ;;                      (car bs))))
-          ;;     (switch-to-buffer target))
-          )))))
+    (when-let
+        ((bs
+          (sort
+           (cl-loop
+            for b in (if-let ((p (project-current)))
+                         (project-buffers p)
+                       (buffer-list))
+            if (eql major-mode (with-current-buffer b
+                                 major-mode))
+            collect b)
+           #'(lambda (b1 b2) (string< (buffer-file-name b1)
+                                 (buffer-file-name b2)))))
+         (target
+          (or (cl-loop
+               for here = (current-buffer)
+               for b = bs then (cdr b)
+               while b
+               if (eql (car b) here)
+               do (return (cadr b)))
+              (car bs))))
+      (switch-to-buffer target))))
 
 ;;;; Ivy
 (use-package ivy
