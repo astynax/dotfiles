@@ -103,15 +103,12 @@ Note: It won't trigger any use-packag'ing!"
 
 (my/overlays-configure)
 
-(defun my/overlay-enabled? (STRING)
-  (cl-block nil
-    (dolist (o my/overlays)
-      (when (string= STRING o)
-        (cl-return t)))))
+(defun my/overlay-enabled-p (STRING)
+  (cl-member STRING my/overlays :test #'equal))
 
 (defmacro overlay (name &rest body)
   "Evaluates the body iff the overlay is enabled."
-  `(when (my/overlay-enabled? ,(symbol-name name))
+  `(when (my/overlay-enabled-p ,(symbol-name name))
      ,@body))
 
 (put 'overlay 'lisp-indent-function 1)
@@ -471,9 +468,6 @@ Note: It won't trigger any use-packag'ing!"
 
 ;;;; Theme
 (use-package modus-themes
-  ;; TODO: switch back to MELPA when it will be updated
-  :quelpa (modus-themes :repo "protesilaos/modus-themes" :fetcher github)
-
   :custom
   (modus-themes-bold-constructs t)
   (modus-themes-italic-constructs t)
