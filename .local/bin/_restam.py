@@ -20,7 +20,7 @@ def main():
             existing.add(p)
             continue
         dt = datetime.fromtimestamp(os.path.getmtime(p))
-        stamp = dt.strftime('%Y%d%m_%H%M%S')
+        stamp = dt.strftime('%Y%m%d_%H%M%S')
         stamps.append((stamp, p))
 
     pairs = []
