@@ -1713,6 +1713,7 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
     (markdown-mode . variable-pitch-mode)
     (markdown-mode . yas-minor-mode)
     (markdown-mode . smartparens-mode)
+    (markdown-mode . olivetti-mode)
 
     :custom
     (markdown-command "pandoc")
@@ -2332,8 +2333,7 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
   ("<f12>" . my/org-open-notes-file)
   (:map
    mode-specific-map
-   ("C" . org-capture)
-   ("<backspace>" . org-mark-ring-goto))
+   ("C" . org-capture))
 
   (:map
    org-mode-map
@@ -2374,6 +2374,8 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
   (org-src-preserve-indentation t)
   (org-src-window-setup 'current-window)
   (org-todo-keywords '((sequence "TODO" "IN-PROGRESS" "DONE")))
+  (org-fontify-done-headline nil)
+  (org-fontify-todo-headline nil)
   (org-use-sub-superscripts nil)
   (org-adapt-indentation nil)
   (org-return-follows-link t)
@@ -2386,7 +2388,7 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
   (require 'ob-python)
   (require 'ob-haskell)
 
-  ;; why it is a defconst?
+  ;; why is it a defconst?
   (setq org-time-stamp-formats '("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>"))
 
   (setq org-babel-python-command "python3")
@@ -2627,6 +2629,8 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
       ("f" . org-roam-node-find)
       ("i" . org-roam-node-insert)
       ("b" . org-roam-buffer-toggle)
+      ("t" . org-roam-tag-add)
+      ("X" . org-roam-extract-subtree)
       ("S" . org-roam-db-sync)
       ("w" . my/roam/kill-link)
       ("m" . my/roam/find-node-for-major)))
