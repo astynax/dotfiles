@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import sys
+
 from plumbum import local
 
 
@@ -21,6 +23,8 @@ def query(word, dicts=DICTS):
     if not dicts:
         NOTIFY('No matches found!')
         return
+    # remove any hyphenation
+    word = word.replace('­', '')
     if not word.isalpha():
         NOTIFY('Select a single word, please!')
         return
@@ -52,8 +56,11 @@ def query(word, dicts=DICTS):
         return
     NOTIFY('Unexpected exitcode: {}\n\n{}'.format(code, err))
 
+
 def main():
-    _, word, _ = CB.run()
+    word = (sys.argv[1:] + [None])[0]
+    if not word:
+        _, word, _ = CB.run()
     if not word:
         _, word, _ = INPUT.run(retcode=None)
     if word:
