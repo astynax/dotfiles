@@ -299,9 +299,10 @@ Note: It won't trigger any use-packag'ing!"
   (dired-isearch-filenames 'dwim)
   (dired-recursive-copies 'always)
   (dired-recursive-deletes 'always)
-  (dired-listing-switches "-AFhlv --group-directories-first")
   (dired-dwim-target t)
   (delete-by-moving-to-trash t)
+  (dired-listing-switches
+   "-AFhlv --group-directories-first --time-style=long-iso")
 
   :hook
   (dired-mode . dired-hide-details-mode)
@@ -1207,7 +1208,9 @@ jumps between the end and begigging of sexp if region is inactive."
    "8"
    :prefix-map my/typographics-map
    ("-" . "—")
-   ("." . "…")))
+   ("." . "…")
+   ("<right>" . "→")
+   ("<left>" . "←")))
 
 ;;;; Fill/unfill
 (use-package unfill
@@ -1617,12 +1620,7 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
     :custom
     (hi2-layout-offset 2)
     (hi2-left-offset 2)
-    (hi2-where-post-offset 2)
-
-    :bind
-    (:map
-     hi2-mode-map
-     ("<tab>" . hi2-indent-line)))
+    (hi2-where-post-offset 2))
 
   (put 'hi2-where-post-offset 'safe-local-variable #'numberp)
   (put 'hi2-left-offset 'safe-local-variable #'numberp)
@@ -2762,8 +2760,6 @@ ${title} is a major mode for [[id:%(org-roam-node-id (org-roam-node-from-title-o
     (code-pdfbackend "atril-page")
     (code-pdfbackendalias "pdf-page" "atril-page")))
 
-
-
 ;;; Other
 ;;;; Nov
 (overlay nov
@@ -2803,6 +2799,14 @@ of the file that MPD is playing now."
             (format "elisp:(mpd-play \"%s\")" dir)
             (format "play \"%s\"" dir))))
       (message "Nothing is playing now"))))
+
+;;; YouTube and alike
+(def-package yt
+  :preface
+  (defun yt/watch (ID)
+    (with-temp-buffer
+      (shell-command (format "basher.bash ~/Downloads/youtube/watch \"%s\"" ID) t)
+      t)))
 
 ;;; Hackernews
 (overlay hackernews
