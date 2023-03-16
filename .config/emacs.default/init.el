@@ -1287,8 +1287,12 @@ jumps between the end and begigging of sexp if region is inactive."
     (dotimes (i 10)
       (when (= p (point)) ad-do-it))))
 
-;; C-u C-SPC C-SPC instead  C-u C-SPC C-u C-SPC
-(setq set-mark-command-repeat-pop t)
+(setup-package simple
+  :custom
+  (set-mark-command-repeat-pop
+   t "C-u C-SPC C-SPC instead  C-u C-SPC C-u C-SPC")
+  (mark-ring-max 6)
+  (global-mark-ring-max 8))
 
 ;;;; Xref
 (defun my/do-then-quit (&rest args)
