@@ -2340,7 +2340,7 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
   (:map
    org-mode-map
    ("C-c M-RET" . org-insert-heading-after-current)
-   ([remap org-insert-link] . my/org-insert-link-dwim))
+   ("C-c l" . my/org-insert-link-dwim))
 
   :hook
   (org-mode . variable-pitch-mode)
@@ -2429,30 +2429,43 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
   (defun my/org-insert-link-dwim ()
     "Like `org-insert-link' but with personal dwim preferences."
     (interactive)
-    (let* ((point-in-link (org-in-regexp org-link-any-re 1))
-           (clipboard-url (when (string-match-p "^http" (current-kill 0))
-                            (current-kill 0)))
-           (region-content (when (region-active-p)
-                             (buffer-substring-no-properties (region-beginning)
-                                                             (region-end)))))
-      (cond ((and region-content clipboard-url (not point-in-link))
-             (delete-region (region-beginning) (region-end))
-             (insert (org-make-link-string clipboard-url region-content)))
-            ((and clipboard-url (not point-in-link))
-             (insert (org-make-link-string
-                      clipboard-url
-                      (read-string
-                       "title: "
-                       (with-current-buffer
-                           (url-retrieve-synchronously clipboard-url)
-                         (dom-text
-                          (car
-                           (dom-by-tag (libxml-parse-html-region
-                                        (point-min)
-                                        (point-max))
-                                       'title))))))))
-            (t
-             (call-interactively 'org-insert-link)))))
+    (let ((point-in-link (org-in-regexp org-link-any-re 1)))
+      (if point-in-link
+          (call-interactively 'org-insert-link)
+        (let* ((clipboard-url (when (string-match-p "^http" (current-kill 0))
+                                (current-kill 0)))
+               (region-content (when (region-active-p)
+                                 (buffer-substring-no-properties
+                                  (region-beginning)
+                                  (region-end))))
+               (highlighted-sym (and region-content
+                                     (string-prefix-p "'" region-content)
+                                     (intern-soft
+                                      (substring region-content 1)))))
+          (cond (highlighted-sym
+                 (delete-region (region-beginning) (region-end))
+                 (insert (org-make-link-string
+                          (format "elisp:(helpful-symbol '%s)"
+                                  highlighted-sym)
+                          region-content)))
+                ((and region-content clipboard-url)
+                 (delete-region (region-beginning) (region-end))
+                 (insert (org-make-link-string clipboard-url region-content)))
+                (clipboard-url
+                 (insert (org-make-link-string
+                          clipboard-url
+                          (read-string
+                           "title: "
+                           (with-current-buffer
+                               (url-retrieve-synchronously clipboard-url)
+                             (dom-text
+                              (car
+                               (dom-by-tag (libxml-parse-html-region
+                                            (point-min)
+                                            (point-max))
+                                           'title))))))))
+                (t
+                 (call-interactively 'org-insert-link)))))))
 
   (setup-package org-attach
     :after (org)
