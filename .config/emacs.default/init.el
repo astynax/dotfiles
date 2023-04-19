@@ -2335,6 +2335,7 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
   ("<f12>" . my/org-open-notes-file)
   (:map
    mode-specific-map
+   ("C-o" . org-open-at-point-global)
    ("C" . org-capture))
 
   (:map
@@ -2482,15 +2483,7 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
     (add-to-list 'org-attach-commands
                  (list '(?I)
                        #'my/attach-clipboard-image
-                       "Save image in clipboard as PNG and attach it")))
-
-  (setq
-   org-capture-templates
-   '(("t" "Add a daily note" entry
-      (file+olp+datetree "" "Daily")
-      "* %?\n%i"
-      )
-     )))
+                       "Save image in clipboard as PNG and attach it"))))
 
 (put 'org-default-notes-file 'safe-local-variable #'stringp)
 (put 'org-export-use-babel 'safe-local-variable #'null)
