@@ -160,6 +160,12 @@ Note: It won't trigger any use-packag'ing!"
   (prefer-coding-system 'utf-8)
   (put 'overwrite-mode 'disabled t))
 
+(setup-package window
+  :config
+  (when (boundp 'switch-to-prev-buffer-skip-regexp)
+    (setq switch-to-prev-buffer-skip-regexp
+          "\*\\(scratch\\|Messages\\|helpful \\|Compilation\\)")))
+
 (setup-package frame
   :custom
   (tool-bar-mode nil)
@@ -355,7 +361,11 @@ Note: It won't trigger any use-packag'ing!"
 ;;;; Highlights
 (setup-package paren
   :config
-  (show-paren-mode t))
+  (show-paren-mode t)
+
+  :custom
+  (when (boundp 'show-paren-context-when-offscreen)
+    (setq show-paren-context-when-offscreen 'overlay)))
 
 (setup-package visual-line
   :custom
@@ -2102,7 +2112,7 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
   (defvar my/flymake-minor-mode-map (make-keymap))
   (define-minor-mode my/flymake-minor-mode
     "Auxiliary minor mode for flymake-minor-mode"
-    nil nil 'my/flymake-minor-mode-map)
+    :keymap my/flymake-minor-mode-map)
 
   :hook
   (flymake-mode . my/flymake-minor-mode)
@@ -2252,7 +2262,7 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
     (let ((dir (locate-dominating-file dir ".projectile")))
       (and dir (cons 'projectile dir))))
 
-  (defmethod project-root ((project (head projectile)))
+  (cl-defmethod project-root ((project (head projectile)))
     (cdr project))
 
   :config
