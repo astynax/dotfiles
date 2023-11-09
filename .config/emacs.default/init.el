@@ -11,6 +11,8 @@
 
 (global-set-key (kbd "M-<f12>") 'my/configure)
 
+(setq my/macos? (string-equal system-type "darwin"))
+
 ;;; Package management
 ;;;; package.el
 (require 'package)
@@ -185,7 +187,7 @@ Note: It won't trigger any use-packag'ing!"
   :diminish (buffer-face-mode "")
 
   :preface
-  (setq my/font-height (if (string-equal system-type "darwin") 190 150))
+  (setq my/font-height (if my/macos? 190 150))
 
   :custom
   (face-font-family-alternatives
@@ -2317,8 +2319,18 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
   (ispell-program-name "hunspell")
 
   :config
-  (setq-default ispell-dictionary (or (getenv "DICTIONARY")
-                                      "ru_RU,en_US"))
+  (setq-default
+   ispell-dictionary
+   (or (getenv "DICTIONARY")
+       ;; TODO: generalize?
+       (if my/macos?
+           "russian-aot,en_US"
+         "ru_RU,en_US")))
+
+  ;; TODO: quickfix for the MacOS when Emacs runs outside of terminal
+  (unless (getenv "LANG")
+    (setenv "LANG" "en_US"))
+
   ;; ispell-set-spellchecker-params has to be called
   ;; before ispell-hunspell-add-multi-dic will work
   (ispell-set-spellchecker-params)
