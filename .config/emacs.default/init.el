@@ -309,14 +309,18 @@ Note: It won't trigger any use-packag'ing!"
   (dired-recursive-deletes 'always)
   (dired-dwim-target t)
   (delete-by-moving-to-trash t)
-  (dired-listing-switches
-   "-AFhlv --group-directories-first --time-style=long-iso")
 
   :hook
   (dired-mode . dired-hide-details-mode)
 
   :config
-  (put 'dired-find-alternate-file 'disabled nil))
+  (put 'dired-find-alternate-file 'disabled nil)
+  (setq dired-listing-switches
+        (if my/macos?
+            "-AFhlv"
+          "-AFhlv --group-directories-first --time-style=long-iso"))
+  (when (executable-find "exa")
+    (setq insert-directory-program (executable-find "ls"))))
 
 (setup-package dired-x
   :custom

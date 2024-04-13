@@ -1,3 +1,5 @@
 .dir-locals.el
 .nix-shell-inputs
 .ok
+
+.config/emacs/auto-save-list/
