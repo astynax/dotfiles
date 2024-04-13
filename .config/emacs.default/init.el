@@ -2589,17 +2589,7 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
 (def-package my/org-slideshow
   :after (org)
 
-  :commands
-  (my/org-simple-slideshow
-   my/org-simple-slideshow-next
-   my/org-simple-slideshow-prev)
-
-  :bind
-  (:map
-   org-mode-map
-   ("<f5>" . my/org-simple-slideshow))
-
-  :config
+  :preface
   (defun my/org-renarrow (move)
     (when (buffer-narrowed-p)
       (beginning-of-buffer)
@@ -2645,7 +2635,17 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
     (unless (buffer-narrowed-p)
       (org-narrow-to-subtree))
     (when (buffer-narrowed-p)
-      (my/org-simple-slideshow-hydra/body))))
+      (my/org-simple-slideshow-hydra/body)))
+
+  :commands
+  (my/org-simple-slideshow
+   my/org-simple-slideshow-next
+   my/org-simple-slideshow-prev)
+
+  :bind
+  (:map
+   org-mode-map
+   ("<f5>" . my/org-simple-slideshow)))
 
 ;;;; Roam
 (overlay org-roam
