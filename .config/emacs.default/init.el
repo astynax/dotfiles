@@ -495,7 +495,18 @@ Note: It won't trigger any use-packag'ing!"
   :config
   (setq modus-themes-common-palette-overrides
         modus-themes-preset-overrides-faint)
+  (load-theme 'modus-vivendi nil t)
   (load-theme 'modus-operandi))
+
+(use-package auto-dark
+  :after modus-themes
+
+  :custom
+  (auto-dark-light-theme 'modus-operandi)
+  (auto-dark-dark-theme 'modus-vivendi)
+
+  :config
+  (auto-dark-mode t))
 
 ;;;; Window sizing
 (def-package my/window-sizing
@@ -2425,7 +2436,8 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
     '((shell . t)
       (emacs-lisp . t)
       (python . t)
-      (haskell . t)))
+      (haskell . t)
+      (clojure . t)))
 
   (defun my/org-find-file (file)
     "Find file, do it in other window witn C-u"
@@ -2882,4 +2894,4 @@ of the file that MPD is playing now."
 (run-with-idle-timer
  5 nil
  (lambda ()
-   (setq gc-cons-threshold 1000000)))
+   (setq gc-cons-threshold 100000000)))
