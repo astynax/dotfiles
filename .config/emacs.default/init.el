@@ -319,7 +319,8 @@ Note: It won't trigger any use-packag'ing!"
         (if my/macos?
             "-AFhlv"
           "-AFhlv --group-directories-first --time-style=long-iso"))
-  (when (executable-find "exa")
+  (when (or (executable-find "exa")
+            (executable-find "eza"))
     (setq insert-directory-program (executable-find "ls"))))
 
 (setup-package dired-x
@@ -499,6 +500,10 @@ Note: It won't trigger any use-packag'ing!"
   (load-theme 'modus-operandi))
 
 (use-package auto-dark
+  :if (display-graphic-p)
+
+  :diminish
+
   :after modus-themes
 
   :custom
