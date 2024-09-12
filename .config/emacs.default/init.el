@@ -865,22 +865,6 @@ Chooses between buffers of the current project if any."
   ("M-<f11>" . my/switch-to-scratch))
 
 ;;;; WWW Browser
-(setup-package browse-url
-  :config
-  (defun my/browse-url-browser-function (url &optional use-external-browser)
-    "Open URL in eww by default or use an external browser with universal arg."
-    (interactive current-prefix-arg)
-    (funcall (if use-external-browser
-                 browse-url-secondary-browser-function
-               #'eww-browse-url)
-             url))
-
-  (setq browse-url-browser-function 'my/browse-url-browser-function)
-  (setq browse-url-secondary-browser-function
-        (pcase system-type
-          ('darwin 'browse-url-default-browser)
-          (_ 'browse-url-firefox))))
-
 (setup-package eww
   :hook
   (eww-mode . olivetti-mode)
@@ -891,8 +875,10 @@ Chooses between buffers of the current project if any."
    (":" . my/eww-browse-url))
 
   :custom
+  (browse-url-browser-function 'eww-browse-url)
   (eww-search-prefix "https://duckduckgo.com/html/?q=")
   (eww-use-external-browser-for-content-type "\\`\\(video/\\|audio\\)")
+  (eww-auto-rename-buffer 'title)
 
   :config
   (defun my/eww-browse-url (&optional new-window)
@@ -920,24 +906,6 @@ Open in the new window if called with the UNIVERSAL ARG."
 (setup-package url-cookie
   :custom
   (url-cookie-untrusted-urls '(".*")))
-
-(def-package prot/eww
-  :hook
-  (eww-after-render . prot-eww--rename-buffer)
-
-  :preface
-  ;; TODO 2021-10-15: Deprecate this in favour of what we added to Emacs29.
-  ;; <https://protesilaos.com/codelog/2021-10-15-emacs-29-eww-rename-buffers/>.
-  (defun prot-eww--rename-buffer ()
-    "Rename EWW buffer using page title or URL.
-To be used by `eww-after-render-hook'."
-    (let ((name (if (eq "" (plist-get eww-data :title))
-                    (plist-get eww-data :url)
-                  (plist-get eww-data :title))))
-      (rename-buffer (format "*%s # eww*" name) t)))
-
-  (advice-add 'eww-back-url :after #'prot-eww--rename-buffer)
-  (advice-add 'eww-forward-url :after #'prot-eww--rename-buffer))
 
 ;;;; History
 (setup-package savehist
