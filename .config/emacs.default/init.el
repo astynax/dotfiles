@@ -1515,7 +1515,32 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
     (cider-mode . smartparens-strict-mode)
 
     :custom
-    (cider-repl-result-prefix ";; => ")))
+    (cider-repl-result-prefix ";; => ")
+    (cider-repl-display-help-banner nil)
+
+    :config
+    ;; source: https://github.com/babashka/babashka/wiki/GNU-Emacs
+    (defun cider-jack-in-babashka (&optional project-dir)
+      "Start a utility CIDER REPL backed by Babashka, not related to a specific project."
+      (interactive)
+      (require 'cl) ;; TODO: revrite someday
+      (lexical-let ((project-dir (or project-dir (project-root (project-current t)))))
+        (nrepl-start-server-process
+         project-dir
+         "bb --nrepl-server 0"
+         (lambda (server-buffer)
+           (cider-nrepl-connect
+            (list :repl-buffer server-buffer
+                  :repl-type 'clj
+                  :host (plist-get nrepl-endpoint :host)
+                  :port (plist-get nrepl-endpoint :port)
+                  :project-dir project-dir
+                  :session-name "babashka"
+                  :repl-init-function (lambda ()
+                                        (setq-local cljr-suppress-no-project-warning t
+                                                    cljr-suppress-middleware-warnings t)
+                                        (rename-buffer "*babashka-repl*"))))))))
+    ))
 
 ;;;; Haskell
 (overlay haskell
