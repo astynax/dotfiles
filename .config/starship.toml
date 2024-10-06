@@ -6,12 +6,15 @@ format = """\
     $git_branch\
     $git_state\
     $git_status\
+    $gradle\
     $package\
     $python\
     $rust\
     $elm\
     $kotlin\
     $haskell\
+    $scala\
+    $clojure\
     $nix_shell\
     $custom\
     $cmd_duration\
@@ -34,62 +37,47 @@ format = "[BATTERY:$percentage]($style)"
 threshold = 10
 style = "bold red"
 
-[character]
-success_symbol = "[λ](bold green)"
-error_symbol = "[λ](bold red)"
-
-[jobs]
-symbol = "+"
-
 [directory]
 truncate_to_repo = false
 read_only = "R"
 
-[git_branch]
-symbol = "#"
-
-[git_status]
-conflicted = "="
-ahead = "^"
-behind = "v"
-diverged = "X"
-untracked = "?"
-stashed = "$"
-modified = "~"
-staged = "+"
-renamed = "%"
-deleted = "-"
-
-[package]
-symbol = "#"
-
-[python]
-symbol = "Py "
-detect_extensions = []
-
-[elm]
-symbol = "Elm "
-
-[rust]
-symbol = "Rust "
+[gradle]
+symbol = "\ue660 "
 
 [kotlin]
-symbol = "Kt "
+symbol = "\ue634 "
 
-[nix_shell]
-symbol = "Nix "
+[scala]
+symbol = "\ue68e "
+
+[haskell]
+symbol = "\ue777 "
+
+[python]
+detect_extensions = []
+
+[custom.racket]
+extensions = ["rkt"]
+symbol = "\ue6b1 "
+style = "cyan"
 
 [custom.commonlisp]
 extensions = ["asd"]
-symbol = "CL "
-style = "inverted cyan"
+symbol = "\ue6b0 "
+style = "cyan"
 
 [custom.makefile]
 files = ["Makefile"]
 description = "Makefile is present"
-symbol = "Make "
+symbol = "\ue673 "
 
 [custom.okfile]
 files = [".ok"]
 description = "Ok-file is present"
 symbol = "Ok "
+
+[custom.idea]
+directories = [".idea"]
+symbol = "\ue7b5 "
+style = "cyan"
+

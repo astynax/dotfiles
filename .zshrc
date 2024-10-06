@@ -29,7 +29,7 @@ if [[ $- == *i* ]]; then
     autoload -Uz compinit
     compinit
 
-    alias ll="eza -l"
+    alias ll="eza -l --icons"
     alias ls=eza
     alias cat=bat
     alias r=ranger
