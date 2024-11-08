@@ -1375,6 +1375,10 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
            s)
       t)))
 
+;;;; Fossil
+(overlay fossil
+  (use-package vc-fossil))
+
 ;;; Languages
 ;;;; Eglot (LSP client)
 (overlay lsp
