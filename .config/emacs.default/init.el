@@ -52,14 +52,6 @@
   :config
   (put 'use-package 'lisp-indent-function 1))
 
-(use-package quelpa
-  :custom
-  (quelpa-upgrade-interval 60))
-
-(use-package quelpa-use-package
-  :config
-  (quelpa-use-package-activate-advice))
-
 (use-package diminish)
 (use-package bind-key)
 
@@ -2542,16 +2534,6 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
 
   :custom
   (org-bullets-bullet-list '("●" "○" "⦿" "⦾")))
-
-(use-package org-menu
-  :after (org)
-
-  :quelpa (org-menu :repo "sheijk/org-menu" :fetcher github)
-
-  :bind
-  (:map
-   org-mode-map
-   ("C-c m" . org-menu)))
 
 (use-package htmlize
   :after (org))
