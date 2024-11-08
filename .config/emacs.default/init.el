@@ -1281,7 +1281,7 @@ jumps between the end and begigging of sexp if region is inactive."
 (put 'bookmark-save-flag 'safe-local-variable #'numberp)
 
 ;;;; Mark ring
-(defadvice pop-to-mark-command (around ensure-new-position activate)
+(define-advice pop-to-mark-command (:around nil "ensure-new-position")
   "When popping the mark, continue popping until the cursor actually moves"
   (let ((p (point)))
     (dotimes (i 10)
@@ -1387,8 +1387,8 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
      ("SPC" . eglot-code-actions))
 
     :config
-    (defadvice eglot--snippet-expansion-fn
-        (around my/eglot-snippet-expansion-advice activate)
+    (define-advice eglot--snippet-expansion-fn
+        (:around nil my/eglot-snippet-expansion-advice)
       ;; TODO: think about a proper snippet skipping
       (unless (derived-mode-p 'haskell-mode)
         a-do-it)))
