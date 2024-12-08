@@ -114,7 +114,7 @@ Note: It won't trigger any use-packag'ing!"
 
 (setup-package cus-edit
   :custom
-  (custom-file null-device "Don't store customizations"))
+  (custom-file (concat user-emacs-directory "custom.el")))
 
 ;;; Emacs itself
 (setup-package emacs
@@ -164,7 +164,7 @@ Note: It won't trigger any use-packag'ing!"
   :custom
   (tool-bar-mode nil)
   (scroll-bar-mode nil)
-  (menu-bar-mode nil)
+  (menu-bar-mode 1)
   (frame-title-format "Emacs: %b")
 
   :bind
@@ -402,9 +402,11 @@ Note: It won't trigger any use-packag'ing!"
 
 ;;;; Which key
 (use-package which-key
-  :demand
+  :ensure nil
 
   :diminish
+
+  :hook (after-init . which-key-mode)
 
   :bind
   ("C-h C-k" . which-key-show-top-level)
@@ -412,10 +414,7 @@ Note: It won't trigger any use-packag'ing!"
   :custom
   (which-key-popup-type 'side-window)
   (which-key-side-window-location 'bottom)
-  (which-key-side-window-max-height 0.25)
-
-  :config
-  (which-key-mode))
+  (which-key-side-window-max-height 0.25))
 
 ;;;; Discover my major
 (use-package discover-my-major
@@ -633,7 +632,7 @@ Chooses between buffers of the current project if any."
                for b = bs then (cdr b)
                while b
                if (eql (car b) here)
-               do (return (cadr b)))
+               do (cl-return (cadr b)))
               (car bs))))
       (switch-to-buffer target))))
 
@@ -1273,11 +1272,12 @@ jumps between the end and begigging of sexp if region is inactive."
 (put 'bookmark-save-flag 'safe-local-variable #'numberp)
 
 ;;;; Mark ring
-(define-advice pop-to-mark-command (:around nil "ensure-new-position")
-  "When popping the mark, continue popping until the cursor actually moves"
-  (let ((p (point)))
-    (dotimes (i 10)
-      (when (= p (point)) ad-do-it))))
+;; FIXME: make it work again
+;; (define-advice pop-to-mark-command (:around nil "ensure-new-position")
+;;   "When popping the mark, continue popping until the cursor actually moves"
+;;   (let ((p (point)))
+;;     (dotimes (i 10)
+;;       (when (= p (point)) ad-do-it))))
 
 (setup-package simple
   :custom

@@ -25,6 +25,7 @@
         kill-visual-line
         markdown-demote
         markdown-electric-backquote
+        markdown-end-of-line
         markdown-outdent-or-delete
         markdown-promote
         mwim-beginning
