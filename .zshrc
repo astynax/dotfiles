@@ -25,6 +25,7 @@ export PATH=$PATH:$HOME/.local/bin
 
 if [[ $- == *i* ]]; then
     source <(/usr/local/bin/starship init zsh --print-full-init)
+    source <(fzf --zsh) || true
 
     autoload -Uz compinit
     compinit
