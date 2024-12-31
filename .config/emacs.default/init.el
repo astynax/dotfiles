@@ -1663,47 +1663,17 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
     :mode
     ("\\.py\\'" . python-mode)
 
+    :custom
+    (python-shell-interpreter "python3")
+
     :hook
     (python-mode . smartparens-mode)
+    (python-mode . eglot-ensure)
 
     :bind
     (:map
      python-mode-map
-     ("C-c C-c" . compile)))
-
-  (use-package elpy
-    :after (python)
-
-    :hook
-    (elpy-mode . flycheck-mode)
-
-    :custom
-    (elpy-rpc-python-command "python3")
-    (elpy-rpc-virtualenv-path 'current)
-    (elpy-modules
-     '(elpy-module-company
-       elpy-module-eldoc
-       elpy-module-highlight-indentation
-       elpy-module-django))
-
-    :config
-    (elpy-enable)
-    (unbind-key "<C-left>" elpy-mode-map)
-    (unbind-key "<C-right>" elpy-mode-map))
-
-  (def-package my/python
-    :custom
-    (python-shell-interpreter "python3")
-    (lsp-pylsp-configuration-sources ["flake8"])
-
-    :preface
-    (defun my/python-mode-hook ()
-      (if (executable-find "pylsp")
-          (lsp)
-        (elpy-mode)))
-
-    :hook
-    (python-mode . my/python-mode-hook)))
+     ("C-c C-c" . compile))))
 
 ;;;; Rust
 (overlay rust
