@@ -1514,11 +1514,13 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
 
     :config
     ;; source: https://github.com/babashka/babashka/wiki/GNU-Emacs
-    (defun cider-jack-in-babashka (&optional project-dir)
+    (defun cider-jack-in-babashka (&optional ask-for-project-dir)
       "Start a utility CIDER REPL backed by Babashka, not related to a specific project."
-      (interactive)
-      (require 'cl) ;; TODO: revrite someday
-      (lexical-let ((project-dir (or project-dir (project-root (project-current t)))))
+      (interactive "P")
+      (let ((project-dir
+             (or (when-let ((c (project-current ask-for-project-dir)))
+                   (project-root c))
+                 default-directory)))
         (nrepl-start-server-process
          project-dir
          "bb --nrepl-server 0"
