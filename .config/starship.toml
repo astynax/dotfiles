@@ -81,3 +81,12 @@ directories = [".idea"]
 symbol = "\ue7b5 "
 style = "cyan"
 
+[custom.clojure]
+files = ["project.clj"]
+symbol = "\ue768 "
+style = "green"
+
+[custom.babashka]
+files = ["bb.edn"]
+symbol = "\ue768 "
+style = "red"
