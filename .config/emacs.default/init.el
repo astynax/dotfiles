@@ -401,9 +401,7 @@ Note: It won't trigger any use-packag'ing!"
   (uniquify-buffer-name-style 'post-forward-angle-brackets))
 
 ;;;; Which key
-(use-package which-key
-  :ensure nil
-
+(setup-package which-key
   :diminish
 
   :hook (after-init . which-key-mode)
@@ -1654,8 +1652,7 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
   (use-package shakespeare-mode
     :after (haskell-mode))
 
-  (use-package inf-haskell
-    :ensure nil))
+  (setup-package inf-haskell))
 
 ;;;; Python
 (overlay python
