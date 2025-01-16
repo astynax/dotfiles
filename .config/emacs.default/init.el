@@ -170,6 +170,10 @@ Note: It won't trigger any use-packag'ing!"
   :bind
   ("C-z" . nil))
 
+(setup-package tab-line
+  :hook
+  (after-init . global-tab-line-mode))
+
 (setup-package simple
   :bind
   ([remap capitalize-word] . capitalize-dwim))
