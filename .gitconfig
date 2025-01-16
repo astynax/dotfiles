@@ -1,18 +1,18 @@
 [user]
-    name = Aleksei Pirogov
+    name = astynax
     email = astynax@users.noreply.github.com
 [alias]
     st = status
     com = commit
+    ls = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)[%an]%Creset' --abbrev-commit --date=relative
     ll = log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)[%an]%Creset' --decorate --numstat
-    l = log --pretty=format:'%C(red)%h %Cgreen%ad%C(yellow)%d %Creset%s%C(bold blue) [%cn]%Creset' --decorate --date=short
+    ld = log --pretty=format:'%C(red)%h %Cgreen%ad%C(yellow)%d %Creset%s%C(bold blue) [%cn]%Creset' --decorate --date=short
     up = !git fetch upstream && git rebase upstream/master
     w = whatchanged --decorate -p
-    dt = !env GIT_EXTERNAL_DIFF=difft git diff
+    diverges = !bash -c 'diff --old-line-format='' --new-line-format='' <(git rev-list --first-parent "${1:-master}") <(git rev-list --first-parent "${2:-HEAD}") | head -1' -
+    ar = !bash -c 'git rebase --autosquash -i `git diverges ${1:-master}`'
 [push]
     default = simple
-[merge]
-    tool = p4merge
 [commit]
     template = ~/.git_commit_template
 [status]
@@ -21,8 +21,17 @@
     whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol
     autocrlf = input
     safecrlf = true
-	excludesfile = ~/.gitignore
+    excludesfile = ~/.gitignore
+    editor = mg
 [pull]
-	rebase = true
+    rebase = true
 [init]
-	defaultBranch = master
+    defaultBranch = master
+[diff]
+    tool = difftastic
+[difftool]
+    prompt = false
+[difftool "difftastic"]
+    cmd = difft "$LOCAL" "$REMOTE"
+[pager]
+    difftool = true
