@@ -2869,16 +2869,14 @@ of the file that MPD is playing now."
 ;;; Hackernews
 (overlay hackernews
   (use-package hackernews
-    :preface
-    (defun my/hackernews-browse (&optional external)
-      "Opens the BUTTON under cursor in eww
- or call ~browse-url~ with universal arg."
-      (interactive current-prefix-arg)
-      (hackernews--visit
-       (point)
-       (lambda (url)
-         (funcall 'my/browse-url-browser-function url external))))
+    :bind
+    (:map
+     hackernews-button-map
+     ("w" . my/hackernews-yank-url)
+     ;; To be consistent with eww:
+     ("M-RET" . hackernews-button-browse-internal))
 
+    :config
     (defun my/hackernews-yank-url ()
       (interactive)
       (when-let (btn (point))
@@ -2887,15 +2885,6 @@ of the file that MPD is playing now."
             (message "URL killed: %s" url)
             (kill-new url)))))
 
-    :bind
-    (:map
-     hackernews-button-map
-     ([remap push-button] . my/hackernews-browse)
-     ("w" . my/hackernews-yank-url)
-     ;; To be consistent with eww:
-     ("M-RET" . hackernews-button-browse-internal))
-
-    :config
     (push '("\\`\\*hackernews .*\\*\\'" (display-buffer-same-window))
           display-buffer-alist)))
 
