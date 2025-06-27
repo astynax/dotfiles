@@ -2,6 +2,7 @@ format = """\
     $username\
     $hostname\
     $directory\
+    $shlvl\
     $env_var\
     $git_branch\
     $git_state\
@@ -25,6 +26,9 @@ format = """\
     """
 
 add_newline = false
+
+[shlvl]
+disabled = false
 
 [env_var.DEBIAN_CHROOT]
 format = "([\\[$env_value\\]](bold red) )"
