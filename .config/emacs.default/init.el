@@ -2446,6 +2446,7 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
   (require 'ob-shell)
   (require 'ob-python)
   (require 'ob-haskell)
+  (require 'ob-clojure)
 
   ;; why is it a defconst?
   (setq org-time-stamp-formats '("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>"))
