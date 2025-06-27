@@ -177,6 +177,10 @@ Note: It won't trigger any use-packag'ing!"
   :custom
   (custom-file (concat user-emacs-directory "custom.el")))
 
+;;; MacOS
+(setup-package ns-win
+  :when my/macos?)
+
 ;;; Emacs itself
 (setup-package emacs
   :init
@@ -230,6 +234,10 @@ Note: It won't trigger any use-packag'ing!"
 
   :bind
   ("C-z" . nil))
+
+(setup-package winner
+  :hook
+  (after-init . winner-mode))
 
 (setup-package tab-line
   :hook
@@ -529,14 +537,6 @@ Note: It won't trigger any use-packag'ing!"
   (:map
    mode-specific-map
    ("z" . 'hydra-global-text-scale/body)))
-
-(setup-package face-remap
-  :config
-  ;; don't want Emacs to use <S> for text scaling as it does on MacOS by default
-  (unbind-key "s-+" global-map)
-  (unbind-key "s--" global-map)
-  (unbind-key "s-=" global-map)
-  (unbind-key "s-0" global-map))
 
 ;;;; Theme
 (use-package modus-themes
