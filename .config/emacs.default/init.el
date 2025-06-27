@@ -1458,7 +1458,9 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
     :bind
     (:map
      embark-identifier-map
-     ("R" . eglot-rename))))
+     ("R" . eglot-rename)))
+
+  (put 'eglot-workspace-configuration 'safe-local-variable #'listp))
 
 ;;;; ELisp
 (setup-package elisp-mode
@@ -1743,18 +1745,7 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
 (overlay rust
   (use-package rust-mode
     :mode
-    ("\\.rs\\'" . rust-mode))
-
-  (use-package flycheck-rust
-    :after (rust-mode)
-
-    :hook
-    (rust-mode . my/rust-mode-hook)
-
-    :config
-    (defun my/rust-mode-hook ()
-      (flycheck-rust-setup)
-      (flycheck-mode))))
+    ("\\.rs\\'" . rust-mode)))
 
 ;;;; Markdown
 (overlay markdown
