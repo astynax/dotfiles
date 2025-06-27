@@ -1,5 +1,13 @@
+setopt append_history
+setopt hist_ignore_dups
+setopt hist_ignore_space
+setopt hist_save_no_dups
+
+setopt emacs
+export FCEDIT=mg
+
 if type brew &>/dev/null; then
-  FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
+    FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
 fi
 
 export NVM_DIR="$HOME/.nvm"
@@ -8,27 +16,18 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && \
     . "/usr/local/opt/nvm/etc/bash_completion.d/nvm"
 
-export DICTIONARY=russian-aot,en_US
-
-export LANGUAGE=en_US.UTF-8
-export LANG=en_US.UTF-8
-
-if locale -a | grep ru_RU.UTF-8 > /dev/null; then
-    export LC_TIME=ru_RU.UTF-8
-    export LC_NUMERIC=ru_RU.UTF-8
-    export LC_COLLATE=ru_RU.UTF-8
-    export LC_CTYPE=ru_RU.UTF-8
-    export LC_MEASUREMENT=ru_RU.UTF-8
+if [[ -d "$HOME/.cargo/env" ]]; then
+    source "$HOME/.cargo/env"
 fi
 
-export PATH=$PATH:$HOME/.local/bin
-
 if [[ $- == *i* ]]; then
+    autoload -Uz compinit
+    compinit
+
     source <(/usr/local/bin/starship init zsh --print-full-init)
     source <(fzf --zsh) || true
 
-    autoload -Uz compinit
-    compinit
+    [[ $(type -p "poe") ]] && source <(poe _zsh_completion) && compdef _poe poe
 
     alias ll="eza --icons -l"
     alias ls=eza
@@ -68,4 +67,8 @@ if [[ $- == *i* ]]; then
         export DEBIAN_CHROOT=ghcup
         export PATH=$HOME/.ghcup/bin:$PATH
     }
+
+    if [[ ! "$SHLVL" -ge 2 ]]; then
+        fortune || true
+    fi
 fi
