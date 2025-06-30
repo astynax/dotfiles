@@ -381,12 +381,9 @@ Note: It won't trigger any use-packag'ing!"
   :config
   (put 'dired-find-alternate-file 'disabled nil)
   (setq dired-listing-switches
-        (if my/macos?
+        (if (and my/macos? (not (executable-find "gls")))
             "-AFhlv"
-          "-AFhlv --group-directories-first --time-style=long-iso"))
-  (when (or (executable-find "exa")
-            (executable-find "eza"))
-    (setq insert-directory-program (executable-find "ls"))))
+          "-AFhlv --group-directories-first --time-style=long-iso")))
 
 (setup-package dired-x
   :custom
