@@ -380,6 +380,8 @@ Note: It won't trigger any use-packag'ing!"
 
   :config
   (put 'dired-find-alternate-file 'disabled nil)
+  (when (executable-find "gls")
+    (setq insert-directory-program "gls"))
   (setq dired-listing-switches
         (if (and my/macos? (not (executable-find "gls")))
             "-AFhlv"
