@@ -2484,6 +2484,7 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
     (setq-local truncate-lines nil))
 
   ;; src: https://xenodium.com/emacs-dwim-do-what-i-mean/
+  (require 's)
   (defun my/org-insert-link-dwim ()
     "Like `org-insert-link' but with personal dwim preferences."
     (interactive)
@@ -2510,18 +2511,24 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
                  (delete-region (region-beginning) (region-end))
                  (insert (org-make-link-string clipboard-url region-content)))
                 (clipboard-url
-                 (insert (org-make-link-string
-                          clipboard-url
-                          (read-string
-                           "title: "
-                           (with-current-buffer
-                               (url-retrieve-synchronously clipboard-url)
-                             (dom-text
-                              (car
-                               (dom-by-tag (libxml-parse-html-region
-                                            (point-min)
-                                            (point-max))
-                                           'title))))))))
+                 (let* ((page-title (with-current-buffer
+                                        (url-retrieve-synchronously
+                                         clipboard-url)
+                                      (dom-text
+                                       (car
+                                        (dom-by-tag (libxml-parse-html-region
+                                                     (point-min)
+                                                     (point-max))
+                                                    'title)))))
+                        (default-title (thread-last
+                                         page-title
+                                         s-trim
+                                         (s-replace-regexp "[\s\n]+" " "))))
+                   (insert (org-make-link-string
+                            clipboard-url
+                            (read-string
+                             "title: "
+                             default-title)))))
                 (t
                  (call-interactively 'org-insert-link)))))))
 
