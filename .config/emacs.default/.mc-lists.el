@@ -5,7 +5,9 @@
       '(
         beginning-of-visual-line
         c-electric-delete-forward
+        capitalize-dwim
         comment-dwim-2
+        completion-at-point
         counsel-unicode-char
         counsel-yank-pop
         dabbrev-completion
