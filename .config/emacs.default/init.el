@@ -1442,7 +1442,11 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
     :bind
     (:map
      mode-specific-map
-     ("SPC" . eglot-code-actions))
+     ("SPC" . eglot-code-actions)
+
+     :map
+     eglot-mode-map
+     ("M-RET" . eglot-code-actions))
 
     :config
     (define-advice eglot--snippet-expansion-fn
