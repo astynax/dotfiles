@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: uv shebang
+# key: #!
+# --
+#!/usr/bin/env -S uv run
