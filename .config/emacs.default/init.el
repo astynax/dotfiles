@@ -560,8 +560,8 @@ Note: It won't trigger any use-packag'ing!"
   :after modus-themes
 
   :custom
-  (auto-dark-light-theme 'modus-operandi)
-  (auto-dark-dark-theme 'modus-vivendi)
+  (auto-dark-themes '((modus-vivendi)
+                      (modus-operandi)))
 
   :config
   (auto-dark-mode t))
