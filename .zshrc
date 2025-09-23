@@ -31,6 +31,7 @@ if [[ $- == *i* ]]; then
 
     alias ll="eza --icons -l"
     alias ls=eza
+    alias et="eza --tree --git-ignore"
     alias cat=bat
     alias r=ranger
 
