@@ -2814,6 +2814,17 @@ ${title} is a major mode for [[id:%(org-roam-node-id (org-roam-node-from-title-o
 
   (setq ee-find-youtube-video-program 'find-mpv-video)
 
+  (defun find-os-open (ARG &optional PATH)
+    "Calls the 'open' process with ARG as a path.
+If PATH is not nil then ARG will be used as '-a ARG'
+i.e. as a name of program to open in."
+    (let ((args (if PATH
+                    (list "-a" ARG (substitute-in-file-name PATH))
+                  (list (substitute-in-file-name ARG)))))
+      (apply #'call-process
+             "open" nil nil nil
+             args)))
+
   (when (executable-find "atril")
     ;; See:
     ;;   (find-pdf-like-intro)
