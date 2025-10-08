@@ -2911,6 +2911,12 @@ of the file that MPD is playing now."
     (push '("\\`\\*hackernews .*\\*\\'" (display-buffer-same-window))
           display-buffer-alist)))
 
+;;; Gopher
+(overlay gopher
+  (use-package elpher
+    :hook
+    (elpher-mode . olivetti-mode)))
+
 ;;; Finalization
 ;; restore GC-limit after timeout
 (run-with-idle-timer
