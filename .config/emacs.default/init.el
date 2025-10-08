@@ -179,7 +179,9 @@ Note: It won't trigger any use-packag'ing!"
 
 ;;; MacOS
 (setup-package ns-win
-  :when my/macos?)
+  :when my/macos?
+  :config
+  (unbind-key "s-t"))
 
 ;;; Emacs itself
 (setup-package emacs
