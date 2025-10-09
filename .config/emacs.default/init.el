@@ -841,7 +841,7 @@ Chooses between buffers of the current project if any."
    ("o" . 'hydra-olivetti/body))
 
   :custom
-  (olivetti-body-width 70))
+  (olivetti-body-width 80))
 
 ;;;; Embark
 (use-package embark
@@ -2914,8 +2914,41 @@ of the file that MPD is playing now."
 ;;; Gopher
 (overlay gopher
   (use-package elpher
+    :bind
+    (:map
+     elpher-mode-map
+     ("w" . my/elpher-kill-current)
+     ("&" . my/elpher-browse-proxied)  ;; as in EWW
+     ("x" . my/elpher-browse-proxied))
+
     :hook
-    (elpher-mode . olivetti-mode)))
+    (elpher-mode . olivetti-mode)
+
+    :config
+    (defun my/elpher-proxy-url (url)
+      "Wraps the elpher's URL into the HTTP-proxied one on the portal.mozz.us."
+      (pcase (s-match "^\\(.*?\\)://\\(.*\\)$" url)
+        ((seq _ proto path)
+         (format "https://portal.mozz.us/%s/%s" proto path))))
+
+    (defun my/elpher-kill-current (&optional PROXIED)
+      "Yanks current URL, a proxied one if PROXIED (universal arg) is true."
+      (interactive "P")
+      (when (eq major-mode 'elpher-mode)
+        (let* ((current (elpher-info-current))
+               (url (if PROXIED
+                        (my/elpher-proxy-url current)
+                      current)))
+          (kill-new url)
+          (message "Killed: %s" url))))
+
+    (defun my/elpher-browse-proxied (&optional EXT)
+      "Opens current page in HTTP browser, in ext. one if EXT (universal arg)"
+      (interactive "P")
+      (when (eq major-mode 'elpher-mode)
+        (let ((url (my/elpher-proxy-url (elpher-info-current))))
+          (if EXT (eww-browse-with-external-browser url)
+            (eww-browse-url url t)))))))
 
 ;;; Finalization
 ;; restore GC-limit after timeout
