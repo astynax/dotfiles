@@ -356,6 +356,17 @@ Note: It won't trigger any use-packag'ing!"
   ;; see also (recentf-cleanup)
   (add-to-list 'recentf-exclude #'my/in-packages-directory-p))
 
+(def-package my/files
+  :config
+  (defun my/expand-path (PATH &optional ONLY-TILDA)
+    (if-let ((home (getenv "HOME")))
+        (let ((homed (if (string-prefix-p "~/" PATH)
+                         (concat home "/" (substring PATH 2))
+                       PATH)))
+          (if ONLY-TILDA homed
+            (substitute-in-file-name homed)))
+      (error "There is no HOME in env!"))))
+
 (use-package backup-walker
   :commands (backup-walker-start))
 
@@ -2816,17 +2827,6 @@ ${title} is a major mode for [[id:%(org-roam-node-id (org-roam-node-from-title-o
 
   (setq ee-find-youtube-video-program 'find-mpv-video)
 
-  (defun find-os-open (ARG &optional PATH)
-    "Calls the 'open' process with ARG as a path.
-If PATH is not nil then ARG will be used as '-a ARG'
-i.e. as a name of program to open in."
-    (let ((args (if PATH
-                    (list "-a" ARG (substitute-in-file-name PATH))
-                  (list (substitute-in-file-name ARG)))))
-      (apply #'call-process
-             "open" nil nil nil
-             args)))
-
   (when (executable-find "atril")
     ;; See:
     ;;   (find-pdf-like-intro)
@@ -2840,6 +2840,19 @@ i.e. as a name of program to open in."
         ,fname))
     (code-pdfbackend "atril-page")
     (code-pdfbackendalias "pdf-page" "atril-page")))
+
+(def-package my/evv-like
+  :config
+  (defun find-os-open (ARG &optional PATH)
+    "Calls the 'open' process with ARG as a path.
+If PATH is not nil then ARG will be used as '-a ARG'
+i.e. as a name of program to open in."
+    (let ((args (if PATH
+                    (list "-a" ARG (my/expand-path PATH))
+                  (list (my/expand-path ARG)))))
+      (apply #'call-process
+             "open" nil nil nil
+             args))))
 
 ;;; Other
 ;;;; Nov
