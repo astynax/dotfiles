@@ -181,7 +181,13 @@ Note: It won't trigger any use-packag'ing!"
 (setup-package ns-win
   :when my/macos?
   :config
-  (unbind-key "s-t"))
+  (unbind-key "s-t")
+
+  (defun my/ns-activate-emacs ()
+    (interactive)
+    (call-process
+     "osascript" nil nil nil
+     "-e" "tell application \"Emacs\" to activate")))
 
 ;;; Emacs itself
 (setup-package emacs
@@ -289,7 +295,9 @@ Note: It won't trigger any use-packag'ing!"
       (let ((buf (get-buffer-create my/ec-edit-clipboard-buffer-name)))
         (switch-to-buffer buf t)
         (my/ec-edit-clipboard-mode 1)
-        (yank)))))
+        (yank)
+        (when (functionp 'my/ns-activate-emacs)
+          (funcall 'my/ns-activate-emacs))))))
 
 ;;; Faces
 (setup-package faces
