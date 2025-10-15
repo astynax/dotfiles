@@ -249,6 +249,48 @@ Note: It won't trigger any use-packag'ing!"
   :bind
   ([remap capitalize-word] . capitalize-dwim))
 
+;;; Server
+(def-package my/emacsclient
+  :config
+  (defvar my/ec-edit-clipboard-buffer-name "*clipboard editor*")
+
+  (defmacro my/ec-edit-clipboard-buffer--with-buffer (NAME &rest BODY)
+    (declare (indent 1))
+    `(when-let ((,NAME (get-buffer my/ec-edit-clipboard-buffer-name)))
+       (with-current-buffer ,NAME
+         ,@BODY)))
+
+  (defun my/ec-edit-clipboard--accept ()
+    (interactive)
+    (my/ec-edit-clipboard-buffer--with-buffer buf
+      (kill-ring-save (point-min) (point-max))
+      (kill-buffer buf)
+      (delete-frame)))
+
+  (defun my/ec-edit-clipboard--abort ()
+    (interactive)
+    (my/ec-edit-clipboard-buffer--with-buffer buf
+      (kill-buffer)
+      (delete-frame)))
+
+  (defvar my/ec-edit-clipboard-mode-map
+    (let ((m (make-sparse-keymap)))
+      (define-key m (kbd "C-c C-c") #'my/ec-edit-clipboard--accept)
+      (define-key m (kbd "C-c C-k") #'my/ec-edit-clipboard--abort)
+      m))
+
+  (define-minor-mode my/ec-edit-clipboard-mode
+    "A minor mode for my small clipboard editor"
+    :map my/ec-edit-clipboard-mode-map)
+
+  (defun my/ec-edit-clipboard ()
+    (interactive)
+    (when server-mode
+      (let ((buf (get-buffer-create my/ec-edit-clipboard-buffer-name)))
+        (switch-to-buffer buf t)
+        (my/ec-edit-clipboard-mode 1)
+        (yank)))))
+
 ;;; Faces
 (setup-package faces
   :diminish (buffer-face-mode "")
