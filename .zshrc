@@ -42,6 +42,17 @@ if [[ $- == *i* ]]; then
         ncal -3
     }
 
+    function mcd() {
+        if [[ -z "$1" ]]; then
+           echo "Usage: mcd NAME"
+        elif [[ -e "$1" ]]; then
+           echo "The disrectory $1 alredy exists, cd'ing into..."
+           cd "$1"
+        else
+           mkdir -p "$1" && cd "$1"
+	fi
+    }
+
     function wttr() {
         curl 'wttr.in/yerevan?T&lang=en'
     }
