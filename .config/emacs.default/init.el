@@ -491,6 +491,11 @@ Note: It won't trigger any use-packag'ing!"
   :commands
   (dired-narrow))
 
+;;; Dictionary
+(setup-package dictionary
+  :custom
+  (dictionary-server "dict.org"))
+
 ;;; UI
 ;;;; Highlights
 (setup-package paren
@@ -942,13 +947,17 @@ Chooses between buffers of the current project if any."
    embark-file-map
    ("J" . my/embark-terminal-jump))
 
+  (:map
+   embark-identifier-map
+   ("D" . dictionary-lookup-definition))
+
   :preface
   (defun my/embark-terminal-jump (arg)
     "Open a FILE (or FILE's DIR) in XTerm."
     (interactive "f")
     (if-let ((default-directory
-               (if (file-directory-p arg) arg
-                 (file-name-directory arg))))
+              (if (file-directory-p arg) arg
+                (file-name-directory arg))))
         (shell-command "basher.bash xterm -maximized -e bash")
       (message "Can't detect a suitable directory to open!"))))
 
