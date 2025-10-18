@@ -2999,12 +2999,13 @@ of the file that MPD is playing now."
     (push '("\\`\\*hackernews .*\\*\\'" (display-buffer-same-window))
           display-buffer-alist)))
 
-;;; Gopher
+;;; Smol Web
 (overlay gopher
   (use-package elpher
     :bind
     (:map
      elpher-mode-map
+     ("<mouse-3>" . nil)
      ("w" . my/elpher-kill-current)
      ("&" . my/elpher-browse-proxied)  ;; as in EWW
      ("x" . my/elpher-browse-proxied))
