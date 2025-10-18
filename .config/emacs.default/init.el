@@ -2561,6 +2561,20 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
     "Tweaks an org-mode"
     (setq-local truncate-lines nil))
 
+  (defun my/org-insert-item--enforce-checkbox (FN &optional ARG)
+    "Adds a checkbox to the new item if the current item has one."
+    (when-let (itemp (org-in-item-p))
+      (let ((new-arg (or ARG
+                         (save-excursion
+                           (goto-char itemp)
+                           (looking-at org-list-full-item-re)
+                           (let ((chk (match-string 3)))
+                             (and chk
+                                  (not (string-empty-p chk))))))))
+        (funcall FN new-arg))))
+
+  (advice-add 'org-insert-item :around #'my/org-insert-item--enforce-checkbox)
+
   ;; src: https://xenodium.com/emacs-dwim-do-what-i-mean/
   (require 's)
   (defun my/org-insert-link-dwim ()
