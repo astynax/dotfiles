@@ -2927,7 +2927,20 @@ i.e. as a name of program to open in."
                   (list (my/expand-path ARG)))))
       (apply #'call-process
              "open" nil nil nil
-             args))))
+             args)))
+
+  (defun find-wikipedia (TERM &optional LANGUAGE)
+    "Opens the Wikipedia with a corresponding page for the TERM
+and with prefered LANGUAGE (\"en\" by default)."
+    (interactive "sTerm:
+sLanguage[en]:")
+    (when (not (string-blank-p TERM))
+      (let ((lang (if (or (not (stringp LANGUAGE))
+                          (string-blank-p LANGUAGE))
+                      "en"
+                    LANGUAGE)))
+        (browse-url
+         (format "https://%s.wikipedia.org/wiki/%s" lang TERM))))))
 
 ;;; Other
 ;;;; Nov
