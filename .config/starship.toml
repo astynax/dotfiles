@@ -7,6 +7,7 @@ format = """\
     $git_branch\
     $git_state\
     $git_status\
+    $golang\
     $gradle\
     $package\
     $python\
@@ -44,6 +45,9 @@ style = "bold red"
 [directory]
 truncate_to_repo = false
 read_only = "R"
+
+[golang]
+symbol = "Go "
 
 [gradle]
 symbol = "\ue660 "
