@@ -2451,11 +2451,20 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
   :commands (flyspell-buffer flyspell-mode)
 
   :bind
-  ("M-<f5>" . flyspell-buffer)
-  ("M-<f8>" . flyspell-goto-next-error)
   (:map
    mode-specific-map
-   ("s" . flyspell-correct-word-before-point)))
+   (:prefix
+    "s"
+    :prefix-map my/flyspell-map
+    ("b" . flyspell-buffer)
+    ("n" . flyspell-goto-next-error)
+    ("c" . flyspell-correct-word-before-point)
+    ("u" . my/flyspell-off)))
+
+  :config
+  (defun my/flyspell-off ()
+    (interactive)
+    (flyspell--mode-off)))
 
 ;;; Org-mode/Outline
 ;;;; Org
