@@ -75,6 +75,16 @@ if [[ $- == *i* ]]; then
             echo "Folder \"$DIR\" will be created..."
             read -n 1
             mkdir -p -- "$DIR" && builtin cd -- "$DIR"
+            export NEW_TEMP_DIR="$(basename $DIR)"
+            function persist () {
+                if [ -d "/tmp/$NEW_TEMP_DIR" ]; then
+                    echo "$NEW_TEMP_DIR will be moved to ~/Projects..."
+                    read -n 1
+                    cd /tmp
+                    mv $NEW_TEMP_DIR ~/Projects && \
+                        cd ~/Projects/$NEW_TEMP_DIR
+                fi
+            }
         fi
     }
 
@@ -86,4 +96,8 @@ if [[ $- == *i* ]]; then
     if [[ ! "$SHLVL" -ge 2 ]]; then
         fortune || true
     fi
+    function p () {
+        cd && cd $(cat <(find Projects -type d -depth 1) <(find IdeaProjects -type d -depth 1) | sort | fzf)
+    }
+
 fi
