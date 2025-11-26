@@ -1,0 +1,11 @@
+# -*- mode:shell-script -*-
+
+pushd -q "$HOME"
+local TARGET=$(
+    cat <(find Projects -type d -depth 1) \
+        <(find IdeaProjects -type d -depth 1) \
+        | sort | fzf )
+popd -q
+if [ -n "$TARGET" ]; then
+    cd "$HOME/$TARGET"
+fi

@@ -24,8 +24,9 @@ if [[ -d "$HOME/.cargo/env" ]]; then
 fi
 
 if [[ $- == *i* ]]; then
-    autoload -Uz compinit
-    compinit
+    export FPATH="$FPATH:$HOME/.local/share/zsh/site-functions"
+
+    autoload -Uz compinit && compinit
 
     source <(/usr/local/bin/starship init zsh --print-full-init)
     source <(fzf --zsh) || true
@@ -37,67 +38,25 @@ if [[ $- == *i* ]]; then
     alias et="eza --tree --git-ignore"
     alias cat=bat
     alias r=ranger
+    alias cal="ncal -3"
 
     alias e=emacs
-    alias enw=emacs -nw
-
-    function cal() {
-        ncal -3
-    }
-
-    function mcd() {
-        if [[ -z "$1" ]]; then
-           echo "Usage: mcd NAME"
-        elif [[ -e "$1" ]]; then
-           echo "The disrectory $1 alredy exists, cd'ing into..."
-           cd "$1"
-        else
-           mkdir -p "$1" && cd "$1"
-	fi
-    }
-
-    function wttr() {
-        curl 'wttr.in/yerevan?T&lang=en'
-    }
+    alias enw="emacs -nw"
 
     function timestamp () {
         date +%Y%m%d_%H%M%S;
     }
 
-    function gotempdir () {
-        local SUFFIX
-        local DIR=/tmp/$(timestamp)
-        read 'SUFFIX?You can add a suffix if you want: '
-        if [[ ! -z "$SUFFIX" ]]; then
-            DIR=$DIR'_'$SUFFIX
-        fi
-        if [[ ! -a "$DIR" ]]; then
-            echo "Folder \"$DIR\" will be created..."
-            read -n 1
-            mkdir -p -- "$DIR" && builtin cd -- "$DIR"
-            export NEW_TEMP_DIR="$(basename $DIR)"
-            function persist () {
-                if [ -d "/tmp/$NEW_TEMP_DIR" ]; then
-                    echo "$NEW_TEMP_DIR will be moved to ~/Projects..."
-                    read -n 1
-                    cd /tmp
-                    mv $NEW_TEMP_DIR ~/Projects && \
-                        cd ~/Projects/$NEW_TEMP_DIR
-                fi
-            }
-        fi
+    autoload -Uz mcd
+    autoload -Uz gotempdir
+    autoload -Uz p
+
+    function wttr() {
+        curl 'wttr.in/yerevan?T&lang=en'
     }
 
     function goghcup () {
         export DEBIAN_CHROOT=ghcup
         export PATH=$HOME/.ghcup/bin:$PATH
     }
-
-    if [[ ! "$SHLVL" -ge 2 ]]; then
-        fortune || true
-    fi
-    function p () {
-        cd && cd $(cat <(find Projects -type d -depth 1) <(find IdeaProjects -type d -depth 1) | sort | fzf)
-    }
-
 fi
