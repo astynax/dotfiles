@@ -1,0 +1,48 @@
+# -*- mode:shell-script -*-
+
+local LSOF_MATCHES=$(lsof -t -c ^lsof -a -p ^$$ -a +D "$(pwd)")
+if [ "$?" -gt 1 ]; then
+    echo "lsof call errored:"
+    echo "$LSOF_MATCHES"
+    return 1
+fi
+
+if [ -n "$LSOF_MATCHES" ]; then
+    echo "Some processes use this subtree"
+    lsof -c ^lsof -a -p ^$$ +D "$(pwd)"
+    return 1
+fi
+
+# allow to abourt if there are any jobs
+if [ -n "$(jobs)" ]; then
+    echo "You have some jobs:"
+    jobs
+    echo "Press any key to continue or Ctrl-C to abort..."
+    read -n 1
+fi
+
+local NAME
+local ORIG_NAME
+ORIG_NAME=$(basename "$(pwd)")
+if [ -z "$1" ]; then
+    local TEMPFILE="/tmp/renameme$$"
+    echo "$ORIG_NAME" > "$TEMPFILE"
+    nano "$TEMPFILE"
+    NAME=$(cat "$TEMPFILE")
+    rm -f "$TEMPFILE"
+    if [ -z "$NAME" ]; then
+        echo "Aborted"
+        return 1
+    fi
+else
+    NAME="$1"
+fi
+
+if [ "$NAME" = "$ORIG_NAME" ]; then
+    echo "Nothing to change"
+    return
+fi
+
+cd .. && \
+    mv "$ORIG_NAME" "$NAME" && \
+    cd "$NAME"
