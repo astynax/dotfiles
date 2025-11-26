@@ -2415,11 +2415,6 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
 (setup-package ispell
   :if (executable-find "hunspell")
 
-  :preface
-  ;; FIXME: remove after the Debian's site-lisp will be fixed
-  (unless (boundp 'ispell-menu-map-needed)
-    (defvar ispell-menu-map-needed nil))
-
   :commands
   (ispell-buffer)
 
