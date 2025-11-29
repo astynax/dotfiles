@@ -49,6 +49,7 @@ if [[ $- == *i* ]]; then
 
     autoload -Uz mcd
     autoload -Uz gotempdir
+    autoload -Uz renameme
     autoload -Uz p
 
     function wttr() {

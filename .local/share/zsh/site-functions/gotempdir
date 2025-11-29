@@ -18,8 +18,8 @@ if [[ ! -a "$DIR" ]]; then
             echo "$NEW_TEMP_DIR will be moved to ~/Projects..."
             read -n 1
             cd /tmp
-            mv "$NEW_TEMP_DIR" ~/Projects && \
-                cd "~/Projects/$NEW_TEMP_DIR"
+            mv "$NEW_TEMP_DIR" "$HOME/Projects" && \
+                builtin cd -- "$HOME/Projects/$NEW_TEMP_DIR/"
         fi
     }
 fi
