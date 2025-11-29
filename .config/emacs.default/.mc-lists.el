@@ -8,6 +8,7 @@
         capitalize-dwim
         comment-dwim-2
         completion-at-point
+        counsel-M-x
         counsel-unicode-char
         counsel-yank-pop
         dabbrev-completion
@@ -38,6 +39,7 @@
         org-delete-char
         org-end-of-line
         org-force-self-insert
+        org-metaright
         org-return-indent
         org-self-insert-command
         org-shiftright
