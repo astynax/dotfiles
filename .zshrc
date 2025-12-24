@@ -29,9 +29,16 @@ if [[ $- == *i* ]]; then
     autoload -Uz compinit && compinit
 
     source <(/usr/local/bin/starship init zsh --print-full-init)
-    source <(fzf --zsh) || true
 
-    [[ $(type -p "poe") ]] && source <(poe _zsh_completion) && compdef _poe poe
+    if type -p "fzf" > /dev/null; then
+        source <(fzf --zsh) || true
+        export FZF_DEFAULT_OPTS_FILE="$HOME/.config/.fzfrc"
+    fi
+
+    if type -p "poe" > /dev/null; then
+        source <(poe _zsh_completion)
+        compdef _poe poe
+    fi
 
     alias ll="eza --icons -l"
     alias ls=eza
