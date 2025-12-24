@@ -65,6 +65,13 @@ Includes Homebrew GCC paths and CommandLineTools SDK libraries."
 (when my/macos?
   (setup-macos-native-comp-library-paths))
 
+;;; Warnings
+
+(setq warning-suppress-types
+      '((files missing-lexbind-cookie))
+      warning-suppress-log-types
+      '((files missing-lexbind-cookie)))
+
 ;;; Environment
 (dolist (p '("/usr/local/bin"
              "~/.local/bin"
@@ -262,7 +269,7 @@ Note: It won't trigger any use-packag'ing!"
 
   (defmacro my/ec-edit-clipboard-buffer--with-buffer (NAME &rest BODY)
     (declare (indent 1))
-    `(when-let ((,NAME (get-buffer my/ec-edit-clipboard-buffer-name)))
+    `(when-let* ((,NAME (get-buffer my/ec-edit-clipboard-buffer-name)))
        (with-current-buffer ,NAME
          ,@BODY)))
 
@@ -357,7 +364,7 @@ Note: It won't trigger any use-packag'ing!"
   (defun my/kill-buffer-file-name ()
     "Kills a file name of the current buffer if any."
     (interactive)
-    (if-let ((name (buffer-file-name (current-buffer))))
+    (if-let* ((name (buffer-file-name (current-buffer))))
         (kill-new name)
       (message "This bufer does'n have a file name")))
 
@@ -409,7 +416,7 @@ Note: It won't trigger any use-packag'ing!"
 (def-package my/files
   :config
   (defun my/expand-path (PATH &optional ONLY-TILDA)
-    (if-let ((home (getenv "HOME")))
+    (if-let* ((home (getenv "HOME")))
         (let ((homed (if (string-prefix-p "~/" PATH)
                          (concat home "/" (substring PATH 2))
                        PATH)))
@@ -744,11 +751,11 @@ _j_ ^ ^ _l_ _=_:equalize
     "Switches between buffers with the same major mode as the current one.
 Chooses between buffers of the current project if any."
     (interactive)
-    (when-let
+    (when-let*
         ((bs
           (sort
            (cl-loop
-            for b in (if-let ((p (project-current)))
+            for b in (if-let* ((p (project-current)))
                          (project-buffers p)
                        (buffer-list))
             if (eql major-mode (with-current-buffer b
@@ -955,9 +962,9 @@ Chooses between buffers of the current project if any."
   (defun my/embark-terminal-jump (arg)
     "Open a FILE (or FILE's DIR) in XTerm."
     (interactive "f")
-    (if-let ((default-directory
-              (if (file-directory-p arg) arg
-                (file-name-directory arg))))
+    (if-let* ((default-directory
+               (if (file-directory-p arg) arg
+                 (file-name-directory arg))))
         (shell-command "basher.bash xterm -maximized -e bash")
       (message "Can't detect a suitable directory to open!"))))
 
@@ -1014,10 +1021,10 @@ Open in the new window if called with the UNIVERSAL ARG."
                     (buffer-substring-no-properties
                      (region-beginning)
                      (region-end)))))
-      (when-let ((url (read-string
-                       (format "(eew) Browse%s: "
-                               (if new-window " (new buffer)" ""))
-                       region)))
+      (when-let* ((url (read-string
+                        (format "(eew) Browse%s: "
+                                (if new-window " (new buffer)" ""))
+                        region)))
         (eww-browse-url url new-window)))))
 
 (setup-package shr
@@ -1521,11 +1528,12 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
      ("M-RET" . eglot-code-actions))
 
     :config
-    (define-advice eglot--snippet-expansion-fn
-        (:around nil my/eglot-snippet-expansion-advice)
-      ;; TODO: think about a proper snippet skipping
-      (unless (derived-mode-p 'haskell-mode)
-        a-do-it)))
+    ;; (define-advice eglot--snippet-expansion-fn
+    ;;     (:around nil my/eglot-snippet-expansion-advice)
+    ;;   ;; TODO: think about a proper snippet skipping
+    ;;   (unless (derived-mode-p 'haskell-mode)
+    ;;     a-do-it))
+    )
 
   (def-package my/eglot
     :after (eglot embark)
@@ -1586,7 +1594,7 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
     (sly-mrepl-mode . rainbow-delimiters-mode)
 
     :config
-    (when-let ((sbcl (executable-find "sbcl")))
+    (when-let* ((sbcl (executable-find "sbcl")))
       (setq inferior-lisp-program sbcl))
 
     ;; do (ql:quickload :clhs) before!
@@ -1628,15 +1636,15 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
                                 nil)))))
 
     (define-clojure-indent
-      ;; compojure indentation tweaks
-      (defroutes 'defun)
-      (GET 2)
-      (POST 2)
-      (PUT 2)
-      (DELETE 2)
-      (HEAD 2)
-      (ANY 2)
-      (context 2)))
+     ;; compojure indentation tweaks
+     (defroutes 'defun)
+     (GET 2)
+     (POST 2)
+     (PUT 2)
+     (DELETE 2)
+     (HEAD 2)
+     (ANY 2)
+     (context 2)))
 
   (use-package clojure-mode-extra-font-locking
     :after (clojure-mode))
@@ -1660,7 +1668,7 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
       "Start a utility CIDER REPL backed by Babashka, not related to a specific project."
       (interactive "P")
       (let ((project-dir
-             (or (when-let ((c (project-current ask-for-project-dir)))
+             (or (when-let* ((c (project-current ask-for-project-dir)))
                    (project-root c))
                  default-directory)))
         (nrepl-start-server-process
@@ -2567,7 +2575,7 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
 
   (defun my/org-insert-item--enforce-checkbox (FN &optional ARG)
     "Adds a checkbox to the new item if the current item has one."
-    (when-let (itemp (org-in-item-p))
+    (when-let* (itemp (org-in-item-p))
       (let ((new-arg (or ARG
                          (save-excursion
                            (goto-char itemp)
@@ -2804,16 +2812,16 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
     (defun my/roam/kill-link ()
       "Returns an org-link to the current org-roam node or file+line."
       (interactive)
-      (when-let ((link (if-let* ((id (org-roam-id-at-point))
-                                 (node (org-roam-node-from-id id)))
-                           (org-make-link-string
-                            (format "id:%s" id)
-                            (org-roam-node-title node))
-                         (when-let ((fname (buffer-file-name (current-buffer))))
-                           (org-make-link-string
-                            (format "file:%s::%s" fname
-                                    (line-number-at-pos (point)))
-                            fname)))))
+      (when-let* ((link (if-let* ((id (org-roam-id-at-point))
+                                  (node (org-roam-node-from-id id)))
+                            (org-make-link-string
+                             (format "id:%s" id)
+                             (org-roam-node-title node))
+                          (when-let* ((fname (buffer-file-name (current-buffer))))
+                            (org-make-link-string
+                             (format "file:%s::%s" fname
+                                     (line-number-at-pos (point)))
+                             fname)))))
         (kill-new link)
         (message "Link was killed...")))
 
@@ -3007,7 +3015,7 @@ of the file that MPD is playing now."
     :config
     (defun my/hackernews-yank-url ()
       (interactive)
-      (when-let (btn (point))
+      (when-let* (btn (point))
         (when (button-has-type-p btn 'hackernews-link)
           (let ((url (button-get btn 'shr-url)))
             (message "URL killed: %s" url)
