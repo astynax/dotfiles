@@ -84,6 +84,12 @@ files = [".ok"]
 description = "Ok-file is present"
 symbol = "Ok "
 
+[custom.poe]
+files = ["poe_tasks.json", "poe_tasks.yaml", "poe_tasks.toml"]
+when = "grep 'tool.poe' pyproject.toml"
+description = "Poe tasks found"
+symbol = "Poe "
+
 [custom.idea]
 directories = [".idea"]
 symbol = "\ue7b5 "
