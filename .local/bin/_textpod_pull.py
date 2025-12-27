@@ -9,9 +9,8 @@
 import sys
 from datetime import datetime
 
-from plumbum import local, FG
+from plumbum import FG, local
 from plumbum.cli.terminal import choose
-
 
 TS_FMT='%Y%m%d_%H%M'
 
