@@ -1,0 +1,6 @@
+#!/bin/sh
+
+git ls-files --exclude-standard \
+    | xargs -I {} git log -1 --format="{}|%h|%ad|%s" --date=short {} \
+    | sort -k 3 -t '|' \
+    | tabulate -f plain -s '\|'
