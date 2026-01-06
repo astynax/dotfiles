@@ -1,0 +1,9 @@
+uv-try() { 
+  local cmd
+  cmd=(uv run)
+  for arg in "$@"; do
+    cmd+=( --with "$arg" )  
+  done
+  cmd+=( python )
+  ${cmd[@]}
+}

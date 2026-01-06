@@ -58,6 +58,7 @@ if [[ $- == *i* ]]; then
     autoload -Uz gotempdir
     autoload -Uz renameme
     autoload -Uz p
+    autoload -Uz uv-try
 
     function wttr() {
         curl 'wttr.in/yerevan?T&lang=en'
