@@ -1817,12 +1817,18 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
 
     :hook
     (python-mode . smartparens-mode)
-    (python-mode . eglot-ensure)
 
     :bind
     (:map
      python-mode-map
-     ("C-c C-c" . compile))))
+     ("C-c C-c" . compile)))
+
+  (def-package my/python-eglot
+    :after (python eglot)
+    :config
+    (add-to-list 'eglot-server-programs
+                 '((python-mode python-ts-mode)
+                   "basedpyright-langserver" "--stdio"))))
 
 ;;;; Rust
 (overlay rust
