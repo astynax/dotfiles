@@ -2581,7 +2581,7 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
 
   (defun my/org-insert-item--enforce-checkbox (FN &optional ARG)
     "Adds a checkbox to the new item if the current item has one."
-    (when-let* (itemp (org-in-item-p))
+    (when-let* ((itemp (org-in-item-p)))
       (let ((new-arg (or ARG
                          (save-excursion
                            (goto-char itemp)
@@ -3021,7 +3021,7 @@ of the file that MPD is playing now."
     :config
     (defun my/hackernews-yank-url ()
       (interactive)
-      (when-let* (btn (point))
+      (when-let* ((btn (point)))
         (when (button-has-type-p btn 'hackernews-link)
           (let ((url (button-get btn 'shr-url)))
             (message "URL killed: %s" url)
