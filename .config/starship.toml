@@ -60,6 +60,7 @@ symbol = "\ue68e "
 
 [haskell]
 symbol = "\ue777 "
+detect_extensions = ['cabal']
 
 [python]
 detect_extensions = []
