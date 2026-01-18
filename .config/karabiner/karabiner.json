@@ -34,12 +34,45 @@
                                         "shell_command": "open -a 'Terminal'"
                                     }
                                 ],
+                                "conditions": [
+                                    {
+                                        "type": "frontmost_application_unless",
+                                        "bundle_identifiers": ["^com\\.apple\\.Terminal$"]
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "from": {
+                                    "key_code": "return_or_enter",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "left_option"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "t",
+                                        "modifiers": ["left_option"]
+                                    }
+                                ],
+                                "conditions": [
+                                    {
+                                        "type": "frontmost_application_if",
+                                        "bundle_identifiers": ["^com\\.apple\\.Terminal$"]
+                                    }
+                                ],
                                 "type": "basic"
                             },
                             {
                                 "from": {
                                     "key_code": "v",
-                                    "modifiers": { "mandatory": ["fn"] }
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "fn"
+                                        ]
+                                    }
                                 },
                                 "to": [
                                     {
