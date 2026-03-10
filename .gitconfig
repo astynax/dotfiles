@@ -24,6 +24,7 @@
     safecrlf = true
     excludesfile = ~/.gitignore
     editor = mg
+    attributesfile = ~/.gitattributes
 [pull]
     rebase = true
 [init]
