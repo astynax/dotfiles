@@ -2276,25 +2276,7 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
     (yas-reload-all))
 
   (use-package yasnippet-snippets
-    :after (yasnippet))
-
-  (use-package yankpad
-    :after (yasnippet)
-
-    :custom
-    (yankpad-file "~/Dropbox/org/yankpad.org")
-
-    :bind
-    (:map
-     mode-specific-map
-     :prefix
-     "y"
-     :prefix-map
-     my/yankpad-map
-     ("m" . yankpad-map)
-     ("y" . yankpad-insert)))
-
-  (put 'yankpad-file 'safe-local-variable #'stringp))
+    :after (yasnippet)))
 
 ;;;; Grep'likes
 (use-package wgrep
