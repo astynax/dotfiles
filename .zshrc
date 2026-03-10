@@ -7,6 +7,7 @@ setopt hist_expire_dups_first
 setopt hist_reduce_blanks
 
 setopt emacs
+export EDITOR=mg
 export FCEDIT=mg
 
 if type brew &>/dev/null; then
@@ -27,6 +28,8 @@ if [[ $- == *i* ]]; then
     export FPATH="$FPATH:$HOME/.local/share/zsh/site-functions"
 
     autoload -Uz compinit && compinit
+
+    zstyle ':completion:*' menu select
 
     source <(/usr/local/bin/starship init zsh --print-full-init)
 
@@ -50,6 +53,8 @@ if [[ $- == *i* ]]; then
     alias e=emacs
     alias enw="emacs -nw"
 
+    alias nano=mg
+
     function timestamp () {
         date +%Y%m%d_%H%M%S;
     }
@@ -68,4 +73,9 @@ if [[ $- == *i* ]]; then
         export DEBIAN_CHROOT=ghcup
         export PATH=$HOME/.ghcup/bin:$PATH
     }
+
+    export TLDR_AUTO_UPDATE_DISABLED=yes
+    alias tldr="tldr --platform=osx"
+
+    export PAGER="less -r"
 fi
