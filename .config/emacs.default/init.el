@@ -85,6 +85,8 @@ Includes Homebrew GCC paths and CommandLineTools SDK libraries."
 ;;;; package.el
 (require 'package)
 
+(setq package-install-upgrade-built-in t)
+
 (setq package-archives
       `(("melpa" . "https://melpa.org/packages/")
         ,@package-archives))
@@ -2460,7 +2462,8 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
 ;;; Org-mode/Outline
 ;;;; Org
 (use-package org
-  :pin gnu
+  ;; :pin gnu  ;; TODO: return someday
+  :ensure nil
 
   :mode ("\\.org\\'" . org-mode)
 
