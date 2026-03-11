@@ -615,7 +615,7 @@ Note: It won't trigger any use-packag'ing!"
    ("z" . 'hydra-global-text-scale/body)))
 
 ;;;; Theme
-(use-package modus-themes
+(setup-package custom
   :custom
   (modus-themes-bold-constructs t)
   (modus-themes-italic-constructs t)
@@ -624,9 +624,10 @@ Note: It won't trigger any use-packag'ing!"
   (modus-themes-org-blocks '(gray-background))
 
   :config
+  (load-theme 'modus-vivendi nil t)
+  (load-theme 'modus-operandi nil t)
   (setq modus-themes-common-palette-overrides
         modus-themes-preset-overrides-faint)
-  (load-theme 'modus-vivendi nil t)
   (load-theme 'modus-operandi))
 
 (use-package auto-dark
