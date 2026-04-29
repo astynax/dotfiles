@@ -1831,7 +1831,10 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
     :config
     (add-to-list 'eglot-server-programs
                  '((python-mode python-ts-mode)
-                   "basedpyright-langserver" "--stdio"))))
+                   "basedpyright-langserver" "--stdio"))
+    (add-to-list 'eglot-server-programs
+                 '((python-mode python-ts-mode)
+                   "pyrefly" "lsp"))))
 
 ;;;; Rust
 (overlay rust
