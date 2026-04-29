@@ -34,13 +34,18 @@ if [[ $- == *i* ]]; then
     source <(/usr/local/bin/starship init zsh --print-full-init)
 
     if type -p "fzf" > /dev/null; then
-        source <(fzf --zsh) || true
         export FZF_DEFAULT_OPTS_FILE="$HOME/.config/.fzfrc"
+        source "$HOME/.local/share/zsh/site-functions/_fzf"
     fi
 
     if type -p "poe" > /dev/null; then
-        source <(poe _zsh_completion)
+        autoload -Uz _poe
         compdef _poe poe
+    fi
+
+    if type -p "but" > /dev/null; then
+        autoload -Uz _but
+        compdef _but but
     fi
 
     alias ll="eza --icons -l"
@@ -52,6 +57,7 @@ if [[ $- == *i* ]]; then
 
     alias e=emacs
     alias enw="emacs -nw"
+    alias ec="emacsclient -nc"
 
     alias nano=mg
 
