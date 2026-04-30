@@ -1,2 +1,4 @@
---theme=ansi
+--theme=auto
+--theme-light=Coldark-Cold
+--theme-dark=Coldark-Dark
 --style=plain
