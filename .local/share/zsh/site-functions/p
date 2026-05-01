@@ -1,11 +1,17 @@
 # -*- mode:shell-script -*-
 
-pushd -q "$HOME"
+local FD=(fd -t directory --exact-depth 1 '.*')
+
+local Q=()
+if [ -n "$1" ]; then
+    Q=(--query "$1")
+fi
+
 local TARGET=$(
-    cat <(find Projects -type d -depth 1) \
-        <(find IdeaProjects -type d -depth 1) \
-        | sort | fzf )
-popd -q
+    cat <($FD -C "$HOME" Projects) \
+        <($FD -C "$HOME" IdeaProjects) \
+        | sort | fzf $Q)
+
 if [ -n "$TARGET" ]; then
-    cd "$HOME/$TARGET"
+    pushd "$HOME/$TARGET"
 fi
