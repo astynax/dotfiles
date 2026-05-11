@@ -2,7 +2,8 @@
 
 # A thin wraper for HEmmeti (https://github.com/astynax/hemmet)
 
-TEMPFILE=$(mktemp --tmpdir mktree_XXXXXX.bash)
+MKTEMP=$(which gmktemp || which mktemp)
+
+TEMPFILE=$($MKTEMP --tmpdir mktree_XXXXXX.bash)
 
 hemmeti ftree bash -O "$TEMPFILE" && bash "$TEMPFILE"
-
