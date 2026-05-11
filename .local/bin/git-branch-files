@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+default_base() {
+    if git show-ref --verify --quiet refs/heads/main; then
+        echo main
+    elif git show-ref --verify --quiet refs/heads/master; then
+        echo master
+    else
+        git symbolic-ref refs/remotes/origin/HEAD \
+            | sed 's@^refs/remotes/origin/@@'
+    fi
+}
+
+BASE_REF="${1:-$(default_base)}"
+
+MERGE_BASE="$(git merge-base HEAD "$BASE_REF")"
+
+git diff --name-only --diff-filter=ACMR "$MERGE_BASE"...HEAD

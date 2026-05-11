@@ -131,7 +131,10 @@ Includes Homebrew GCC paths and CommandLineTools SDK libraries."
   `(use-package ,name
      :ensure nil
      :no-require t
-     ,@body))
+     :preface
+     (provide ',name)
+     ,@body
+     ))
 
 (put 'def-package 'lisp-indent-function 1)
 
@@ -1514,6 +1517,25 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
 ;;;; Fossil
 (overlay fossil
   (use-package vc-fossil))
+
+;;;; Misc
+(def-package my/vc
+  :commands (my/open-files-from-current-git-branch)
+  :config
+  (require 'project)
+  ;; IDEA: use the universal argument to call
+  ;; the `find-file' instead of `find-file-noselect'
+  (defun my/open-files-from-current-git-branch ()
+    (interactive)
+    (let* ((project (project-current t))
+           (root (project-root project))
+           (script (executable-find "git-branch-files"))
+           (default-directory root)
+           (files (process-lines script)))
+      (dolist (file files)
+        (let ((path (expand-file-name file root)))
+          (when (file-exists-p path)
+            (find-file-noselect path)))))))
 
 ;;; Languages
 ;;;; Eglot (LSP client)
