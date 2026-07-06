@@ -1856,7 +1856,26 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
                    "basedpyright-langserver" "--stdio"))
     (add-to-list 'eglot-server-programs
                  '((python-mode python-ts-mode)
-                   "pyrefly" "lsp"))))
+                   "pyrefly" "lsp")))
+
+  (def-package my/python
+    :after (python)
+    :commands (my/activate-uv-script-env)
+    :config
+    (require 'f)
+    (defun my/activate-uv-script-env ()
+      (interactive)
+      (save-excursion
+        (if (not (and (or (eq major-mode 'python-mode) (eq major-mode 'python-ts-mode))
+                      (progn
+                        (beginning-of-buffer)
+                        (re-search-forward "# /// script" 200 t 1))))
+            (message "%s" "This is not a uv-script")
+          (let* ((script (buffer-file-name (current-buffer)))
+                 (python (car (process-lines "uv" "python" "find" "--script" script)))
+                 (venv (f-parent (f-parent python))))
+            (setenv "VIRTUAL_ENV" venv)
+            (message "Env was configured!")))))))
 
 ;;;; Rust
 (overlay rust
