@@ -171,7 +171,7 @@ Note: It won't trigger any use-packag'ing!"
 (my/overlays-configure)
 
 (defun my/overlay-enabled-p (STRING)
-  (cl-member STRING my/overlays :test #'equal))
+  (not (null (cl-member STRING my/overlays :test #'equal))))
 
 (defmacro overlay (name &rest body)
   "Evaluates the body iff the overlay is enabled."
