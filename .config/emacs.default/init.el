@@ -2155,6 +2155,12 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
   (use-package lua-mode
     :mode "\\.lua$"))
 
+;;;; Odin
+(overlay odin
+  (use-package odin-mode
+    :vc (:url "https://github.com/mattt-b/odin-mode.git")
+    :mode ("\\.odin\\'" . odin-mode)))
+
 ;;; IDE
 ;;;; Autocompletion and abbreviation
 (setup-package abbrev
