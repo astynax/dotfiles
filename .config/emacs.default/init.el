@@ -2406,6 +2406,29 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
   (add-hook 'project-find-functions
             #'project-try-projectile))
 
+(def-package my/project
+  :after (project)
+  :config
+  (defun my/project-kill-file-path (&optional ARG)
+    "Kills a path to the file relatively to the current project"
+    (interactive "P")
+    (if-let* ((full-path (buffer-file-name (current-buffer)))
+              (prj (project-current)))
+        (let* ((root (project-root prj))
+               (path (file-relative-name full-path root))
+               (suffix
+                (if (or (region-active-p) ARG)
+                    (let ((b (line-number-at-pos (region-beginning) t))
+                          (e (line-number-at-pos (region-end) t)))
+                      (if (eq b e)
+                          (format ":%d" b)
+                        (format ":%d:%d" b e)))
+                  ""))
+               (result (format "%s%s" path suffix)))
+          (kill-new result)
+          (message "Killed: %s" result))
+      (message "%s" "Not in a project or not a file!"))))
+
 ;;;; Terminal here
 (use-package terminal-here
   :after (projectile)
