@@ -2884,7 +2884,31 @@ ${title} is a major mode for [[id:%(org-roam-node-id (org-roam-node-from-title-o
       :format literal
       :files "*.org"
       :dir org-roam-directory
-      :confirm prefix)))
+      :confirm prefix))
+
+  (def-package my/org-roam
+    :commands (my/org-roam-find-orphan)
+
+    :config
+    ;; source: https://www.cyan.sh/blog/posts/org-roam-orphans.html
+    (defun my/org-roam-find-orphan ()
+      "Find all orphaned nodes and then provide their paths to open with completing-read."
+      (interactive)
+      (let* ((org-roam--db (sqlite-open org-roam-db-location))
+             (org-roam-orphans
+              (sqlite-select
+               org-roam--db
+               "select * from nodes n
+where not exists ( select null from links l where n.id = l.source )
+and not exists ( select null from links l where n.id = l.dest );")))
+        (sqlite-close org-roam--db)
+        (find-file
+         (completing-read
+          "Orphan node: "
+          (mapcar
+           (lambda (rec)
+             (string-replace "\"" "" (cadr rec)))
+           org-roam-orphans)))))))
 
 ;;;; Outshine
 (use-package outshine
