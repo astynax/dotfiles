@@ -30,6 +30,7 @@ add_newline = false
 
 [shlvl]
 disabled = false
+threshold = 3
 
 [env_var.DEBIAN_CHROOT]
 format = "([\\[$env_value\\]](bold red) )"
