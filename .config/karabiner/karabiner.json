@@ -31,7 +31,7 @@
                                 ],
                                 "from": {
                                     "key_code": "return_or_enter",
-                                    "modifiers": { "mandatory": ["left_option"] }
+                                    "modifiers": { "mandatory": ["left_command"] }
                                 },
                                 "to": [{ "shell_command": "open -a 'Terminal'" }],
                                 "type": "basic"
@@ -47,12 +47,12 @@
                                 ],
                                 "from": {
                                     "key_code": "return_or_enter",
-                                    "modifiers": { "mandatory": ["left_option"] }
+                                    "modifiers": { "mandatory": ["left_command"] }
                                 },
                                 "to": [
                                     {
                                         "key_code": "t",
-                                        "modifiers": ["left_option"]
+                                        "modifiers": ["left_command"]
                                     }
                                 ],
                                 "type": "basic"
@@ -83,9 +83,16 @@
                     },
                     "ignore": true,
                     "manipulate_caps_lock_led": false
+                },
+                {
+                    "identifiers": {
+                        "is_keyboard": true,
+                        "product_id": 2311,
+                        "vendor_id": 7847
+                    },
+                    "ignore_vendor_events": true
                 }
             ],
-            "fn_function_keys": [],
             "name": "Default profile",
             "selected": true,
             "simple_modifications": [
