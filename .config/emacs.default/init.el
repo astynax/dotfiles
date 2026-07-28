@@ -647,7 +647,7 @@ Note: It won't trigger any use-packag'ing!"
   :config
   (auto-dark-mode t))
 
-;;;; Window sizing
+;;;; window sizing
 (def-package my/window-sizing
   :preface
   (defhydra hydra-window-sizing (:hint nil)
@@ -1212,8 +1212,8 @@ is already narrowed."
 ;;;; Expand Region
 (use-package expand-region
   :bind
-  ("M-]" . er/expand-region)
-  ("M-[" . er/contract-region)
+  ("M-}" . er/expand-region)
+  ("M-{" . er/contract-region)
 
   :custom
   (expand-region-show-usage-message nil)
