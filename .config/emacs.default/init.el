@@ -2981,6 +2981,27 @@ and not exists ( select null from links l where n.id = l.dest );")))
   ;; unbind M-tab
   (unbind-key "C-M-i" outline-minor-mode-map))
 
+;;; diary
+(setup-package diary
+  :bind
+  (:map
+   diary-mode-map
+   ("M-RET" . my/diary-split-line))
+
+  :config
+  (calendar-set-date-style 'iso)
+
+  (defun my/diary-split-line ()
+    "Split the current line and put the first word
+of the original line in the beginning of the new one."
+    (interactive)
+    (let ((w (save-excursion
+               (beginning-of-line)
+               (current-word))))
+      (newline)
+      (insert w)
+      (insert " "))))
+
 ;;; eev
 (use-package eev
   :bind
