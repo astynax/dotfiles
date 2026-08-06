@@ -3054,7 +3054,7 @@ of the original line in the beginning of the new one."
     (code-pdfbackend "atril-page")
     (code-pdfbackendalias "pdf-page" "atril-page")))
 
-(def-package my/evv-like
+(def-package my/eev-like
   :config
   (defun find-os-open (ARG &optional PATH)
     "Calls the 'open' process with ARG as a path.
