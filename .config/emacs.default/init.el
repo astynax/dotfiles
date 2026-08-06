@@ -189,6 +189,21 @@ Note: It won't trigger any use-packag'ing!"
   :custom
   (custom-file (concat user-emacs-directory "custom.el")))
 
+;;; Stdlib
+(def-package my-helpers
+  :preface
+  (defun my/sort-lines-by-first-word ()
+    (interactive)
+    (save-excursion
+      (goto-char (point-min))
+      (sort-subr
+       nil
+       #'forward-line
+       #'end-of-line
+       #'beginning-of-line
+       (lambda ()
+         (skip-chars-forward "^ \t\n"))))))
+
 ;;; MacOS
 (setup-package ns-win
   :when my/macos?
