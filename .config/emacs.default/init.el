@@ -2998,7 +2998,10 @@ and not exists ( select null from links l where n.id = l.dest );")))
   (unbind-key "C-M-i" outline-minor-mode-map))
 
 ;;; diary
-(setup-package diary
+(setup-package calendar
+  :mode
+  ("diary" . diary-mode)
+
   :bind
   (:map
    diary-mode-map
