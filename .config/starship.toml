@@ -88,7 +88,7 @@ symbol = "Ok "
 
 [custom.poe]
 files = ["poe_tasks.json", "poe_tasks.yaml", "poe_tasks.toml"]
-when = "grep 'tool.poe' pyproject.toml"
+when = "grep -q 'tool\\.poe' pyproject.toml"
 description = "Poe tasks found"
 symbol = "Poe "
 
