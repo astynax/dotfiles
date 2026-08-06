@@ -194,6 +194,7 @@ Note: It won't trigger any use-packag'ing!"
   :when my/macos?
   :config
   (unbind-key "s-t")
+  (unbind-key "s-o")
 
   (defun my/ns-activate-emacs ()
     (interactive)
