@@ -1562,11 +1562,18 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
     :bind
     (:map
      mode-specific-map
-     ("SPC" . eglot-code-actions)
+     ("SPC" . eglot-code-actions))
 
-     :map
-     eglot-mode-map
-     ("M-RET" . eglot-code-actions))
+    (:map
+     mode-specific-map
+     :prefix
+     "e"
+     :prefix-map
+     my/eglot-map
+     ("e" . eglot)
+     ("SPC" . eglot-act)
+     ("r" . eglot-rename)
+     ("S" . eglot-shutdown))
 
     :config
     ;; (define-advice eglot--snippet-expansion-fn
@@ -3029,7 +3036,7 @@ of the original line in the beginning of the new one."
   ("<f8>" . eepitch-this-line)
   (:map
    mode-specific-map
-   :prefix "e"
+   :prefix "E"
    :prefix-map my/eev-map
    ("e" . ee-eval-sexp-eol)
    ("j" . eejump)
