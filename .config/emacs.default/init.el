@@ -2997,19 +2997,21 @@ and not exists ( select null from links l where n.id = l.dest );")))
   ;; unbind M-tab
   (unbind-key "C-M-i" outline-minor-mode-map))
 
-;;; diary
+;;; diary & calendar
 (setup-package calendar
+  :config
+  (calendar-set-date-style 'iso))
+
+(setup-package diary-lib
   :mode
   ("diary" . diary-mode)
 
   :bind
   (:map
    diary-mode-map
-   ("M-RET" . my/diary-split-line))
+   ("C-M-J" . my/diary-split-line))
 
   :config
-  (calendar-set-date-style 'iso)
-
   (defun my/diary-split-line ()
     "Split the current line and put the first word
 of the original line in the beginning of the new one."
