@@ -349,7 +349,7 @@ Note: It won't trigger any use-packag'ing!"
   (mode-line ((t (:height 0.8))))
   (mode-line-inactive ((t (:height 0.8)))))
 
-;;; Date/Time
+;;; Date/Time/Calendar/Diary
 (setup-package time
   :preface
   (defun insert-today ()
@@ -358,9 +358,38 @@ Note: It won't trigger any use-packag'ing!"
 
   :custom
   (display-time-default-load-average nil)
-  (display-time-24hr-format t)
+  (display-time-24hr-format t))
+
+(setup-package calendar
+  :custom
   (calendar-week-start-day 1)
-  (calendar-date-style 'european))
+  (calendar-time-display-form
+   '(24-hours ":" minutes
+              (if time-zone " (") time-zone (if time-zone ")")))
+
+  :config
+  (calendar-set-date-style 'iso))
+
+(setup-package diary-lib
+  :mode
+  ("diary" . diary-mode)
+
+  :bind
+  (:map
+   diary-mode-map
+   ("C-M-J" . my/diary-split-line))
+
+  :config
+  (defun my/diary-split-line ()
+    "Split the current line and put the first word
+of the original line in the beginning of the new one."
+    (interactive)
+    (let ((w (save-excursion
+               (beginning-of-line)
+               (current-word))))
+      (newline)
+      (insert w)
+      (insert " "))))
 
 ;;; Files
 (setup-package files
@@ -3003,32 +3032,6 @@ and not exists ( select null from links l where n.id = l.dest );")))
   :config
   ;; unbind M-tab
   (unbind-key "C-M-i" outline-minor-mode-map))
-
-;;; diary & calendar
-(setup-package calendar
-  :config
-  (calendar-set-date-style 'iso))
-
-(setup-package diary-lib
-  :mode
-  ("diary" . diary-mode)
-
-  :bind
-  (:map
-   diary-mode-map
-   ("C-M-J" . my/diary-split-line))
-
-  :config
-  (defun my/diary-split-line ()
-    "Split the current line and put the first word
-of the original line in the beginning of the new one."
-    (interactive)
-    (let ((w (save-excursion
-               (beginning-of-line)
-               (current-word))))
-      (newline)
-      (insert w)
-      (insert " "))))
 
 ;;; eev
 (use-package eev
