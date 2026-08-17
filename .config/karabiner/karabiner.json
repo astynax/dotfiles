@@ -14,6 +14,22 @@
                                 },
                                 "to": [{ "shell_command": "/usr/local/bin/emacsclient -c --no-wait -e '(my/ec-edit-clipboard)'" }],
                                 "type": "basic"
+                            },
+                            {
+                                "from": {
+                                    "key_code": "e",
+                                    "modifiers": { "mandatory": ["command", "shift"] }
+                                },
+                                "to": [{ "shell_command": "/usr/local/bin/emacsclient --no-wait -c" }],
+                                "type": "basic"
+                            },
+                            {
+                                "from": {
+                                    "key_code": "e",
+                                    "modifiers": { "mandatory": ["command", "control", "shift"] }
+                                },
+                                "to": [{ "shell_command": "open -na Emacs" }],
+                                "type": "basic"
                             }
                         ]
                     },
