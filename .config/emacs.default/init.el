@@ -1269,10 +1269,7 @@ is already narrowed."
   :diminish
 
   :custom
-  (undo-tree-auto-save-history nil) ;; TODO: enable someday
-  (undo-tree-history-directory-alist
-   `((".*\\.emacs\\.d\\/elpa" . "/tmp/undo-tree-history")
-     (".*" . ,(format "%sundo-tree-history" user-emacs-directory))))
+  (undo-tree-auto-save-history nil)
 
   :hook
   (after-init . global-undo-tree-mode))
@@ -1597,7 +1594,7 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
      :prefix-map
      my/eglot-map
      ("e" . eglot)
-     ("SPC" . eglot-act)
+     ("SPC" . eglot-code-actions)
      ("r" . eglot-rename)
      ("S" . eglot-shutdown))
 
