@@ -2200,6 +2200,18 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
     :vc (:url "https://github.com/mattt-b/odin-mode.git")
     :mode ("\\.odin\\'" . odin-mode)))
 
+;;;; Swift
+(overlay swift
+  (use-package swift-mode
+    :mode ("\\.swift\\'" . swift-mode))
+
+  (def-package my/swift-eglot
+    :after (swift-mode eglot)
+    :config
+    (add-to-list 'eglot-server-programs
+                 '((swift-mode swift-ts-mode)
+                   "sourcekit-lsp"))))
+
 ;;; IDE
 ;;;; Autocompletion and abbreviation
 (setup-package abbrev
