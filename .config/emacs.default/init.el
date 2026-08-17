@@ -582,11 +582,6 @@ of the original line in the beginning of the new one."
   :config
   (volatile-highlights-mode 1))
 
-(use-package highlight-indentation
-  :diminish
-
-  :commands (highlight-indentation-mode))
-
 ;;;; Hydra
 (use-package hydra)
 
@@ -610,14 +605,6 @@ of the original line in the beginning of the new one."
   (which-key-popup-type 'side-window)
   (which-key-side-window-location 'bottom)
   (which-key-side-window-max-height 0.25))
-
-;;;; Discover my major
-(use-package discover-my-major
-  :commands
-  (discover-my-major discover-my-mode)
-
-  :bind
-  ("C-h C-m" . discover-my-major))
 
 ;;;; Text scale
 ;; source: https://www.emacswiki.org/emacs/GlobalTextScaleMode
@@ -2421,18 +2408,10 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
     :confirm prefix
     :flags ("--hidden -g !*.lock"))
 
-  ;; source: https://protesilaos.com/dotemacs
-  (defun rg/save-search-as-name ()
-    "Save `rg' buffer, naming it after the current search query."
-    (interactive)
-    (let ((pattern (car rg-pattern-history)))
-      (rg-save-search-as-name (concat "«" pattern "»"))))
-
   :bind
   ("M-s g" . rg/grep-vc-or-dir)
   (:map
    rg-mode-map
-   ("s" . rg/save-search-as-name)
    ("C-n" . next-line)
    ("C-p" . previous-line)
    ("M-n" . rg-next-file)
@@ -2505,24 +2484,6 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
           (kill-new result)
           (message "Killed: %s" result))
       (message "%s" "Not in a project or not a file!"))))
-
-;;;; Terminal here
-(use-package terminal-here
-  :after (projectile)
-
-  :bind
-  (:map
-   mode-specific-map
-   :prefix
-   "t"
-   :prefix-map
-   my/terminal-here-map
-   ("t" . terminal-here-launch)
-   ("p" . terminal-here-project-launch))
-
-  :custom
-  (terminal-here-project-root-function 'projectile-project-root)
-  (terminal-here-terminal-command (list "x-terminal-emulator")))
 
 ;;;; RESTclient
 (overlay restclient
