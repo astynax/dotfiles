@@ -5,6 +5,22 @@
             "complex_modifications": {
                 "rules": [
                     {
+                        "description": "Window switchers",
+                        "manipulators": [
+                            {
+                                "from": {
+                                    "key_code": "j",
+                                    "modifiers": {
+                                        "mandatory": ["left_command"],
+                                        "optional": []
+                                    }
+                                },
+                                "to": [{ "shell_command": "pkill -USR1 winu" }],
+                                "type": "basic"
+                            }
+                        ]
+                    },
+                    {
                         "description": "Emacs helpers",
                         "manipulators": [
                             {
