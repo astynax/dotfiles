@@ -217,6 +217,16 @@ Note: It won't trigger any use-packag'ing!"
      "osascript" nil nil nil
      "-e" "tell application \"Emacs\" to activate")))
 
+(def-package my/osx
+  :when my/macos?
+  :config
+  (defun osx-notify (MESSAGE &optional TITLE)
+    (let ((script (format "display notification \"%s\" with title \"%s\""
+                          MESSAGE (or TITLE "Emacs"))))
+      (call-process "osascript"
+                    nil nil nil
+                    "-e" script))))
+
 ;;; Emacs itself
 (setup-package emacs
   :init
