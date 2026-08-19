@@ -1237,9 +1237,9 @@ is already narrowed."
    mode-specific-map
    ("S" . ethan-wspace-clean-all)))
 
-(use-package shrink-whitespace
+(setup-package simple
   :bind
-  ("M-\\" . shrink-whitespace))
+  ("M-\\" . cycle-spacing))
 
 ;;;; Smart commenting
 (use-package comment-dwim-2
