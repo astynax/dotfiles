@@ -401,6 +401,11 @@ of the original line in the beginning of the new one."
       (insert w)
       (insert " "))))
 
+;;; Remember
+(setup-package remember
+  :config
+  (put 'remember-data-file 'safe-local-variable #'stringp))
+
 ;;; Files
 (setup-package files
   :preface
