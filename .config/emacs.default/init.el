@@ -289,10 +289,6 @@ Note: It won't trigger any use-packag'ing!"
   :hook
   (after-init . global-tab-line-mode))
 
-(setup-package simple
-  :bind
-  ([remap capitalize-word] . capitalize-dwim))
-
 ;;; Server
 (def-package my/emacsclient
   :config
@@ -1324,7 +1320,13 @@ jumps between the end and begigging of sexp if region is inactive."
   (require 'smartparens-config)
   (sp-local-pair 'minibuffer-inactive-mode "'" nil :actions nil))
 
-;;;; Case formatting
+;;;; Text case
+(setup-package simple
+  :bind
+  ([remap upcase-word] . upcase-dwim)
+  ([remap downcase-word] . downcase-dwim)
+  ([remap capitalize-word] . capitalize-dwim))
+
 (use-package string-inflection
   :bind
   (:map
