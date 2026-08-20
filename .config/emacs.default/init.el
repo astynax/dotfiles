@@ -1022,7 +1022,17 @@ Chooses between buffers of the current project if any."
   :config
   (when (executable-find "mogrify")
     (setq image-use-external-converter t)))
+
 ;;; Behaviour
+;;;; Locking
+(setup-package emacs-lock
+  :diminish (emacs-lock-mode " 🔒")
+
+  :bind
+  (:map
+   ctl-x-x-map
+   ("l" . emacs-lock-mode)))
+
 ;;;; reverse-im
 (use-package reverse-im
   :demand
