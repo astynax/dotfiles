@@ -2570,7 +2570,8 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
   :config
   (defun my/flyspell-off ()
     (interactive)
-    (flyspell--mode-off)))
+    (flyspell--mode-off)
+    (ispell-kill-ispell t)))
 
 ;;; Org-mode/Outline
 ;;;; Org
