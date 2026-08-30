@@ -1026,22 +1026,8 @@ Chooses between buffers of the current project if any."
 
   :bind
   (:map
-   embark-file-map
-   ("J" . my/embark-terminal-jump))
-
-  (:map
    embark-identifier-map
-   ("D" . dictionary-lookup-definition))
-
-  :preface
-  (defun my/embark-terminal-jump (arg)
-    "Open a FILE (or FILE's DIR) in XTerm."
-    (interactive "f")
-    (if-let* ((default-directory
-               (if (file-directory-p arg) arg
-                 (file-name-directory arg))))
-        (shell-command "basher.bash xterm -maximized -e bash")
-      (message "Can't detect a suitable directory to open!"))))
+   ("D" . dictionary-lookup-definition)))
 
 ;;; Images
 (setup-package image
