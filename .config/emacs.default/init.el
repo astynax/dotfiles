@@ -559,6 +559,32 @@ of the original line in the beginning of the new one."
   :commands
   (dired-narrow))
 
+;;; Shells/terminals
+(setup-package eshell
+  :commands (eshell))
+
+(setup-package em-hist
+  :after (eshell)
+  :config
+  (unbind-key "<down>" eshell-hist-mode-map)
+  (unbind-key "<up>" eshell-hist-mode-map))
+
+(setup-package esh-mode
+  :after (eshell)
+
+  :bind
+  (:map
+   eshell-mode-map
+   ("s-t" . my/eshell-clone))
+
+  :config
+  (unbind-key "M-RET" eshell-mode-map)
+
+  (defun my/eshell-clone ()
+    (interactive)
+    (when eshell-mode
+      (eshell t))))
+
 ;;; Dictionary
 (setup-package dictionary
   :custom
