@@ -12,7 +12,6 @@ format = """\
     $package\
     $python\
     $rust\
-    $elm\
     $kotlin\
     $haskell\
     $scala\
@@ -61,10 +60,15 @@ symbol = "\ue68e "
 
 [haskell]
 symbol = "\ue777 "
-detect_extensions = ['cabal']
+detect_extensions = ["cabal"]
 
 [python]
 detect_extensions = []
+
+[custom.elm]
+files = ["elm.json"]
+extensions = ["elm"]
+symbol = "Elm "
 
 [custom.racket]
 extensions = ["rkt"]
