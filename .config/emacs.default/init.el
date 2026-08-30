@@ -2609,6 +2609,30 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
     (flyspell--mode-off)
     (ispell-kill-ispell t)))
 
+;;; Hyperbole
+(use-package hyperbole
+  :ensure t)
+
+(def-package my/hyperbole
+  :after (hyperbole)
+
+  :hook
+  (after-init . my/hyperbole-lite-mode)
+
+  :preface
+  (define-minor-mode my/hyperbole-lite-mode
+    "My own minor mode for the subset of Hyperbole bindings"
+    :global t
+    :lighter " H"
+    :keymap (make-sparse-keymap "My Hyperbole/lite keymap"))
+
+  :bind
+  (:map
+   my/hyperbole-lite-mode-map
+   ("M-RET" . hkey-either)
+   ("C-h h" . hyperbole)
+   ("C-h A" . hkey-help)))
+
 ;;; Org-mode/Outline
 ;;;; Org
 (use-package org
