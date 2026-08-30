@@ -815,6 +815,9 @@ _j_ ^ ^ _l_ _=_:equalize
   :bind
   ([remap kill-buffer] . my/kill-this-buffer)
   ("<s-tab>" . my/next-buffer-like-this)
+  (:map
+   ctl-x-x-map
+   ("b" . bury-buffer))
 
   :preface
   (defun my/kill-this-buffer ()
@@ -1117,6 +1120,11 @@ Open in the new window if called with the UNIVERSAL ARG."
 
   :custom
   (history-length 25))
+
+;;;; Repeating
+(setup-package repeat
+  :hook
+  (after-init . repeat-mode))
 
 ;;; Editing
 ;;;; isearch
@@ -2512,6 +2520,12 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
 
 (def-package my/project
   :after (project)
+
+  :bind
+  (:map
+   project-prefix-map
+   ("K" . my/project-kill-file-path))
+
   :config
   (defun my/project-kill-file-path (&optional ARG)
     "Kills a path to the file relatively to the current project"
