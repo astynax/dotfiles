@@ -591,6 +591,22 @@ of the original line in the beginning of the new one."
   (dictionary-server "dict.org"))
 
 ;;; UI
+;;;; Hideshow
+(setup-package hideshow
+  :bind
+  (:map
+   hs-minor-mode-map
+   ("C-c h h" . my/hs-cycle-block)
+   ("C-c h c" . hs-cycle)
+   ("C-c h s" . hs-show-block))
+
+  :config
+  (defun my/hs-cycle-block ()
+    (interactive)
+    (if (hs-already-hidden-p)
+        (hs-show-block)
+      (hs-hide-block))))
+
 ;;;; Highlights
 (setup-package paren
   :config
