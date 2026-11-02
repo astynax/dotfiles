@@ -10,47 +10,37 @@ setopt emacs
 export EDITOR=mg
 export FCEDIT=mg
 
-if type brew &>/dev/null; then
-    FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
-fi
-
-export NVM_DIR="$HOME/.nvm"
-[ -s "/usr/local/opt/nvm/nvm.sh" ] && \
-    . "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
-[ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && \
-    . "/usr/local/opt/nvm/etc/bash_completion.d/nvm"
-
 if [[ -d "$HOME/.cargo/env" ]]; then
     source "$HOME/.cargo/env"
 fi
 
 if [[ $- == *i* ]]; then
+    if type brew &>/dev/null; then
+        FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
+    fi
     export FPATH="$FPATH:$HOME/.local/share/zsh/site-functions"
+    export FPATH="$FPATH:/opt/local/share/zsh/site-functions"
 
     autoload -Uz compinit && compinit
 
     zstyle ':completion:*' menu select
 
-    source <(/usr/local/bin/starship init zsh --print-full-init)
+    if [[ "$TERM" != "dumb" ]]; then
+        source <(/usr/local/bin/starship init zsh --print-full-init)
+    else
+        export PS1="%d %# "
+    fi
 
     if type -p "fzf" > /dev/null; then
         export FZF_DEFAULT_OPTS_FILE="$HOME/.config/.fzfrc"
         source "$HOME/.local/share/zsh/site-functions/_fzf"
     fi
 
-    if type -p "poe" > /dev/null; then
-        autoload -Uz _poe
-        compdef _poe poe
-    fi
-
-    if type -p "but" > /dev/null; then
-        autoload -Uz _but
-        compdef _but but
-    fi
+    source ~/.orbstack/shell/init.zsh 2>/dev/null || true
 
     alias ll="eza --icons -l"
     alias ls=eza
-    alias et="eza --tree --git-ignore"
+    alias tree="eza --tree --git-ignore"
     alias cat=bat
     alias r=ranger
     alias cal="ncal -3"
