@@ -829,43 +829,10 @@ _j_ ^ ^ _l_ _=_:equalize
 
 (def-package my/buffers
   :bind
-  ([remap kill-buffer] . my/kill-this-buffer)
-  ("<s-tab>" . my/next-buffer-like-this)
+  ([remap kill-buffer] . kill-current-buffer)
   (:map
    ctl-x-x-map
-   ("b" . bury-buffer))
-
-  :preface
-  (defun my/kill-this-buffer ()
-    "Kills the current buffer"
-    (interactive)
-    (kill-buffer (current-buffer)))
-
-  (defun my/next-buffer-like-this ()
-    "Switches between buffers with the same major mode as the current one.
-Chooses between buffers of the current project if any."
-    (interactive)
-    (when-let*
-        ((bs
-          (sort
-           (cl-loop
-            for b in (if-let* ((p (project-current)))
-                         (project-buffers p)
-                       (buffer-list))
-            if (eql major-mode (with-current-buffer b
-                                 major-mode))
-            collect b)
-           #'(lambda (b1 b2) (string< (buffer-file-name b1)
-                                 (buffer-file-name b2)))))
-         (target
-          (or (cl-loop
-               for here = (current-buffer)
-               for b = bs then (cdr b)
-               while b
-               if (eql (car b) here)
-               do (cl-return (cadr b)))
-              (car bs))))
-      (switch-to-buffer target))))
+   ("b" . bury-buffer)))
 
 ;;;; Ivy
 (use-package ivy
