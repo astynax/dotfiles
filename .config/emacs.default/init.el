@@ -2596,14 +2596,14 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
 (use-package hyperbole
   :ensure t)
 
-(def-package my/hyperbole
+(def-package my--hyperbole
   :after (hyperbole)
 
   :hook
-  (after-init . my/hyperbole-lite-mode)
+  (after-init . my--hyperbole-lite-mode)
 
   :preface
-  (define-minor-mode my/hyperbole-lite-mode
+  (define-minor-mode my--hyperbole-lite-mode
     "My own minor mode for the subset of Hyperbole bindings"
     :global t
     :lighter " H"
@@ -2611,7 +2611,7 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
 
   :bind
   (:map
-   my/hyperbole-lite-mode-map
+   my--hyperbole-lite-mode-map
    ("M-RET" . hkey-either)
    ("C-h h" . hyperbole)
    ("C-h A" . hkey-help)))
