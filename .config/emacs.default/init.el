@@ -1015,6 +1015,26 @@ _j_ ^ ^ _l_ _=_:equalize
    embark-identifier-map
    ("D" . dictionary-lookup-definition)))
 
+;;;; Space-Tree
+(use-package space-tree
+  :vc (:url "https://github.com/chiply/space-tree.git"
+            :rev "v0.1.9")
+
+  :bind
+  ("s-1" . space-tree-to-1)
+  ("s-2" . space-tree-to-2)
+  ("s-3" . space-tree-to-3)
+  ("s-4" . space-tree-to-4)
+  ("s-5" . space-tree-to-5)
+
+  :config
+  (space-tree-init)
+  (let ((lighter '(:eval (space-tree-modeline-lighter))))
+    (unless
+        (cl-find lighter mode-line-format :test #'equal)
+      (setq-default
+       mode-line-format (cons lighter mode-line-format)))))
+
 ;;; Images
 (setup-package image
   :config
