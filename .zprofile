@@ -14,9 +14,9 @@ fi
 export PATH=$PATH:/usr/local/bin:$HOME/.local/bin:$HOME/.ghcup/bin
 export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
 
-if [[ -d "/opt/homebrew/etc/ca-certificates/" ]]; then
-    export SSL_CERT_FILE="/opt/homebrew/etc/ca-certificates/cert.pem"
-    export CURL_CA_BUNDLE="/opt/homebrew/etc/ca-certificates/cert.pem"
-    export REQUESTS_CA_BUNDLE="/opt/homebrew/etc/ca-certificates/cert.pem"
-    export NODE_EXTRA_CA_CERTS="/opt/homebrew/etc/ca-certificates/cert.pem"
+if [[ -f "/usr/local/etc/ca-certificates/cert.pem" ]]; then
+    export SSL_CERT_FILE="/usr/local/etc/ca-certificates/cert.pem"
+    export CURL_CA_BUNDLE="/usr/local/etc/ca-certificates/cert.pem"
+    export REQUESTS_CA_BUNDLE="/usr/local/etc/ca-certificates/cert.pem"
+    export NODE_EXTRA_CA_CERTS="/usr/local/etc/ca-certificates/cert.pem"
 fi
