@@ -1500,6 +1500,9 @@ jumps between the end and begigging of sexp if region is inactive."
 
 (advice-add #'xref-goto-xref :around #'my/do-then-quit)
 
+;;; Casual toolkit
+(use-package casual)
+
 ;;; Version Control
 ;;;; Git/Magit
 (use-package magit
@@ -2926,6 +2929,18 @@ https://github.com/magit/magit/issues/460 (@cpitclaudel)."
   (:map
    org-mode-map
    ("<f5>" . my/org-simple-slideshow)))
+
+(def-package my-org-casual
+  :after (org casual)
+  :bind
+  (:map
+   org-mode-map
+   ("s-o" . casual-editkit-main-tmenu)
+   ("s-m" . casual-org-tmenu))
+
+  (:map
+   org-table-fedit-map
+   ("s-m" . casual-org-table-fedit-tmenu)))
 
 ;;;; Roam
 (overlay org-roam
